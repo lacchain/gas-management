@@ -16,7 +16,7 @@ import(
 )
 
 //SignPayload ...
-func SignPayload(signingAddr, destinationAddress string, encodedFunction []byte, gasLimit, nonce uint64, txRelay string) ([]byte, error){
+func SignPayload(signingAddr, destinationAddress string, encodedFunction []byte, gasLimit, nonce uint64) ([]byte, error){
 	log.Println("rawData", hexutil.Encode(encodedFunction))
 
 	//nonce := await txRelay.getNonce.call(signingAddr)

@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"math/big"
 	//"net"
 	"net/http"
@@ -23,20 +24,27 @@ import (
 	"net/url"
 	//"time"
 //	"sync"
-"io/ioutil"
-"bytes"
+	"io/ioutil"
+	"bytes"
+	"github.com/spf13/viper"
 	"github.com/lacchain/gas-relay-signer/rpc"
 	"github.com/lacchain/gas-relay-signer/util"
+	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/service"
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+//	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
-func main() {
-	
-	setupRoutes()
+var config *model.Config
+var relaySignerService *service.RelaySignerService
 
-	fmt.Println("Terminating Program")
+func main() {
+	config = getConfigFromFile()
+
+	relaySignerService = new(service.RelaySignerService)
+	relaySignerService.Init(config)
+	setupRoutes()
 }
 
 func signTransaction(w http.ResponseWriter, r *http.Request) {
@@ -75,8 +83,13 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 
 		decodeTransaction,_ := util.GetTransaction(params[0][2:])
 
+		message, err := decodeTransaction.AsMessage(types.NewEIP155Signer(decodeTransaction.ChainId()))
+    	if err != nil {
+        	log.Fatal(err)
+    	}
+
 		//fmt.Println("Decode Transaction:",*decodeTransaction)
-		fmt.Println("From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6")
+		fmt.Println("From:",message.From().Hex())
 		fmt.Println("To:",decodeTransaction.To().Hex())
 		fmt.Println("Data:",hexutil.Encode(decodeTransaction.Data()))
 		fmt.Println("GasLimit:",decodeTransaction.Gas())
@@ -84,13 +97,13 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("GasPrice:",decodeTransaction.GasPrice())
 		fmt.Println("Value:",decodeTransaction.Value())
 
-		signature,_ := util.SignPayload("0x63949701cd0e1cc04dfea0afbf410968f10ff4b6", decodeTransaction.To().Hex(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce(), "0x3Ca0963A2b3bEeeD3b3EC0d3b6Cae6D99B4855e9")
+		signature,_ := util.SignPayload(message.From().Hex(), decodeTransaction.To().Hex(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce())
 
 		fmt.Println("signature:",signature)
 
-		relaySignerService := new(service.RelaySignerService)
+		//relaySignerService := new(service.RelaySignerService)
 
-		code := relaySignerService.SendMetatransaction(common.HexToAddress("0x63949701cd0e1cc04dfea0afbf410968f10ff4b6"), *decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature, "0x3Ca0963A2b3bEeeD3b3EC0d3b6Cae6D99B4855e9")
+		code := relaySignerService.SendMetatransaction(message.From(), *decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature)
 		if code == 100{
 			log.Println("Failed to send metatransaction")
 		}else{
@@ -102,7 +115,7 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		r.Body=rdr2
 		fmt.Println("Is not a rawTransaction")
 		
-		serveReverseProxy("http://34.75.103.207:4545",w,r)
+		serveReverseProxy(config.Application.NodeURL,w,r)
 	}
 }
 
@@ -121,6 +134,22 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 
 	// Note that ServeHttp is non blocking and uses a go routine under the hood
 	proxy.ServeHTTP(res, req)
+}
+
+func getConfigFromFile()(*model.Config){
+	v := viper.New()
+	v.SetConfigName("config")
+	v.AddConfigPath(".")
+	if err := v.ReadInConfig(); err != nil {
+		fmt.Printf("couldn't load config: %s", err)
+		os.Exit(1)
+	}
+	var c model.Config
+	if err := v.Unmarshal(&c); err != nil {
+		fmt.Printf("couldn't read config: %s", err)
+	}
+	fmt.Printf("smartContract=%s AgentKey=%s\n", c.Application.ContractAddress, c.KeyStore.Agent)
+	return &c
 }
 
 func setupRoutes() {

@@ -29,19 +29,19 @@ func (service *RelaySignerService) Init(_config *model.Config){
 }
 
 //SendMetatransaction saving the hash into blockchain
-func (service *RelaySignerService) SendMetatransaction(from common.Address, to common.Address, encodedFunction []byte, gasLimit, nonce *big.Int, signature []byte, relayHubContract string) (int) {
+func (service *RelaySignerService) SendMetatransaction(from common.Address, to common.Address, encodedFunction []byte, gasLimit, nonce *big.Int, signature []byte) (int) {
 	client := new(bl.Client)
-	err := client.Connect("http://34.75.103.207:4545")
+	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
 		handleError(err)
 	}
 	defer client.Close()
 	
-	options, err := client.ConfigTransaction("/home/adrian/.ethereum/keystore/UTC--2020-06-18T05-39-57.250267184Z--63949701cd0e1cc04dfea0afbf410968f10ff4b6","Peru123.")
+	options, err := client.ConfigTransaction(service.Config.KeyStore.Agent,service.Config.Passphrase.Agent,gasLimit.Uint64())
 	if err != nil {
 		return handleError(err)
 	}
-	contractAddress := common.HexToAddress(relayHubContract)
+	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
 	err, tx := client.SendMetatransaction(contractAddress, options, from, to, encodedFunction, gasLimit, nonce, signature)
 	if err != nil {

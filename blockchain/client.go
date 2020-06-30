@@ -42,7 +42,7 @@ func (ec *Client) Close() {
 }
 
 //ConfigTransaction from ethereum address contract
-func (ec *Client) ConfigTransaction(keyStorePath,keystorepass string) (*bind.TransactOpts, error) {
+func (ec *Client) ConfigTransaction(keyStorePath,keystorepass string, gasLimit uint64) (*bind.TransactOpts, error) {
 	keystore, err := os.Open(keyStorePath)
 	defer keystore.Close()
     if err != nil {
@@ -74,7 +74,7 @@ func (ec *Client) ConfigTransaction(keyStorePath,keystorepass string) (*bind.Tra
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = uint64(200000) // in units
+	auth.GasLimit = gasLimit // in units
 	auth.GasPrice = gasPrice
 
 	l.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d,gas:%s", auth.From,nonce,gasPrice,auth.GasLimit,0)

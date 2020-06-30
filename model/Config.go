@@ -6,11 +6,11 @@ type ApplicationConfig struct {
 }
 
 type KeyStoreConfig struct {
-	RelayNode string `mapstructure:"feeAgent"`
+	Agent string `mapstructure:"agent"`
 }
 
 type PassphraseConfig struct {
-	RelayNode string `mapstructure:"feeAgent"`
+	Agent string `mapstructure:"agent"`
 }
 
 type Config struct {
