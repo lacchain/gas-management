@@ -3,6 +3,9 @@ package model
 type ApplicationConfig struct {
 	NodeURL string `mapstructure:"nodeURL"`
 	ContractAddress string `mapstructure:"contractAddress"`
+	NodeKeyPath string `mapstructure:"nodeKeyPath"`
+	NodeAddressPath string `mapstructure:"nodeAddressPath"`
+	Key string `mapstructure:"key"`
 }
 
 type KeyStoreConfig struct {

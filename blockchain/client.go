@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"os"
+//	"os"
+	"crypto/ecdsa"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -42,21 +43,16 @@ func (ec *Client) Close() {
 }
 
 //ConfigTransaction from ethereum address contract
-func (ec *Client) ConfigTransaction(keyStorePath,keystorepass string, gasLimit uint64) (*bind.TransactOpts, error) {
-	keystore, err := os.Open(keyStorePath)
+func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bind.TransactOpts, error) {
+/*	keystore, err := os.Open(keyStorePath)
 	defer keystore.Close()
     if err != nil {
 		msg := fmt.Sprintf("could not load keystore from location %s",keyStorePath)
 		err = errors.FailedKeystore.Wrapf(err,msg)
 		return nil,err
     }
-	
-	auth, err := bind.NewTransactor(keystore, keystorepass)
-	if err != nil {
-		msg := fmt.Sprintf("can't open the keystore")
-		err = errors.FailedKeystore.Wrapf(err,msg)
-		return nil, err
-	}
+*/	
+	auth := bind.NewKeyedTransactor(key)
 
 	nonce, err := ec.client.PendingNonceAt(context.Background(), auth.From)
 	if err != nil {

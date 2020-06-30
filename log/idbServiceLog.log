@@ -99,3 +99,8 @@ General Logger:	2020/06/29 18:26:29 client.go:34: Connected to Ethereum Node: ht
 General Logger:	2020/06/29 18:26:30 client.go:80: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:190,gasPrice:0,gasLimit:200000,gas:%!s(int=0)
 General Logger:	2020/06/30 16:15:32 client.go:34: Connected to Ethereum Node: http://localhost:4545
 General Logger:	2020/06/30 16:50:09 client.go:34: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/06/30 18:31:56 client.go:35: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/06/30 18:41:03 client.go:35: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/06/30 18:41:43 client.go:35: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/06/30 18:43:05 client.go:35: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/06/30 18:47:01 client.go:35: Connected to Ethereum Node: http://localhost:4545

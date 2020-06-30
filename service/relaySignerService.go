@@ -10,8 +10,10 @@ package service
 import (
 	"log"
 	"fmt"
+	"io/ioutil"
 	"math/big"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	bl "github.com/lacchain/gas-relay-signer/blockchain"
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/errors"
@@ -26,6 +28,14 @@ type RelaySignerService struct {
 //Init configuration parameters
 func (service *RelaySignerService) Init(_config *model.Config){
 	service.Config = _config
+
+	key, err := ioutil.ReadFile(service.Config.Application.NodeKeyPath)
+    if err != nil {
+        fmt.Println("File Key reading error:", err)
+        return
+	}
+	service.Config.Application.Key = string(key[2:66])
+	fmt.Println(string(key[2:66]))
 }
 
 //SendMetatransaction saving the hash into blockchain
@@ -37,7 +47,12 @@ func (service *RelaySignerService) SendMetatransaction(from common.Address, to c
 	}
 	defer client.Close()
 	
-	options, err := client.ConfigTransaction(service.Config.KeyStore.Agent,service.Config.Passphrase.Agent,gasLimit.Uint64())
+	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+	options, err := client.ConfigTransaction(privateKey,gasLimit.Uint64())
 	if err != nil {
 		return handleError(err)
 	}
