@@ -10,10 +10,12 @@ package service
 import (
 	"log"
 	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"math/big"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/lacchain/gas-relay-signer/rpc"
 	bl "github.com/lacchain/gas-relay-signer/blockchain"
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/errors"
@@ -35,11 +37,10 @@ func (service *RelaySignerService) Init(_config *model.Config){
         return
 	}
 	service.Config.Application.Key = string(key[2:66])
-	fmt.Println(string(key[2:66]))
 }
 
 //SendMetatransaction saving the hash into blockchain
-func (service *RelaySignerService) SendMetatransaction(from common.Address, to common.Address, encodedFunction []byte, gasLimit, nonce *big.Int, signature []byte) (int) {
+func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from common.Address, to common.Address, encodedFunction []byte, gasLimit, nonce *big.Int, signature []byte) (*rpc.JsonrpcMessage) {
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
@@ -50,22 +51,34 @@ func (service *RelaySignerService) SendMetatransaction(from common.Address, to c
 	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
     if err != nil {
         log.Fatal(err)
-    }
-
+	}
+	
 	options, err := client.ConfigTransaction(privateKey,gasLimit.Uint64())
 	if err != nil {
-		return handleError(err)
+		return handleErrorRPCMessage(err)
 	}
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
+	if(!client.SimulateTransaction(service.Config.Application.NodeURL,from,client.GenerateTransaction(1000000,contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
+		fmt.Println("Transaction will fail, then is rejected")
+		result := new(rpc.JsonrpcMessage)
+
+		result.ID = id
+
+		return result
+	}
+
 	err, tx := client.SendMetatransaction(contractAddress, options, from, to, encodedFunction, gasLimit, nonce, signature)
 	if err != nil {
-		return handleError(err)
+		return handleErrorRPCMessage(err)
 	}
 
 	fmt.Println("tx",tx)
 
-	return 200
+	result := new(rpc.JsonrpcMessage)
+
+	result.ID = id
+	return result.Response(tx)
 }
 
 func handleError(err error)(int){
@@ -82,4 +95,8 @@ func handleError(err error)(int){
       		log.Println("otro error:",err)
 	   }
 	  return 100
+}
+
+func handleErrorRPCMessage(err error)(*rpc.JsonrpcMessage){
+	return nil
 }

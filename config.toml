@@ -1,6 +1,6 @@
 [application]
-nodeURL = "http://localhost:4545"
-contractAddress = "0x82EAA0235b789A2021142023f44CcbB97Cfe9afA"
+nodeURL = "http://34.75.103.207:4545"
+contractAddress = "0x60ea04D698EB386534826410D7dF0969f567aA01"
 nodeKeyPath = "/root/lacchain/data/key"  
 nodeAddressPath = "/root/lacchain/data/nodeAddress"
 

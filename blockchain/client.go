@@ -6,17 +6,25 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+//	"strconv"
+	"strings"
 //	"os"
 	"crypto/ecdsa"
-
+//	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/lacchain/gas-relay-signer/model"
 	relay "github.com/lacchain/gas-relay-signer/blockchain/contracts"
 	"github.com/lacchain/gas-relay-signer/errors"
 	l "github.com/lacchain/gas-relay-signer/util"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
+
+const RelayABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"}],\"name\":\"GasUsed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"}],\"name\":\"Hashed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"selector\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"charge\",\"type\":\"uint256\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"encodedFunction\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"}],\"name\":\"setGasLimit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 //Client to manage Connection to Ethereum
 type Client struct {
@@ -70,10 +78,10 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bi
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = gasLimit // in units
+	auth.GasLimit = gasLimit + 150000 // in units
 	auth.GasPrice = gasPrice
 
-	l.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d,gas:%s", auth.From,nonce,gasPrice,auth.GasLimit,0)
+	l.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d", auth.From,nonce,gasPrice,auth.GasLimit)
 
 	return auth, nil
 }
@@ -113,6 +121,58 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 	transactionHash := tx.Hash()
 
 	return nil, &transactionHash
+}
+
+func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *types.Transaction) bool {
+	client, err := rpc.DialHTTP(nodeURL)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer client.Close()
+	
+	var result string
+	err = client.Call(&result,"eth_call",createCallMsgFromTransaction(from, tx), "latest")
+	if err != nil {
+		log.Fatal("Cannot not get revert reason: " + err.Error())
+		return false
+	}
+	fmt.Println("result:",result)
+	value := new(big.Int)
+	
+	hexResult := strings.Replace(result, "0x", "", -1)
+	value.SetString(hexResult, 16)
+	fmt.Println("value:",value)
+	if value.Int64() == 0 {
+		fmt.Println("no error message or out of gas")
+		return false
+	}
+	return true
+}
+
+func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) model.CallRequest {
+	
+	fmt.Println("Call From:",from.Hex())
+	fmt.Println("Call To:",tx.To().Hex())
+	fmt.Println("Call Data:",hexutil.Encode(tx.Data()))
+	fmt.Println("Call GasLimit:",hexutil.EncodeUint64(tx.Gas()))
+
+	return model.CallRequest{
+		From: from.Hex(),
+		To: tx.To().Hex(),
+		Gas: hexutil.EncodeUint64(tx.Gas()),
+		Data: hexutil.Encode(tx.Data()),
+	}
+}
+
+//GenerateTransaction ...
+func (ec *Client)GenerateTransaction(gasLimitTx uint64, relayAddress common.Address, from common.Address, to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, signature []byte) (*types.Transaction){
+	testabi, err := abi.JSON(strings.NewReader(RelayABI))
+	if err != nil{
+		fmt.Println("Error decoding ABI")
+	}
+	bytesData, _ := testabi.Pack("relayMetaTx",from,to,encodedFunction,gasLimit,nonce,signature)
+	tx := types.NewTransaction(100, relayAddress, big.NewInt(0), gasLimitTx, big.NewInt(0), bytesData)
+	return tx
 }
 
 //GetTransactionReceipt ...

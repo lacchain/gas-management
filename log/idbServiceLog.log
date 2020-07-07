@@ -104,3 +104,68 @@ General Logger:	2020/06/30 18:41:03 client.go:35: Connected to Ethereum Node: ht
 General Logger:	2020/06/30 18:41:43 client.go:35: Connected to Ethereum Node: http://localhost:4545
 General Logger:	2020/06/30 18:43:05 client.go:35: Connected to Ethereum Node: http://localhost:4545
 General Logger:	2020/06/30 18:47:01 client.go:35: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/07/02 18:51:58 client.go:35: Connected to Ethereum Node: http://localhost:4545
+General Logger:	2020/07/02 18:53:20 client.go:35: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/02 18:53:21 client.go:76: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:212,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/02 18:59:13 client.go:35: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/02 18:59:13 client.go:76: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:213,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/02 18:59:32 client.go:35: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/02 18:59:32 client.go:76: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:214,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/02 18:59:56 client.go:35: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/02 18:59:56 client.go:76: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:215,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/02 19:00:36 client.go:35: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/02 19:00:37 client.go:76: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:216,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 10:42:43 client.go:35: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 10:42:43 client.go:76: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:217,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 17:38:31 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 17:38:31 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:218,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 17:57:30 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 17:57:31 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:218,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:00:31 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:00:31 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:218,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:11:49 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:11:49 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:219,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:18:05 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:18:06 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:220,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:23:27 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:23:27 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:221,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:30:57 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:30:57 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:222,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:31:43 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:31:43 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:223,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:33:33 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:33:33 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:224,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:34:12 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:34:12 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:225,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 18:35:10 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 18:35:10 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:225,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 20:45:37 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 20:45:37 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:225,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 20:46:10 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 20:46:10 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:225,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/06 20:57:56 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/06 20:57:56 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:226,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 11:30:42 client.go:42: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 11:30:42 client.go:83: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:227,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 11:39:03 client.go:42: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 11:39:04 client.go:83: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:228,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 11:53:57 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 11:53:58 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:229,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 11:54:33 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 11:54:33 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:230,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:00:11 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:00:12 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:231,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:06:31 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:06:31 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:232,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:10:02 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:10:03 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:233,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:11:59 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:12:00 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:234,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:12:32 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:12:33 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:235,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:14:00 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:14:00 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:236,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:16:25 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:16:26 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:237,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/07 12:21:38 client.go:43: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/07 12:21:38 client.go:84: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:238,gasPrice:0,gasLimit:210000

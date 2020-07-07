@@ -104,7 +104,8 @@ func (msg *JsonrpcMessage) errorResponse(err error) *JsonrpcMessage {
 	return resp
 }
 
-func (msg *JsonrpcMessage) response(result interface{}) *JsonrpcMessage {
+//Response ...
+func (msg *JsonrpcMessage) Response(result interface{}) *JsonrpcMessage {
 	enc, err := json.Marshal(result)
 	if err != nil {
 		// TODO: wrap with 'internal server error'

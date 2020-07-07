@@ -69,6 +69,7 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("value:",rpcMessage.Method);
+	fmt.Println("value:",rpcMessage.ID);
 
 	if (rpcMessage.IsRawTransaction()){
 		fmt.Println("Is a rawTransaction")
@@ -103,14 +104,9 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 
 		//relaySignerService := new(service.RelaySignerService)
 
-		code := relaySignerService.SendMetatransaction(message.From(), *decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature)
-		if code == 100{
-			log.Println("Failed to send metatransaction")
-		}else{
-			log.Println("sucess")
-		}
-
-		w.Write([]byte("success"))
+		response := relaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), *decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature)
+		data, err := json.Marshal(response)
+		w.Write(data)
 	}else{
 		r.Body=rdr2
 		fmt.Println("Is not a rawTransaction")
