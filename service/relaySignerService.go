@@ -40,7 +40,7 @@ func (service *RelaySignerService) Init(_config *model.Config){
 }
 
 //SendMetatransaction saving the hash into blockchain
-func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from common.Address, to common.Address, encodedFunction []byte, gasLimit, nonce *big.Int, signature []byte) (*rpc.JsonrpcMessage) {
+func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from common.Address, to *common.Address, encodedFunction []byte, gasLimit, nonce *big.Int, signature []byte) (*rpc.JsonrpcMessage) {
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {

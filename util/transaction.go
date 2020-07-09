@@ -9,6 +9,7 @@ import(
 	"crypto/ecdsa"
 	sha "golang.org/x/crypto/sha3"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rlp"
@@ -16,7 +17,7 @@ import(
 )
 
 //SignPayload ...
-func SignPayload(signingAddr, destinationAddress string, encodedFunction []byte, gasLimit, nonce uint64) ([]byte, error){
+func SignPayload(_privateKey, signingAddr string, destinationAddress *common.Address, encodedFunction []byte, gasLimit, nonce uint64) ([]byte, error){
 	log.Println("rawData", hexutil.Encode(encodedFunction))
 
 	//nonce := await txRelay.getNonce.call(signingAddr)
@@ -28,7 +29,7 @@ func SignPayload(signingAddr, destinationAddress string, encodedFunction []byte,
 	
 	fmt.Println("messageHashed:",hexutil.Encode(hash))
 
-	privateKey, err := crypto.HexToECDSA("b3e7374dca5ca90c3899dbb2c978051437fb15534c945bf59df16d6c80be27c0")
+	privateKey, err := crypto.HexToECDSA(_privateKey)
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
     if !ok {
@@ -36,7 +37,7 @@ func SignPayload(signingAddr, destinationAddress string, encodedFunction []byte,
 	}
 	
 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
-    fmt.Println("address:",address)
+	fmt.Println("Node Address:",address)
 
 	if err != nil {
         log.Fatal(err)
@@ -58,20 +59,36 @@ func SignPayload(signingAddr, destinationAddress string, encodedFunction []byte,
 }
 
 //Hash 
-func Hash(from, to string, encodedFunction []byte, gasLimit, nonce string) ([]byte) {
-	hash := sha3.SoliditySHA3(
-		// types
-		[]string{"address", "address", "bytes32", "uint256", "uint256"},
+func Hash(from string, to *common.Address, encodedFunction []byte, gasLimit, nonce string) ([]byte) {
+	var hash []byte
+	if (to != nil){
+		hash = sha3.SoliditySHA3(
+			// types
+			[]string{"address", "address", "bytes32", "uint256", "uint256"},
 
-		// values
-		[]interface{}{
-			from,
-			to,
-			encodedFunction,
-			gasLimit,
-			nonce,
-		},
-	)
+			// values
+			[]interface{}{
+				from,
+				to.Hex(),
+				encodedFunction,
+				gasLimit,
+				nonce,
+			},
+		)
+	}else{
+		hash = sha3.SoliditySHA3(
+			// types
+			[]string{"address", "bytes32", "uint256", "uint256"},
+
+			// values
+			[]interface{}{
+				from,
+				encodedFunction,
+				gasLimit,
+				nonce,
+			},
+		)
+	}
 	
 	return hash
 }

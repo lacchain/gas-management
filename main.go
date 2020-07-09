@@ -18,12 +18,9 @@ import (
 	"log"
 	"os"
 	"math/big"
-	//"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	//"time"
-//	"sync"
 	"io/ioutil"
 	"bytes"
 	"github.com/spf13/viper"
@@ -32,7 +29,6 @@ import (
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/service"
 	"github.com/ethereum/go-ethereum/core/types"
-//	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
@@ -68,8 +64,7 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("value:",rpcMessage.Method);
-	fmt.Println("value:",rpcMessage.ID);
+	fmt.Println("JSON-RPC Method:",rpcMessage.Method);
 
 	if (rpcMessage.IsRawTransaction()){
 		fmt.Println("Is a rawTransaction")
@@ -91,20 +86,26 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Println("Decode Transaction:",*decodeTransaction)
 		fmt.Println("From:",message.From().Hex())
-		fmt.Println("To:",decodeTransaction.To().Hex())
+		if (decodeTransaction.To() != nil){
+			fmt.Println("To:",decodeTransaction.To().Hex())
+		}
 		fmt.Println("Data:",hexutil.Encode(decodeTransaction.Data()))
 		fmt.Println("GasLimit:",decodeTransaction.Gas())
 		fmt.Println("Nonce",decodeTransaction.Nonce())
 		fmt.Println("GasPrice:",decodeTransaction.GasPrice())
 		fmt.Println("Value:",decodeTransaction.Value())
+		v,r,s := decodeTransaction.RawSignatureValues();
 
-		signature,_ := util.SignPayload(message.From().Hex(), decodeTransaction.To().Hex(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce())
+		fmt.Println(fmt.Sprintf("Signature R %x",r))
+		fmt.Println(fmt.Sprintf("Signature S %x",s))
+		fmt.Println(fmt.Sprintf("Signature V %x",v))
 
+		signature,_ := util.SignPayload(relaySignerService.Config.Application.Key, message.From().Hex(), decodeTransaction.To(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce())
 		fmt.Println("signature:",signature)
 
 		//relaySignerService := new(service.RelaySignerService)
 
-		response := relaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), *decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature)
+		response := relaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature)
 		data, err := json.Marshal(response)
 		w.Write(data)
 	}else{
@@ -151,5 +152,5 @@ func getConfigFromFile()(*model.Config){
 func setupRoutes() {
 	fmt.Println("Init RelaySigner")
 	http.HandleFunc("/", signTransaction)
-	http.ListenAndServe(":9002", nil)
+	http.ListenAndServe(":9001", nil)
 }
