@@ -283,3 +283,15 @@ General Logger:	2020/07/09 18:28:32 client.go:40: Connected to Ethereum Node: ht
 General Logger:	2020/07/09 18:28:32 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:294,gasPrice:0,gasLimit:210000
 General Logger:	2020/07/09 18:41:26 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
 General Logger:	2020/07/09 18:41:26 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:295,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/10 12:03:02 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/10 12:03:03 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:299,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/10 12:05:06 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/10 12:05:07 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:300,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/10 14:18:18 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/10 14:18:18 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:303,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/10 14:37:15 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/10 14:37:16 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:304,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/10 14:58:22 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/10 14:58:23 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:304,gasPrice:0,gasLimit:210000
+General Logger:	2020/07/10 15:01:05 client.go:40: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2020/07/10 15:01:06 client.go:81: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:305,gasPrice:0,gasLimit:210000

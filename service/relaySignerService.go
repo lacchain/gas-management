@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"math/big"
+	"crypto/ecdsa"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/lacchain/gas-relay-signer/rpc"
@@ -52,6 +53,14 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
     if err != nil {
         log.Fatal(err)
 	}
+
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+    if !ok {
+        log.Fatal("error casting public key to ECDSA")
+	}
+	
+	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 	
 	options, err := client.ConfigTransaction(privateKey,gasLimit.Uint64())
 	if err != nil {
@@ -59,7 +68,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 	}
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
-	if(!client.SimulateTransaction(service.Config.Application.NodeURL,from,client.GenerateTransaction(1000000,contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
+	if(!client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(1000000,contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
 		fmt.Println("Transaction will fail, then is rejected")
 		result := new(rpc.JsonrpcMessage)
 
