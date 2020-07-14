@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 	"fmt"
-	"log"
 	"math/big"
 	"strings"
 	"crypto/ecdsa"
@@ -17,7 +16,7 @@ import (
 	"github.com/lacchain/gas-relay-signer/model"
 	relay "github.com/lacchain/gas-relay-signer/blockchain/contracts"
 	"github.com/lacchain/gas-relay-signer/errors"
-	l "github.com/lacchain/gas-relay-signer/util"
+	log "github.com/lacchain/gas-relay-signer/util"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
@@ -37,7 +36,7 @@ func (ec *Client) Connect(nodeURL string) error {
 		return err
 	}
 
-	l.GeneralLogger.Println("Connected to Ethereum Node:", nodeURL)
+	log.GeneralLogger.Println("Connected to Ethereum Node:", nodeURL)
 	ec.client = client
 	return nil
 }
@@ -78,7 +77,7 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bi
 	auth.GasLimit = gasLimit + 150000 // in units
 	auth.GasPrice = gasPrice
 
-	l.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d", auth.From,nonce,gasPrice,auth.GasLimit)
+	log.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d", auth.From,nonce,gasPrice,auth.GasLimit)
 
 	return auth, nil
 }
@@ -92,16 +91,16 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 		return err, nil
 	}
 
-	log.Println("RelayHub Contract instanced:",contractAddress.Hex())
+	log.GeneralLogger.Println("RelayHub Contract instanced:",contractAddress.Hex())
 
-	log.Println("from:", from.Hex())
+	log.GeneralLogger.Println("from:", from.Hex())
 	if (to!=nil){
-		log.Println("to:", to.Hex())
+		log.GeneralLogger.Println("to:", to.Hex())
 	}
-	log.Println("encodedFunction:", hexutil.Encode(encodedFunction))
-	log.Println("gasLimit:", gasLimit)
-	log.Println("nonce:", nonce)
-	log.Println("signature:", hexutil.Encode(signature))
+	log.GeneralLogger.Println("encodedFunction:", hexutil.Encode(encodedFunction))
+	log.GeneralLogger.Println("gasLimit:", gasLimit)
+	log.GeneralLogger.Println("nonce:", nonce)
+	log.GeneralLogger.Println("signature:", hexutil.Encode(signature))
 
 	var tx *types.Transaction
 	
@@ -121,7 +120,7 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 		err = errors.FailedTransaction.Wrapf(err,msg)
 		return err, nil
 	}
-	log.Printf("Tx sent: %s", tx.Hash().Hex())
+	log.GeneralLogger.Printf("Tx sent: %s", tx.Hash().Hex())
 
 	transactionHash := tx.Hash()
 
@@ -131,24 +130,24 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *types.Transaction) bool {
 	client, err := rpc.DialHTTP(nodeURL)
     if err != nil {
-        log.Fatal(err)
+        log.GeneralLogger.Fatal(err)
     }
     defer client.Close()
 	
 	var result string
 	err = client.Call(&result,"eth_call",createCallMsgFromTransaction(from, tx), "latest")
 	if err != nil {
-		log.Fatal("Cannot not get revert reason: " + err.Error())
+		log.GeneralLogger.Fatal("Cannot not get revert reason: " + err.Error())
 		return false
 	}
-	fmt.Println("result:",result)
+	log.GeneralLogger.Println("result:",result)
 	value := new(big.Int)
 	
 	hexResult := strings.Replace(result, "0x", "", -1)
 	value.SetString(hexResult, 16)
-	fmt.Println("value:",value)
+	log.GeneralLogger.Println("value:",value)
 	if value.Int64() == 0 {
-		fmt.Println("no error message or out of gas")
+		log.GeneralLogger.Println("no error message or out of gas")
 		return false
 	}
 	return true
@@ -156,10 +155,10 @@ func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *t
 
 func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) model.CallRequest {
 	
-	fmt.Println("Call From:",from.Hex())
-	fmt.Println("Call To:",tx.To().Hex())
-	fmt.Println("Call Data:",hexutil.Encode(tx.Data()))
-	fmt.Println("Call GasLimit:",hexutil.EncodeUint64(tx.Gas()))
+	log.GeneralLogger.Println("Call From:",from.Hex())
+	log.GeneralLogger.Println("Call To:",tx.To().Hex())
+	log.GeneralLogger.Println("Call Data:",hexutil.Encode(tx.Data()))
+	log.GeneralLogger.Println("Call GasLimit:",hexutil.EncodeUint64(tx.Gas()))
 
 	return model.CallRequest{
 		From: from.Hex(),
@@ -173,7 +172,7 @@ func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) mo
 func (ec *Client)GenerateTransaction(gasLimitTx uint64, relayAddress common.Address, from common.Address, to *common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, signature []byte) (*types.Transaction){
 	testabi, err := abi.JSON(strings.NewReader(RelayABI))
 	if err != nil{
-		fmt.Println("Error decoding ABI")
+		log.GeneralLogger.Println("Error decoding ABI")
 	}
 
 	var bytesData []byte
@@ -191,18 +190,18 @@ func (ec *Client)GenerateTransaction(gasLimitTx uint64, relayAddress common.Addr
 func (ec *Client) GetTransactionReceipt(transactionHash common.Hash)(*big.Int, string, error){
 	receipt, err := ec.client.TransactionReceipt(context.Background(), transactionHash)
         if err != nil {
-            log.Fatal(err)
+            log.GeneralLogger.Fatal(err)
 		}
 		
-	log.Println("Status:",receipt.Status)
-	log.Println("BlockNumber:",receipt.BlockNumber)
+		log.GeneralLogger.Println("Status:",receipt.Status)
+		log.GeneralLogger.Println("BlockNumber:",receipt.BlockNumber)
 
 	block, err := ec.client.BlockByNumber(context.Background(), receipt.BlockNumber)
     if err != nil {
-        log.Fatal(err)
+        log.GeneralLogger.Fatal(err)
 	}
 	
-	log.Println("block time:",block.Time())
+	log.GeneralLogger.Println("block time:",block.Time())
 
 	ts := time.Unix(int64(block.Time()),0).UTC()
 

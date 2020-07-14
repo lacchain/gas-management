@@ -8,8 +8,6 @@
 package service
 
 import (
-	"log"
-	"fmt"
 	"encoding/json"
 	"io/ioutil"
 	"math/big"
@@ -18,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/lacchain/gas-relay-signer/rpc"
 	bl "github.com/lacchain/gas-relay-signer/blockchain"
+	log "github.com/lacchain/gas-relay-signer/util"
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/errors"
 )
@@ -34,7 +33,7 @@ func (service *RelaySignerService) Init(_config *model.Config){
 
 	key, err := ioutil.ReadFile(service.Config.Application.NodeKeyPath)
     if err != nil {
-        fmt.Println("File Key reading error:", err)
+        log.GeneralLogger.Println("File Key reading error:", err)
         return
 	}
 	service.Config.Application.Key = string(key[2:66])
@@ -51,13 +50,13 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 	
 	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
     if err != nil {
-        log.Fatal(err)
+        log.GeneralLogger.Fatal(err)
 	}
 
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
     if !ok {
-        log.Fatal("error casting public key to ECDSA")
+        log.GeneralLogger.Fatal("error casting public key to ECDSA")
 	}
 	
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
@@ -69,7 +68,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
 	if(!client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(1000000,contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
-		fmt.Println("Transaction will fail, then is rejected")
+		log.GeneralLogger.Println("Transaction will fail, then is rejected")
 		result := new(rpc.JsonrpcMessage)
 
 		result.ID = id
@@ -82,7 +81,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 		return handleErrorRPCMessage(err)
 	}
 
-	fmt.Println("tx",tx)
+	log.GeneralLogger.Println("tx",tx)
 
 	result := new(rpc.JsonrpcMessage)
 
@@ -94,14 +93,14 @@ func handleError(err error)(int){
 	errorType := errors.GetType(err)
    	switch errorType {
     	case errors.FailedConnection: 
-			  log.Fatal(err.Error())
+			log.GeneralLogger.Fatal(err.Error())
 		case errors.FailedKeystore:
-			  log.Fatal(err.Error())	
+			log.GeneralLogger.Fatal(err.Error())	
 		case errors.FailedConfigTransaction:
-			log.Println(err.Error())
+			log.GeneralLogger.Println(err.Error())
 			return 100  
 		default: 
-      		log.Println("otro error:",err)
+			log.GeneralLogger.Println("otro error:",err)
 	   }
 	  return 100
 }
