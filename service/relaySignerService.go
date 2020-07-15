@@ -10,8 +10,11 @@ package service
 import (
 	"encoding/json"
 	"io/ioutil"
+	"fmt"
 	"math/big"
 	"crypto/ecdsa"
+	"encoding/hex"
+	sha "golang.org/x/crypto/sha3"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/lacchain/gas-relay-signer/rpc"
@@ -87,6 +90,42 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 
 	result.ID = id
 	return result.Response(tx)
+}
+
+func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,transactionId string) (*rpc.JsonrpcMessage){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		handleError(err)
+	}
+	defer client.Close()
+
+	receipt,err := client.GetTransactionReceipt(common.HexToHash(transactionId))
+	if err != nil {
+		handleError(err)
+	}
+
+	if receipt!=nil{
+		d := sha.NewLegacyKeccak256()
+		d.Write([]byte("ContractDeployed(address)"))
+
+		eventKeccak := hex.EncodeToString(d.Sum(nil))
+
+		fmt.Println("deployed contract eventKeccak:",eventKeccak)
+
+		for _,log := range receipt.Logs {
+		//	fmt.Println(log.Topics[0].Hex())
+			if log.Topics[0].Hex() == "0x"+eventKeccak {
+			//	fmt.Println(hex.EncodeToString(log.Data))
+			//	fmt.Println(common.BytesToAddress(log.Data).Hex())
+				receipt.ContractAddress = common.BytesToAddress(log.Data)
+			} 
+		}
+	}
+	result := new(rpc.JsonrpcMessage)
+
+	result.ID = id
+	return result.Response(receipt)
 }
 
 func handleError(err error)(int){

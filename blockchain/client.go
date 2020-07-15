@@ -2,7 +2,7 @@ package blockchain
 
 import (
 	"context"
-	"time"
+//	"time"
 	"fmt"
 	"math/big"
 	"strings"
@@ -187,23 +187,14 @@ func (ec *Client)GenerateTransaction(gasLimitTx uint64, relayAddress common.Addr
 }
 
 //GetTransactionReceipt ...
-func (ec *Client) GetTransactionReceipt(transactionHash common.Hash)(*big.Int, string, error){
+func (ec *Client) GetTransactionReceipt(transactionHash common.Hash)(*types.Receipt, error){
 	receipt, err := ec.client.TransactionReceipt(context.Background(), transactionHash)
-        if err != nil {
-            log.GeneralLogger.Fatal(err)
-		}
-		
-		log.GeneralLogger.Println("Status:",receipt.Status)
-		log.GeneralLogger.Println("BlockNumber:",receipt.BlockNumber)
-
-	block, err := ec.client.BlockByNumber(context.Background(), receipt.BlockNumber)
     if err != nil {
-        log.GeneralLogger.Fatal(err)
+        return nil, err
 	}
-	
-	log.GeneralLogger.Println("block time:",block.Time())
+		
+	log.GeneralLogger.Println("Status:",receipt.Status)
+	log.GeneralLogger.Println("BlockNumber:",receipt.BlockNumber)
 
-	ts := time.Unix(int64(block.Time()),0).UTC()
-
-	return receipt.BlockNumber, ts.String(), nil
+	return receipt,nil;
 }
