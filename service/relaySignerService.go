@@ -12,7 +12,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"math/big"
-	"crypto/ecdsa"
+//	"crypto/ecdsa"
 	"encoding/hex"
 	sha "golang.org/x/crypto/sha3"
 	"github.com/ethereum/go-ethereum/common"
@@ -56,13 +56,13 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
         log.GeneralLogger.Fatal(err)
 	}
 
-	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-    if !ok {
-        log.GeneralLogger.Fatal("error casting public key to ECDSA")
-	}
+//	publicKey := privateKey.Public()
+//	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+//    if !ok {
+//        log.GeneralLogger.Fatal("error casting public key to ECDSA")
+//	}
 	
-	address := crypto.PubkeyToAddress(*publicKeyECDSA)
+//	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 	
 	options, err := client.ConfigTransaction(privateKey,gasLimit.Uint64())
 	if err != nil {
@@ -70,14 +70,14 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 	}
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
-	if(!client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(1000000,contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
+	/*if(!client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(gasLimit.Uint64(),contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
 		log.GeneralLogger.Println("Transaction will fail, then is rejected")
 		result := new(rpc.JsonrpcMessage)
 
 		result.ID = id
 
 		return result
-	}
+	}*/
 
 	err, tx := client.SendMetatransaction(contractAddress, options, from, to, encodedFunction, gasLimit, nonce, signature)
 	if err != nil {
