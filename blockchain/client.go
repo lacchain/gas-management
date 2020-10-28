@@ -74,7 +74,7 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bi
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = gasLimit + 150000 // in units
+	auth.GasLimit = gasLimit + 300000 // in units
 	auth.GasPrice = gasPrice
 
 	log.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d", auth.From,nonce,gasPrice,auth.GasLimit)
@@ -197,4 +197,23 @@ func (ec *Client) GetTransactionReceipt(transactionHash common.Hash)(*types.Rece
 	log.GeneralLogger.Println("BlockNumber:",receipt.BlockNumber)
 
 	return receipt,nil;
+}
+
+//GetTransactionCount ...
+func (ec *Client) GetTransactionCount(contractAddress common.Address, address common.Address)(*big.Int, error){
+	contract, err := relay.NewRelay(contractAddress, ec.client)
+	if err != nil {
+		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
+		err = errors.FailedContract.Wrapf(err,msg)
+		return nil,err
+	}
+
+	log.GeneralLogger.Println("RelayHub Contract instanced:",contractAddress.Hex())
+
+	count, err := contract.GetNonce(&bind.CallOpts{}, address)
+	if err != nil {
+		return nil,err
+	}
+
+	return count,nil
 }

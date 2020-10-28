@@ -109,7 +109,7 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		w.Write(data)
 	}else if (rpcMessage.IsGetTransactionReceipt()){
 		r.Body=rdr2
-		log.GeneralLogger.Println("Is a getTransactionReceipt")
+		log.GeneralLogger.Println("Is getTransactionReceipt")
 		var params []string
 		err = json.Unmarshal(rpcMessage.Params, &params)
 		if err != nil {
@@ -121,6 +121,18 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		w.Write(data)
 		return
 
+	}else if(rpcMessage.IsGetTransactionCount()){
+		log.GeneralLogger.Println("Is getTransactionCount")
+		var params []string
+		err = json.Unmarshal(rpcMessage.Params, &params)
+		if err != nil {
+			log.GeneralLogger.Println("Error Unmarshaling Json RPC Params")
+			log.GeneralLogger.Println(err)
+		}
+		response := relaySignerService.GetTransactionCount(rpcMessage.ID,params[0])
+		data, _ := json.Marshal(response)
+		w.Write(data)
+		return
 	}else{
 		r.Body=rdr2
 		log.GeneralLogger.Println("Is not a rawTransaction")

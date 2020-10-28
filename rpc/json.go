@@ -38,6 +38,7 @@ const (
 	notificationMethodSuffix        = "_subscription"
 	sendRawTransactionMethodSuffix  = "_sendRawTransaction"
 	getTransactionReceiptSuffix     = "_getTransactionReceipt"
+	getTransactionCountSuffix       = "_getTransactionCount"
 
 	defaultWriteTimeout = 10 * time.Second // used if context has no deadline
 )
@@ -84,14 +85,19 @@ func (msg *JsonrpcMessage) isUnsubscribe() bool {
 	return strings.HasSuffix(msg.Method, unsubscribeMethodSuffix)
 }
 
-//IsRawTransaction
+//IsRawTransaction ...
 func (msg *JsonrpcMessage) IsRawTransaction() bool {
 	return strings.HasSuffix(msg.Method, sendRawTransactionMethodSuffix)
 }
 
-//IsGetTransactionReceipt
+//IsGetTransactionReceipt ...
 func (msg *JsonrpcMessage) IsGetTransactionReceipt() bool {
 	return strings.HasSuffix(msg.Method, getTransactionReceiptSuffix)
+}
+
+//IsGetTransactionCount ...
+func (msg *JsonrpcMessage) IsGetTransactionCount() bool {
+	return strings.HasSuffix(msg.Method, getTransactionCountSuffix)
 }
 
 func (msg *JsonrpcMessage) namespace() string {
