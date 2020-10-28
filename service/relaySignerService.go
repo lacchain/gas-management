@@ -128,6 +128,31 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 	return result.Response(receipt)
 }
 
+func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from string) (*rpc.JsonrpcMessage){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		handleError(err)
+	}
+	defer client.Close()
+
+	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
+	address := common.HexToAddress(from)
+
+	count,err := client.GetTransactionCount(contractAddress, address)
+	if err != nil {
+		handleError(err)
+	}
+
+	if count!=nil{
+		
+	}
+	result := new(rpc.JsonrpcMessage)
+
+	result.ID = id
+	return result.Response(count)
+}
+
 func handleError(err error)(int){
 	errorType := errors.GetType(err)
    	switch errorType {
