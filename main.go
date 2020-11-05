@@ -14,6 +14,7 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"math/big"
@@ -95,16 +96,33 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		log.GeneralLogger.Println("Value:",decodeTransaction.Value())
 		v,r,s := decodeTransaction.RawSignatureValues();
 
-		log.GeneralLogger.Println(fmt.Sprintf("Signature R %x",r))
-		log.GeneralLogger.Println(fmt.Sprintf("Signature S %x",s))
+		log.GeneralLogger.Println("r",r)
+		log.GeneralLogger.Println("s",s)
+		log.GeneralLogger.Println("v",v)
+
+		log.GeneralLogger.Println("r len", r.BitLen())
+		log.GeneralLogger.Println("s len", s.BitLen())
+		log.GeneralLogger.Println("v len", v.BitLen())
+
+		log.GeneralLogger.Println(fmt.Sprintf("Signature R %064x",r))
+		log.GeneralLogger.Println(fmt.Sprintf("Signature S %064x",s))
 		log.GeneralLogger.Println(fmt.Sprintf("Signature V %x",v))
+
+		log.GeneralLogger.Println("senderSignature:",fmt.Sprintf("%064x",r)+fmt.Sprintf("%064x",s)+fmt.Sprintf("%x",v))
+
+		senderSignature, err := hex.DecodeString(fmt.Sprintf("%064x",r)+fmt.Sprintf("%064x",s)+fmt.Sprintf("%x",v))
+
+		if err != nil {
+			log.GeneralLogger.Println("Error decoding sender signature")
+			log.GeneralLogger.Println(err)
+		}
 
 		signature,_ := util.SignPayload(relaySignerService.Config.Application.Key, message.From().Hex(), decodeTransaction.To(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce())
 		log.GeneralLogger.Println("signature:",signature)
 
 		//relaySignerService := new(service.RelaySignerService)
 
-		response := relaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature)
+		response := relaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature,senderSignature)
 		data, err := json.Marshal(response)
 		w.Write(data)
 	}else if (rpcMessage.IsGetTransactionReceipt()){

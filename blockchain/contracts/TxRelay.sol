@@ -5,6 +5,7 @@ pragma solidity ^0.6.0;
 import "./IRelayHub.sol";
 import "./lib/ECDSA.sol";
 import "./lib/SafeMath.sol";
+import "./lib/RLPEncode.sol";
 import "./GasLimit.sol";
 
 contract TxRelay is GasLimit,IRelayHub{
@@ -16,17 +17,30 @@ contract TxRelay is GasLimit,IRelayHub{
     // Different from the nonce defined w/in protocol.
     mapping(address => uint) nonces;
 
-    constructor(uint8 _blocksFrequency) GasLimit(_blocksFrequency) public{}
+    address msgSender;
+
+    constructor(uint8 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress) public{}
 
     function relayMetaTx(
         address from,
         address to,
-        bytes calldata encodedFunction,
+        bytes memory encodedFunction,
         uint256 gasLimit,
         uint256 nonce,
-        bytes calldata signature
+        bytes calldata signature,
+        bytes calldata senderSignature
     ) external evaluateCurrencyBlock override returns (bool success){
-        require(gasLimit <= block.gaslimit, "Impossible gas limit");
+        if (gasLimit > block.gaslimit){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.MaxBlockGasLimit);
+            return false;
+        }
+
+        if (from != _getOriginalSender(to,encodedFunction,gasLimit,nonce,senderSignature)){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.BadOriginalSender);
+            return false;
+        }
 
         nonces[msg.sender]++; //if we are going to do tx, update nonce
 
@@ -37,22 +51,34 @@ contract TxRelay is GasLimit,IRelayHub{
 
         // Verify that the message's signer is the owner of the order
         address signer = messageHash.recover(signature);
-        emit Relayed(msg.sender,signer);
-        require(from == signer, "the sender isn't the signer");
+        emit Relayed(from,signer);
+        if (msg.sender != signer){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.BadNodeSigner);
+            return false;
+        }
 
-        bytes memory _data = encodedFunction;
+        //bytes memory _data = encodedFunction;
 
         uint256 gasUsed = gasleft();
 
-        require(_hasEnoughGas(gasUsed),"Exceeded the allowed gas limit");
+        if(!_hasEnoughGas(gasUsed)){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.NotEnoughGas);
+            return false;
+        }
 
-        _executeCall(to,0,_data);
-
-        gasUsed = gasUsed.sub(gasleft());
-
-        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(gasUsed);
-
-        emit GasUsedByTransaction(block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
+        if (_isContract(to)){
+            msgSender = from;
+            bool executed = _executeCall(to,0,encodedFunction);
+            emit TransactionExecuted(executed);
+            gasUsed = gasUsed.sub(gasleft());
+            _decreaseGasUsed(gasUsed);
+        }else{
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.IsNotContract);
+            return false;
+        }
 
         return true;
     }
@@ -62,9 +88,19 @@ contract TxRelay is GasLimit,IRelayHub{
         bytes calldata _byteCode,
         uint256 gasLimit,
         uint256 nonce,
-        bytes calldata signature
+        bytes calldata signature,
+        bytes calldata senderSignature
     ) external evaluateCurrencyBlock returns (bool success, address deployedAddress){
-        require(gasLimit <= block.gaslimit, "Impossible gas limit");
+        if (gasLimit > block.gaslimit){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            return (false, address(0));
+        }
+
+        if (from != _getOriginalSender(address(0),_byteCode,gasLimit,nonce,senderSignature)){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.BadOriginalSender);
+            return (false, address(0));
+        }
 
         nonces[msg.sender]++; //if we are going to do tx, update nonce
 
@@ -76,25 +112,32 @@ contract TxRelay is GasLimit,IRelayHub{
         // Verify that the message's signer is the owner of the order
         address signer = messageHash.recover(signature);
         emit Relayed(msg.sender,signer);
-        require(from == signer, "the sender isn't the signer");
+        if (msg.sender != signer){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadSigner(true);
+            return (false,address(0));
+        }
 
-        bytes memory _data = _byteCode;
+        //bytes memory _data = _byteCode;
 
         uint256 gasUsed = gasleft();
 
-        require(_hasEnoughGas(gasUsed),"Exceeded the allowed gas limit");
+        if(!_hasEnoughGas(gasUsed)){
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            return (false,address(0));
+        }
 
-        deployedAddress = _doCreate(0,_data);
-
-        gasUsed = gasUsed.sub(gasleft());
-
-        emit ContractDeployed(deployedAddress);
-
-        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(gasUsed);
-
-        emit GasUsedByTransaction(block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
-
-        return (true,deployedAddress);
+        if (_byteCode.length > 0){
+            msgSender = from;
+            deployedAddress = _doCreate(0,_byteCode);
+            gasUsed = gasUsed.sub(gasleft());
+            emit ContractDeployed(deployedAddress);
+            _decreaseGasUsed(gasUsed);
+            return (true,deployedAddress);
+        }else{
+            _decreaseGasUsed(GASUSED_RELAYHUB);
+            return (false,address(0));
+        }
     }
 
     /**
@@ -128,7 +171,46 @@ contract TxRelay is GasLimit,IRelayHub{
          return nonces[from];
     }
 
+    function getMsgSender() external view returns (address){
+        return msgSender;
+    }
+
     event Relayed(address indexed sender, address indexed from);
-    event GasUsedByTransaction(uint blockNumber, uint gasUsed, uint gasLimit, uint gasUsedLastBlocks);
+    event GasUsedByTransaction(address node, uint blockNumber, uint gasUsed, uint gasLimit, uint gasUsedLastBlocks);
     event ContractDeployed(address contractDeployed);
+
+    function _isContract(address _addr) private view returns (bool isContract){
+        uint32 size;
+        assembly {
+            size := extcodesize(_addr)
+        }
+        return (size > 0);
+    }
+
+    function _decreaseGasUsed(uint256 gasUsed) private {
+        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(gasUsed);
+        emit GasUsedByTransaction(msg.sender, block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
+    }
+
+    function _getOriginalSender(address to, bytes memory encodedFunction, uint256 gasLimit, uint256 nonce, bytes memory signature)private pure returns(address){
+        bytes[] memory rawTx =  new bytes[](6);
+        rawTx[0]=RLPEncode.encodeUint(nonce);
+        rawTx[1]=RLPEncode.encodeUint(0); //gasPrice
+        rawTx[2]=RLPEncode.encodeUint(gasLimit);
+        rawTx[3]=RLPEncode.encodeAddress(to);
+        rawTx[4]=RLPEncode.encodeUint(0); //value
+        rawTx[5]=RLPEncode.encodeBytes(encodedFunction);
+
+        bytes32 digest = keccak256(RLPEncode.encodeList(rawTx));
+        address sender = digest.recover(signature);
+        return sender;
+    }
+
+    event BadTransactionSent(address node, address originalSender, ErrorCode errorCode);
+
+    //TODO delete
+    event TransactionExecuted(bool executed);
+
+    //TODO delete
+    event BadSigner(bool isSigner);
 }
