@@ -107,7 +107,7 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 
 	if receipt!=nil{
 		d := sha.NewLegacyKeccak256()
-		d.Write([]byte("ContractDeployed(address)"))
+		d.Write([]byte("ContractDeployed(address,address,address)"))
 
 		eventKeccak := hex.EncodeToString(d.Sum(nil))
 
