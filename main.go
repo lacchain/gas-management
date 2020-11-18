@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"encoding/hex"
 	"fmt"
+	"sync"
 	"os"
 	"math/big"
 	"net/http"
@@ -35,6 +36,7 @@ import (
 
 var config *model.Config
 var relaySignerService *service.RelaySignerService
+var lock sync.Mutex
 
 func main() {
 	config = getConfigFromFile()
@@ -121,8 +123,9 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		log.GeneralLogger.Println("signature:",signature)
 
 		//relaySignerService := new(service.RelaySignerService)
-
+		lock.Lock()
 		response := relaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature,senderSignature)
+		lock.Unlock()
 		data, err := json.Marshal(response)
 		w.Write(data)
 	}else if (rpcMessage.IsGetTransactionReceipt()){
