@@ -105,9 +105,9 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 	var tx *types.Transaction
 	
 	if (to != nil){
-		tx, err = contract.RelayMetaTx(options, from, *to, encodedFunction, gasLimit, nonce, signature, senderSignature)
+		tx, err = contract.RelayMetaTx(options, *to, encodedFunction, gasLimit, nonce, senderSignature)
 	}else{
-		tx, err = contract.DeployMetaTx(options, from, encodedFunction, gasLimit, nonce, signature, senderSignature)
+		tx, err = contract.DeployMetaTx(options, encodedFunction, gasLimit, nonce, senderSignature)
 	}
 	if err != nil {
 		msg := fmt.Sprintf("failed executing contract")

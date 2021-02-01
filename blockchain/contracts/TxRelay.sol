@@ -22,43 +22,29 @@ contract TxRelay is GasLimit,IRelayHub{
     constructor(uint8 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress) public{}
 
     function relayMetaTx(
-        address from,
         address to,
-        bytes memory encodedFunction,
+        bytes calldata encodedFunction,
         uint256 gasLimit,
         uint256 nonce,
-        bytes calldata signature,
         bytes calldata senderSignature
     ) external evaluateCurrencyBlock override returns (bool success){
-        if (gasLimit > block.gaslimit){
+        address from = _getOriginalSender(to,encodedFunction,gasLimit,nonce,senderSignature,false);
+
+        if (gasLimit > MAX_GASBLOCK_LIMIT){
             _decreaseGasUsed(GASUSED_RELAYHUB);
             emit BadTransactionSent(msg.sender, from, ErrorCode.MaxBlockGasLimit);
             return false;
         }
 
-        if (from != _getOriginalSender(to,encodedFunction,gasLimit,nonce,senderSignature)){
+        if (!exists(msg.sender)){
             _decreaseGasUsed(GASUSED_RELAYHUB);
-            emit BadTransactionSent(msg.sender, from, ErrorCode.BadOriginalSender);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.NodeNotAllowed);
             return false;
         }
 
-        nonces[msg.sender]++; //if we are going to do tx, update nonce
+        nonces[from]++; //if we are going to do tx, update nonce
 
-        // This recreates the message hash that was signed on the client.
-        bytes32 hash = keccak256(abi.encodePacked(from, to, keccak256(encodedFunction), gasLimit, nonce));
-
-        bytes32 messageHash = hash.toEthSignedMessageHash();
-
-        // Verify that the message's signer is the owner of the order
-        address signer = messageHash.recover(signature);
-        emit Relayed(from,signer);
-        if (msg.sender != signer){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
-            emit BadTransactionSent(msg.sender, from, ErrorCode.BadNodeSigner);
-            return false;
-        }
-
-        //bytes memory _data = encodedFunction;
+        emit Relayed(from,msg.sender);
 
         uint256 gasUsed = gasleft();
 
@@ -71,7 +57,7 @@ contract TxRelay is GasLimit,IRelayHub{
         if (_isContract(to)){
             msgSender = from;
             bool executed = _executeCall(to,0,encodedFunction);
-            emit TransactionExecuted(executed);
+            emit TransactionRelayed(msg.sender, from, to, executed);
             gasUsed = gasUsed.sub(gasleft());
             _decreaseGasUsed(gasUsed);
         }else{
@@ -84,46 +70,34 @@ contract TxRelay is GasLimit,IRelayHub{
     }
 
     function deployMetaTx(
-        address from,
         bytes calldata _byteCode,
         uint256 gasLimit,
         uint256 nonce,
-        bytes calldata signature,
         bytes calldata senderSignature
     ) external evaluateCurrencyBlock returns (bool success, address deployedAddress){
+        address from = _getOriginalSender(address(0),_byteCode,gasLimit,nonce,senderSignature,true);
+
         if (gasLimit > block.gaslimit){
             _decreaseGasUsed(GASUSED_RELAYHUB);
+             emit BadTransactionSent(msg.sender, from, ErrorCode.MaxBlockGasLimit);
             return (false, address(0));
         }
 
-        if (from != _getOriginalSender(address(0),_byteCode,gasLimit,nonce,senderSignature)){
+        if (!exists(msg.sender)){
             _decreaseGasUsed(GASUSED_RELAYHUB);
-            emit BadTransactionSent(msg.sender, from, ErrorCode.BadOriginalSender);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.NodeNotAllowed);
             return (false, address(0));
         }
 
-        nonces[msg.sender]++; //if we are going to do tx, update nonce
+        nonces[from]++; //if we are going to do tx, update nonce
 
-        // This recreates the message hash that was signed on the client.
-        bytes32 hash = keccak256(abi.encodePacked(from, keccak256(_byteCode), gasLimit, nonce));
-
-        bytes32 messageHash = hash.toEthSignedMessageHash();
-
-        // Verify that the message's signer is the owner of the order
-        address signer = messageHash.recover(signature);
-        emit Relayed(msg.sender,signer);
-        if (msg.sender != signer){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
-            emit BadSigner(true);
-            return (false,address(0));
-        }
-
-        //bytes memory _data = _byteCode;
+        emit Relayed(from,msg.sender);
 
         uint256 gasUsed = gasleft();
 
         if(!_hasEnoughGas(gasUsed)){
             _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.NotEnoughGas);
             return (false,address(0));
         }
 
@@ -131,11 +105,12 @@ contract TxRelay is GasLimit,IRelayHub{
             msgSender = from;
             deployedAddress = _doCreate(0,_byteCode);
             gasUsed = gasUsed.sub(gasleft());
-            emit ContractDeployed(deployedAddress);
+            emit ContractDeployed(msg.sender, from, deployedAddress);
             _decreaseGasUsed(gasUsed);
             return (true,deployedAddress);
         }else{
             _decreaseGasUsed(GASUSED_RELAYHUB);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.EmptyCode);
             return (false,address(0));
         }
     }
@@ -177,7 +152,8 @@ contract TxRelay is GasLimit,IRelayHub{
 
     event Relayed(address indexed sender, address indexed from);
     event GasUsedByTransaction(address node, uint blockNumber, uint gasUsed, uint gasLimit, uint gasUsedLastBlocks);
-    event ContractDeployed(address contractDeployed);
+    event ContractDeployed(address indexed relay, address indexed from, address contractDeployed);
+    event BadTransactionSent(address node, address originalSender, ErrorCode errorCode);
 
     function _isContract(address _addr) private view returns (bool isContract){
         uint32 size;
@@ -192,12 +168,16 @@ contract TxRelay is GasLimit,IRelayHub{
         emit GasUsedByTransaction(msg.sender, block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
     }
 
-    function _getOriginalSender(address to, bytes memory encodedFunction, uint256 gasLimit, uint256 nonce, bytes memory signature)private pure returns(address){
+    function _getOriginalSender(address to, bytes memory encodedFunction, uint256 gasLimit, uint256 nonce, bytes memory signature, bool deployContract)private pure returns(address){
         bytes[] memory rawTx =  new bytes[](6);
         rawTx[0]=RLPEncode.encodeUint(nonce);
         rawTx[1]=RLPEncode.encodeUint(0); //gasPrice
         rawTx[2]=RLPEncode.encodeUint(gasLimit);
-        rawTx[3]=RLPEncode.encodeAddress(to);
+        if (deployContract){
+            rawTx[3]=RLPEncode.encodeUint(0);
+        }else{
+            rawTx[3]=RLPEncode.encodeAddress(to);
+        }
         rawTx[4]=RLPEncode.encodeUint(0); //value
         rawTx[5]=RLPEncode.encodeBytes(encodedFunction);
 
@@ -205,12 +185,4 @@ contract TxRelay is GasLimit,IRelayHub{
         address sender = digest.recover(signature);
         return sender;
     }
-
-    event BadTransactionSent(address node, address originalSender, ErrorCode errorCode);
-
-    //TODO delete
-    event TransactionExecuted(bool executed);
-
-    //TODO delete
-    event BadSigner(bool isSigner);
 }

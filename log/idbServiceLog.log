@@ -1,0 +1,296 @@
+General Logger:	2021/01/27 17:37:43 main.go:194: smartContract=0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3 AgentKey=/home/adrian/.ethereum/keystore/UTC--2020-06-26T19-00-23.241896464Z--bceda2ba9af65c18c7992849c312d1db77cf008e
+General Logger:	2021/01/27 17:37:43 relaySignerService.go:39: File Key reading error: open /root/lacchain/data/key: permission denied
+General Logger:	2021/01/27 17:37:43 main.go:199: Init RelaySigner
+General Logger:	2021/01/27 17:38:14 main.go:194: smartContract=0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3 AgentKey=/home/adrian/.ethereum/keystore/UTC--2020-06-26T19-00-23.241896464Z--bceda2ba9af65c18c7992849c312d1db77cf008e
+General Logger:	2021/01/27 17:38:14 main.go:199: Init RelaySigner
+General Logger:	2021/01/27 18:00:39 main.go:52: Body: &{0xc0001c4020 <nil> <nil> false true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:00:39 main.go:58: Request body :  {{"jsonrpc":"2.0","method":"eth_sendRawTransaction","params":["0xf9013582013880831e84808080b8e6608060405234801561001057600080fd5b5060c78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80636057361d146037578063b05784b8146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b60686088565b6040518082815260200191505060405180910390f35b8060008190555050565b6000805490509056fea26469706673582212208595760c8d4272f1711ffb94441dddc78e22630630efc2bc60b984de1caeb06c64736f6c634300060300331ca05df2125348e920368db997fdd5aef1968c53cd27572fd98fab086d890a69d45aa02fa4e2a553b4b3726da7c7d8a793e921f3637bb555d18f63fae083168f0b42b2"],"id":1}}
+General Logger:	2021/01/27 18:00:39 main.go:69: JSON-RPC Method: eth_sendRawTransaction
+General Logger:	2021/01/27 18:00:39 main.go:72: Is a rawTransaction
+General Logger:	2021/01/27 18:00:39 main.go:90: From: 0x63949701cD0e1Cc04Dfea0AFBf410968F10fF4b6
+General Logger:	2021/01/27 18:00:39 main.go:94: Data: 0x608060405234801561001057600080fd5b5060c78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80636057361d146037578063b05784b8146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b60686088565b6040518082815260200191505060405180910390f35b8060008190555050565b6000805490509056fea26469706673582212208595760c8d4272f1711ffb94441dddc78e22630630efc2bc60b984de1caeb06c64736f6c63430006030033
+General Logger:	2021/01/27 18:00:39 main.go:95: GasLimit: 2000000
+General Logger:	2021/01/27 18:00:39 main.go:96: Nonce 312
+General Logger:	2021/01/27 18:00:39 main.go:97: GasPrice: 0
+General Logger:	2021/01/27 18:00:39 main.go:98: Value: 0
+General Logger:	2021/01/27 18:00:39 main.go:101: r 42492798384708346135185655655281997474388955764430254578857847315153637987418
+General Logger:	2021/01/27 18:00:39 main.go:102: s 21550031053918006304627386071966460894394150799131136788985188851860474905266
+General Logger:	2021/01/27 18:00:39 main.go:103: v 28
+General Logger:	2021/01/27 18:00:39 main.go:105: r len 255
+General Logger:	2021/01/27 18:00:39 main.go:106: s len 254
+General Logger:	2021/01/27 18:00:39 main.go:107: v len 5
+General Logger:	2021/01/27 18:00:39 main.go:109: Signature R 5df2125348e920368db997fdd5aef1968c53cd27572fd98fab086d890a69d45a
+General Logger:	2021/01/27 18:00:39 main.go:110: Signature S 2fa4e2a553b4b3726da7c7d8a793e921f3637bb555d18f63fae083168f0b42b2
+General Logger:	2021/01/27 18:00:39 main.go:111: Signature V 1c
+General Logger:	2021/01/27 18:00:39 main.go:113: senderSignature: 5df2125348e920368db997fdd5aef1968c53cd27572fd98fab086d890a69d45a2fa4e2a553b4b3726da7c7d8a793e921f3637bb555d18f63fae083168f0b42b21c
+General Logger:	2021/01/27 18:00:39 main.go:123: signature: [96 176 109 126 222 116 32 70 126 106 180 241 127 60 65 64 116 79 84 84 89 231 54 44 87 62 78 98 246 126 153 176 56 21 185 21 152 127 249 103 81 156 180 70 103 3 174 75 252 191 139 120 88 172 146 132 247 232 183 135 30 236 148 167 28]
+General Logger:	2021/01/27 18:00:39 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:00:40 client.go:80: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:4,gasPrice:0,gasLimit:2300000
+General Logger:	2021/01/27 18:00:40 client.go:94: RelayHub Contract instanced: 0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3
+General Logger:	2021/01/27 18:00:40 client.go:96: from: 0x63949701cD0e1Cc04Dfea0AFBf410968F10fF4b6
+General Logger:	2021/01/27 18:00:40 client.go:100: encodedFunction: 0x608060405234801561001057600080fd5b5060c78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80636057361d146037578063b05784b8146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b60686088565b6040518082815260200191505060405180910390f35b8060008190555050565b6000805490509056fea26469706673582212208595760c8d4272f1711ffb94441dddc78e22630630efc2bc60b984de1caeb06c64736f6c63430006030033
+General Logger:	2021/01/27 18:00:40 client.go:101: gasLimit: 2000000
+General Logger:	2021/01/27 18:00:40 client.go:102: nonce: 312
+General Logger:	2021/01/27 18:00:40 client.go:103: signature: 0x60b06d7ede7420467e6ab4f17f3c4140744f545459e7362c573e4e62f67e99b03815b915987ff967519cb4466703ae4bfcbf8b7858ac9284f7e8b7871eec94a71c
+General Logger:	2021/01/27 18:00:40 client.go:123: Tx sent: 0xd68f1ba23e2edeb7690d633e0f22691cda97cece43394c3d2297d59439c63621
+General Logger:	2021/01/27 18:00:40 relaySignerService.go:87: tx [214 143 27 162 62 46 222 183 105 13 99 62 15 34 105 28 218 151 206 206 67 57 76 61 34 151 213 148 57 198 54 33]
+General Logger:	2021/01/27 18:17:43 main.go:52: Body: &{0xc00044aee0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:43 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:17:43 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:17:43 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:44 main.go:52: Body: &{0xc00044b000 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:44 main.go:58: Request body :  {{"id":3371956176288449,"jsonrpc":"2.0","params":["0x21924c",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:17:44 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:17:44 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:45 main.go:52: Body: &{0xc0001c4be0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:45 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:17:45 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:17:45 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:45 main.go:52: Body: &{0xc00000e0a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:45 main.go:58: Request body :  {{"id":3,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:17:45 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:17:45 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:48 main.go:52: Body: &{0xc000150200 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:48 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:17:48 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:17:48 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:48 main.go:52: Body: &{0xc0001f00c0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:48 main.go:58: Request body :  {{"id":2173053592531645,"jsonrpc":"2.0","params":["0x21924e",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:17:48 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:17:48 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:52 main.go:52: Body: &{0xc0001502a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:52 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:17:52 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:17:52 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:52 main.go:52: Body: &{0xc0001f02a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:52 main.go:58: Request body :  {{"id":1110867935227,"jsonrpc":"2.0","params":["0x219250",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:17:52 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:17:52 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:56 main.go:52: Body: &{0xc00000e100 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:56 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:17:56 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:17:56 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:17:56 main.go:52: Body: &{0xc0001503c0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:17:56 main.go:58: Request body :  {{"id":525436534887795,"jsonrpc":"2.0","params":["0x219252",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:17:56 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:17:56 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:00 main.go:52: Body: &{0xc00000e400 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:00 main.go:58: Request body :  {{"id":4,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:00 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:00 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:00 main.go:52: Body: &{0xc00000e540 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:00 main.go:58: Request body :  {{"id":6,"jsonrpc":"2.0","params":[],"method":"eth_gasPrice"}}
+General Logger:	2021/01/27 18:18:00 main.go:69: JSON-RPC Method: eth_gasPrice
+General Logger:	2021/01/27 18:18:00 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:00 main.go:52: Body: &{0xc0001f03c0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:00 main.go:58: Request body :  {{"id":3394542685771483,"jsonrpc":"2.0","params":["0x41b1942a868ffeb011d82e480ad178177d3efa12","pending"],"method":"eth_getTransactionCount"}}
+General Logger:	2021/01/27 18:18:00 main.go:69: JSON-RPC Method: eth_getTransactionCount
+General Logger:	2021/01/27 18:18:00 main.go:146: Is getTransactionCount
+General Logger:	2021/01/27 18:18:00 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:00 client.go:211: RelayHub Contract instanced: 0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3
+General Logger:	2021/01/27 18:18:00 main.go:52: Body: &{0xc00000e5c0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:00 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:18:00 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:18:00 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:00 main.go:52: Body: &{0xc0001f0e80 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:00 main.go:58: Request body :  {{"id":3812897049840745,"jsonrpc":"2.0","params":["0xf901ef8080831e84808080b901a1608060405234801561001057600080fd5b506040516101813803806101818339818101604052602081101561003357600080fd5b810190808051906020019092919050505080600081905550506101268061005b6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80636057361d146037578063b05784b8146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b606860e7565b6040518082815260200191505060405180910390f35b806000819055507feaf540d6ee39a98c4ab8d5d07d678c306272e18b51a3c93b026c4a2ce84a7afd3382600054604051808473ffffffffffffffffffffffffffffffffffffffff168152602001838152602001828152602001935050505060405180910390a150565b6000805490509056fea26469706673582212204937a5dd79dc9132e92e75cdcc25339114e8b8550a2da0fcd1dd5b1dcf58c0e164736f6c634300060c0033000000000000000000000000000000000000000000000000000000000000007b1ba00a72cfa72f07c3bbd45b81dc32a543d35df1a84075c940b8a0067d3c5ce73eaba0176cd27e5574e0c9881bbcd5b4227fc91c009df354e73223fe2da54691360783"],"method":"eth_sendRawTransaction"}}
+General Logger:	2021/01/27 18:18:00 main.go:69: JSON-RPC Method: eth_sendRawTransaction
+General Logger:	2021/01/27 18:18:00 main.go:72: Is a rawTransaction
+General Logger:	2021/01/27 18:18:00 main.go:90: From: 0x41B1942A868fFeB011d82E480Ad178177D3EFA12
+General Logger:	2021/01/27 18:18:00 main.go:94: Data: 0x608060405234801561001057600080fd5b506040516101813803806101818339818101604052602081101561003357600080fd5b810190808051906020019092919050505080600081905550506101268061005b6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80636057361d146037578063b05784b8146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b606860e7565b6040518082815260200191505060405180910390f35b806000819055507feaf540d6ee39a98c4ab8d5d07d678c306272e18b51a3c93b026c4a2ce84a7afd3382600054604051808473ffffffffffffffffffffffffffffffffffffffff168152602001838152602001828152602001935050505060405180910390a150565b6000805490509056fea26469706673582212204937a5dd79dc9132e92e75cdcc25339114e8b8550a2da0fcd1dd5b1dcf58c0e164736f6c634300060c0033000000000000000000000000000000000000000000000000000000000000007b
+General Logger:	2021/01/27 18:18:00 main.go:95: GasLimit: 2000000
+General Logger:	2021/01/27 18:18:00 main.go:96: Nonce 0
+General Logger:	2021/01/27 18:18:00 main.go:97: GasPrice: 0
+General Logger:	2021/01/27 18:18:00 main.go:98: Value: 0
+General Logger:	2021/01/27 18:18:00 main.go:101: r 4725982219975150631507726656085863253888884481215333426940221193572013522603
+General Logger:	2021/01/27 18:18:00 main.go:102: s 10595467773096924162703832946948023202822125007468687159508989905901473630083
+General Logger:	2021/01/27 18:18:00 main.go:103: v 27
+General Logger:	2021/01/27 18:18:00 main.go:105: r len 252
+General Logger:	2021/01/27 18:18:00 main.go:106: s len 253
+General Logger:	2021/01/27 18:18:00 main.go:107: v len 5
+General Logger:	2021/01/27 18:18:00 main.go:109: Signature R 0a72cfa72f07c3bbd45b81dc32a543d35df1a84075c940b8a0067d3c5ce73eab
+General Logger:	2021/01/27 18:18:00 main.go:110: Signature S 176cd27e5574e0c9881bbcd5b4227fc91c009df354e73223fe2da54691360783
+General Logger:	2021/01/27 18:18:00 main.go:111: Signature V 1b
+General Logger:	2021/01/27 18:18:00 main.go:113: senderSignature: 0a72cfa72f07c3bbd45b81dc32a543d35df1a84075c940b8a0067d3c5ce73eab176cd27e5574e0c9881bbcd5b4227fc91c009df354e73223fe2da546913607831b
+General Logger:	2021/01/27 18:18:00 main.go:123: signature: [109 181 153 238 11 236 58 156 125 100 137 212 242 206 211 115 244 68 127 72 177 157 119 158 11 111 11 115 94 33 147 186 1 99 242 251 238 212 169 222 240 158 106 48 78 149 64 88 19 85 129 18 144 1 153 240 7 242 209 254 164 7 176 132 28]
+General Logger:	2021/01/27 18:18:00 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:00 main.go:52: Body: &{0xc0001c4020 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:00 main.go:58: Request body :  {{"id":6322098956012629,"jsonrpc":"2.0","params":["0x219254",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:18:00 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:18:00 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:01 client.go:80: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:5,gasPrice:0,gasLimit:2300000
+General Logger:	2021/01/27 18:18:01 client.go:94: RelayHub Contract instanced: 0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3
+General Logger:	2021/01/27 18:18:01 client.go:96: from: 0x41B1942A868fFeB011d82E480Ad178177D3EFA12
+General Logger:	2021/01/27 18:18:01 client.go:100: encodedFunction: 0x608060405234801561001057600080fd5b506040516101813803806101818339818101604052602081101561003357600080fd5b810190808051906020019092919050505080600081905550506101268061005b6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80636057361d146037578063b05784b8146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b606860e7565b6040518082815260200191505060405180910390f35b806000819055507feaf540d6ee39a98c4ab8d5d07d678c306272e18b51a3c93b026c4a2ce84a7afd3382600054604051808473ffffffffffffffffffffffffffffffffffffffff168152602001838152602001828152602001935050505060405180910390a150565b6000805490509056fea26469706673582212204937a5dd79dc9132e92e75cdcc25339114e8b8550a2da0fcd1dd5b1dcf58c0e164736f6c634300060c0033000000000000000000000000000000000000000000000000000000000000007b
+General Logger:	2021/01/27 18:18:01 client.go:101: gasLimit: 2000000
+General Logger:	2021/01/27 18:18:01 client.go:102: nonce: 0
+General Logger:	2021/01/27 18:18:01 client.go:103: signature: 0x6db599ee0bec3a9c7d6489d4f2ced373f4447f48b19d779e0b6f0b735e2193ba0163f2fbeed4a9def09e6a304e95405813558112900199f007f2d1fea407b0841c
+General Logger:	2021/01/27 18:18:01 client.go:123: Tx sent: 0xd34d673083594cf52ccdce7b96c1f271314081317fd01fd726f0470c6230a52d
+General Logger:	2021/01/27 18:18:01 relaySignerService.go:87: tx [211 77 103 48 131 89 76 245 44 205 206 123 150 193 242 113 49 64 129 49 127 208 31 215 38 240 71 12 98 48 165 45]
+General Logger:	2021/01/27 18:18:01 main.go:52: Body: &{0xc0001f17c0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:01 main.go:58: Request body :  {{"id":8,"jsonrpc":"2.0","params":["0xd34d673083594cf52ccdce7b96c1f271314081317fd01fd726f0470c6230a52d"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:01 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:01 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:01 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:01 relaySignerService.go:167: otro error: not found
+General Logger:	2021/01/27 18:18:02 main.go:52: Body: &{0xc00000e8a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:02 main.go:58: Request body :  {{"id":9,"jsonrpc":"2.0","params":["0xd34d673083594cf52ccdce7b96c1f271314081317fd01fd726f0470c6230a52d"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:02 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:02 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:02 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:02 relaySignerService.go:167: otro error: not found
+General Logger:	2021/01/27 18:18:03 main.go:52: Body: &{0xc00000ea40 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:03 main.go:58: Request body :  {{"id":10,"jsonrpc":"2.0","params":["0xd34d673083594cf52ccdce7b96c1f271314081317fd01fd726f0470c6230a52d"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:03 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:03 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:03 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:03 relaySignerService.go:167: otro error: not found
+General Logger:	2021/01/27 18:18:04 main.go:52: Body: &{0xc0001c4e40 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:04 main.go:58: Request body :  {{"id":11,"jsonrpc":"2.0","params":["0xd34d673083594cf52ccdce7b96c1f271314081317fd01fd726f0470c6230a52d"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:04 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:04 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:04 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:04 client.go:196: Status: 1
+General Logger:	2021/01/27 18:18:04 client.go:197: BlockNumber: 2200150
+General Logger:	2021/01/27 18:18:04 main.go:52: Body: &{0xc0001c5600 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:04 main.go:58: Request body :  {{"id":12,"jsonrpc":"2.0","params":["0x6e6bbf31aa45042d53128339383fcd1c377b42c7","latest"],"method":"eth_getCode"}}
+General Logger:	2021/01/27 18:18:04 main.go:69: JSON-RPC Method: eth_getCode
+General Logger:	2021/01/27 18:18:04 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:12 main.go:52: Body: &{0xc00000ee40 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:12 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:18:12 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:18:12 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:12 main.go:52: Body: &{0xc0001f1b20 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:12 main.go:58: Request body :  {{"id":4172209456046291,"jsonrpc":"2.0","params":["0x21925a",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:18:12 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:18:12 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:13 main.go:52: Body: &{0xc00000f4e0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:13 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:13 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:13 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:13 main.go:52: Body: &{0xc00000f540 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:13 main.go:58: Request body :  {{"id":3,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:13 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:13 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:16 main.go:52: Body: &{0xc0001c58a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:16 main.go:58: Request body :  {{"id":4,"jsonrpc":"2.0","params":[{"from":"0x41b1942a868ffeb011d82e480ad178177d3efa12","gas":"0x1e8480","data":"0xb05784b8","to":"0x6e6bbf31aa45042d53128339383fcd1c377b42c7"},"latest"],"method":"eth_call"}}
+General Logger:	2021/01/27 18:18:16 main.go:69: JSON-RPC Method: eth_call
+General Logger:	2021/01/27 18:18:16 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:21 main.go:52: Body: &{0xc0001c5900 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:21 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:18:21 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:18:21 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:22 main.go:52: Body: &{0xc000150000 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:22 main.go:58: Request body :  {{"id":6658399772986529,"jsonrpc":"2.0","params":["0x21925f",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:18:22 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:18:22 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:22 main.go:52: Body: &{0xc0001c40e0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:22 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:22 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:22 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:22 main.go:52: Body: &{0xc0001c4140 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:22 main.go:58: Request body :  {{"id":3,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:22 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:22 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:26 main.go:52: Body: &{0xc00000e0a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:26 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:18:26 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:18:26 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:26 main.go:52: Body: &{0xc0001502a0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:26 main.go:58: Request body :  {{"id":3567817034722283,"jsonrpc":"2.0","params":["0x219261",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:18:26 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:18:26 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:28 main.go:52: Body: &{0xc0001c44c0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:28 main.go:58: Request body :  {{"id":4,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:28 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:28 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:28 main.go:52: Body: &{0xc0001c45e0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:28 main.go:58: Request body :  {{"id":5,"jsonrpc":"2.0","params":[],"method":"eth_gasPrice"}}
+General Logger:	2021/01/27 18:18:28 main.go:69: JSON-RPC Method: eth_gasPrice
+General Logger:	2021/01/27 18:18:28 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:29 main.go:52: Body: &{0xc0001503e0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:29 main.go:58: Request body :  {{"id":5867236198602101,"jsonrpc":"2.0","params":["0x41b1942a868ffeb011d82e480ad178177d3efa12","pending"],"method":"eth_getTransactionCount"}}
+General Logger:	2021/01/27 18:18:29 main.go:69: JSON-RPC Method: eth_getTransactionCount
+General Logger:	2021/01/27 18:18:29 main.go:146: Is getTransactionCount
+General Logger:	2021/01/27 18:18:29 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:29 client.go:211: RelayHub Contract instanced: 0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3
+General Logger:	2021/01/27 18:18:29 main.go:52: Body: &{0xc000151a40 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:29 main.go:58: Request body :  {{"id":2914410858336929,"jsonrpc":"2.0","params":["0xf8840180831e8480946e6bbf31aa45042d53128339383fcd1c377b42c780a46057361d00000000000000000000000000000000000000000000000000000000000001591ba028934b543809922b277e85f6bcf7b1f25e937de05c5138e17fdfa480ba74e84ba055a2a611763ffcb748547408093551928c9549f95a0a9cabd3b1f1f2e166cc16"],"method":"eth_sendRawTransaction"}}
+General Logger:	2021/01/27 18:18:29 main.go:69: JSON-RPC Method: eth_sendRawTransaction
+General Logger:	2021/01/27 18:18:29 main.go:72: Is a rawTransaction
+General Logger:	2021/01/27 18:18:29 main.go:90: From: 0x41B1942A868fFeB011d82E480Ad178177D3EFA12
+General Logger:	2021/01/27 18:18:29 main.go:92: To: 0x6E6bBf31aA45042D53128339383fcd1c377B42c7
+General Logger:	2021/01/27 18:18:29 main.go:94: Data: 0x6057361d0000000000000000000000000000000000000000000000000000000000000159
+General Logger:	2021/01/27 18:18:29 main.go:95: GasLimit: 2000000
+General Logger:	2021/01/27 18:18:29 main.go:96: Nonce 1
+General Logger:	2021/01/27 18:18:29 main.go:97: GasPrice: 0
+General Logger:	2021/01/27 18:18:29 main.go:98: Value: 0
+General Logger:	2021/01/27 18:18:29 main.go:101: r 18352760363366032966850918843521991111496143179873735176066423411282204223563
+General Logger:	2021/01/27 18:18:29 main.go:102: s 38733967514737575060812490234093193678095723240508993317852411248827601177622
+General Logger:	2021/01/27 18:18:29 main.go:103: v 27
+General Logger:	2021/01/27 18:18:29 main.go:105: r len 254
+General Logger:	2021/01/27 18:18:29 main.go:106: s len 255
+General Logger:	2021/01/27 18:18:29 main.go:107: v len 5
+General Logger:	2021/01/27 18:18:29 main.go:109: Signature R 28934b543809922b277e85f6bcf7b1f25e937de05c5138e17fdfa480ba74e84b
+General Logger:	2021/01/27 18:18:29 main.go:110: Signature S 55a2a611763ffcb748547408093551928c9549f95a0a9cabd3b1f1f2e166cc16
+General Logger:	2021/01/27 18:18:29 main.go:111: Signature V 1b
+General Logger:	2021/01/27 18:18:29 main.go:113: senderSignature: 28934b543809922b277e85f6bcf7b1f25e937de05c5138e17fdfa480ba74e84b55a2a611763ffcb748547408093551928c9549f95a0a9cabd3b1f1f2e166cc161b
+General Logger:	2021/01/27 18:18:29 main.go:123: signature: [246 205 83 218 249 217 156 155 215 125 167 23 111 238 159 225 83 79 182 80 167 117 202 117 191 61 254 86 234 135 105 28 31 191 244 98 101 194 237 4 8 234 169 209 59 206 115 116 170 19 52 159 92 48 25 69 59 100 109 200 83 167 179 93 27]
+General Logger:	2021/01/27 18:18:29 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:29 client.go:80: OptionsTransaction=[From:0x63949701cd0e1cc04dfea0afbf410968f10ff4b6,nonce:6,gasPrice:0,gasLimit:2300000
+General Logger:	2021/01/27 18:18:29 client.go:94: RelayHub Contract instanced: 0x49b1CC35EB7942449F1F9Bb17c727EB4b60465f3
+General Logger:	2021/01/27 18:18:29 client.go:96: from: 0x41B1942A868fFeB011d82E480Ad178177D3EFA12
+General Logger:	2021/01/27 18:18:29 client.go:98: to: 0x6E6bBf31aA45042D53128339383fcd1c377B42c7
+General Logger:	2021/01/27 18:18:29 client.go:100: encodedFunction: 0x6057361d0000000000000000000000000000000000000000000000000000000000000159
+General Logger:	2021/01/27 18:18:29 client.go:101: gasLimit: 2000000
+General Logger:	2021/01/27 18:18:29 client.go:102: nonce: 1
+General Logger:	2021/01/27 18:18:29 client.go:103: signature: 0xf6cd53daf9d99c9bd77da7176fee9fe1534fb650a775ca75bf3dfe56ea87691c1fbff46265c2ed0408eaa9d13bce7374aa13349f5c3019453b646dc853a7b35d1b
+General Logger:	2021/01/27 18:18:29 client.go:123: Tx sent: 0x364138b4ce48abf4cda22824549ce5baa64460457d976c49f261036c9a54ca06
+General Logger:	2021/01/27 18:18:29 relaySignerService.go:87: tx [54 65 56 180 206 72 171 244 205 162 40 36 84 156 229 186 166 68 96 69 125 151 108 73 242 97 3 108 154 84 202 6]
+General Logger:	2021/01/27 18:18:29 main.go:52: Body: &{0xc0001c51e0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:29 main.go:58: Request body :  {{"id":7,"jsonrpc":"2.0","params":["0x364138b4ce48abf4cda22824549ce5baa64460457d976c49f261036c9a54ca06"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:29 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:29 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:29 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:29 relaySignerService.go:167: otro error: not found
+General Logger:	2021/01/27 18:18:30 main.go:52: Body: &{0xc0001f02e0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:30 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:18:30 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:18:30 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:30 main.go:52: Body: &{0xc0001f0400 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:30 main.go:58: Request body :  {{"id":4314300730307665,"jsonrpc":"2.0","params":["0x219263",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:18:30 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:18:30 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:31 main.go:52: Body: &{0xc0001f0520 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:31 main.go:58: Request body :  {{"id":8,"jsonrpc":"2.0","params":["0x364138b4ce48abf4cda22824549ce5baa64460457d976c49f261036c9a54ca06"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:31 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:31 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:31 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:31 relaySignerService.go:167: otro error: not found
+General Logger:	2021/01/27 18:18:32 main.go:52: Body: &{0xc0001c5440 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:32 main.go:58: Request body :  {{"id":9,"jsonrpc":"2.0","params":["0x364138b4ce48abf4cda22824549ce5baa64460457d976c49f261036c9a54ca06"],"method":"eth_getTransactionReceipt"}}
+General Logger:	2021/01/27 18:18:32 main.go:69: JSON-RPC Method: eth_getTransactionReceipt
+General Logger:	2021/01/27 18:18:32 main.go:133: Is getTransactionReceipt
+General Logger:	2021/01/27 18:18:32 client.go:39: Connected to Ethereum Node: http://34.75.103.207:4545
+General Logger:	2021/01/27 18:18:32 client.go:196: Status: 1
+General Logger:	2021/01/27 18:18:32 client.go:197: BlockNumber: 2200164
+General Logger:	2021/01/27 18:18:38 main.go:52: Body: &{0xc0001f0ac0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:38 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"eth_blockNumber"}}
+General Logger:	2021/01/27 18:18:38 main.go:69: JSON-RPC Method: eth_blockNumber
+General Logger:	2021/01/27 18:18:38 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:38 main.go:52: Body: &{0xc00000e500 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:38 main.go:58: Request body :  {{"id":7690859397150707,"jsonrpc":"2.0","params":["0x219267",false],"method":"eth_getBlockByNumber"}}
+General Logger:	2021/01/27 18:18:38 main.go:69: JSON-RPC Method: eth_getBlockByNumber
+General Logger:	2021/01/27 18:18:38 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:39 main.go:52: Body: &{0xc00000e580 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:39 main.go:58: Request body :  {{"id":1,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:39 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:39 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:39 main.go:52: Body: &{0xc0001f0ca0 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:39 main.go:58: Request body :  {{"id":3,"jsonrpc":"2.0","params":[],"method":"net_version"}}
+General Logger:	2021/01/27 18:18:39 main.go:69: JSON-RPC Method: net_version
+General Logger:	2021/01/27 18:18:39 main.go:159: Is not a rawTransaction
+General Logger:	2021/01/27 18:18:41 main.go:52: Body: &{0xc0001f0d00 <nil> <nil> true true {0 0} false false false 0x72f6b0}
+General Logger:	2021/01/27 18:18:41 main.go:58: Request body :  {{"id":4,"jsonrpc":"2.0","params":[{"from":"0x41b1942a868ffeb011d82e480ad178177d3efa12","gas":"0x1e8480","data":"0xb05784b8","to":"0x6e6bbf31aa45042d53128339383fcd1c377b42c7"},"latest"],"method":"eth_call"}}
+General Logger:	2021/01/27 18:18:41 main.go:69: JSON-RPC Method: eth_call
+General Logger:	2021/01/27 18:18:41 main.go:159: Is not a rawTransaction

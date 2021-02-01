@@ -27,7 +27,7 @@ var (
 )
 
 // RelayABI is the input ABI used to generate the binding from.
-const RelayABI = "[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isSigner\",\"type\":\"bool\"}],\"name\":\"BadSigner\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"originalSender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIRelayHub.ErrorCode\",\"name\":\"errorCode\",\"type\":\"uint8\"}],\"name\":\"BadTransactionSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"contractDeployed\",\"type\":\"address\"}],\"name\":\"ContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"countExceeded\",\"type\":\"uint8\"}],\"name\":\"GasLimitExceeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newGasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimitSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"}],\"name\":\"GasUsedByTransaction\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"NodeBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"result\",\"type\":\"bool\"}],\"name\":\"Recalculated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"executed\",\"type\":\"bool\"}],\"name\":\"TransactionExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"selector\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"charge\",\"type\":\"uint256\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"addNode\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"index\",\"type\":\"uint16\"}],\"name\":\"deleteNode\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_byteCode\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"deployMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"deployedAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasUsedLastBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMsgSender\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNodes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"encodedFunction\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"name\":\"setAccounIngress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"setBlocksFrequency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newGasUsed\",\"type\":\"uint256\"}],\"name\":\"setGasUsedLastBlocks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const RelayABI = "[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"originalSender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIRelayHub.ErrorCode\",\"name\":\"errorCode\",\"type\":\"uint8\"}],\"name\":\"BadTransactionSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"BlockFrequencyChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"contractDeployed\",\"type\":\"address\"}],\"name\":\"ContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"countExceeded\",\"type\":\"uint8\"}],\"name\":\"GasLimitExceeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newGasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimitSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"}],\"name\":\"GasUsedByTransaction\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"NodeAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"NodeBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"result\",\"type\":\"bool\"}],\"name\":\"Recalculated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"executed\",\"type\":\"bool\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"addNode\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"index\",\"type\":\"uint16\"}],\"name\":\"deleteNode\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_byteCode\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"deployMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"deployedAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasUsedLastBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMsgSender\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNodes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"encodedFunction\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"name\":\"setAccounIngress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"setBlocksFrequency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newGasUsed\",\"type\":\"uint256\"}],\"name\":\"setGasUsedLastBlocks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // Relay is an auto generated Go binding around an Ethereum contract.
 type Relay struct {
@@ -343,46 +343,46 @@ func (_Relay *RelayTransactorSession) DeleteNode(index uint16) (*types.Transacti
 	return _Relay.Contract.DeleteNode(&_Relay.TransactOpts, index)
 }
 
-// DeployMetaTx is a paid mutator transaction binding the contract method 0x17bd37da.
+// DeployMetaTx is a paid mutator transaction binding the contract method 0xf8a15607.
 //
-// Solidity: function deployMetaTx(address from, bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes signature, bytes senderSignature) returns(bool success, address deployedAddress)
-func (_Relay *RelayTransactor) DeployMetaTx(opts *bind.TransactOpts, from common.Address, _byteCode []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.contract.Transact(opts, "deployMetaTx", from, _byteCode, gasLimit, nonce, signature, senderSignature)
+// Solidity: function deployMetaTx(bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success, address deployedAddress)
+func (_Relay *RelayTransactor) DeployMetaTx(opts *bind.TransactOpts, _byteCode []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "deployMetaTx", _byteCode, gasLimit, nonce, senderSignature)
 }
 
-// DeployMetaTx is a paid mutator transaction binding the contract method 0x17bd37da.
+// DeployMetaTx is a paid mutator transaction binding the contract method 0xf8a15607.
 //
-// Solidity: function deployMetaTx(address from, bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes signature, bytes senderSignature) returns(bool success, address deployedAddress)
-func (_Relay *RelaySession) DeployMetaTx(from common.Address, _byteCode []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, from, _byteCode, gasLimit, nonce, signature, senderSignature)
+// Solidity: function deployMetaTx(bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success, address deployedAddress)
+func (_Relay *RelaySession) DeployMetaTx(_byteCode []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
+	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, _byteCode, gasLimit, nonce, senderSignature)
 }
 
-// DeployMetaTx is a paid mutator transaction binding the contract method 0x17bd37da.
+// DeployMetaTx is a paid mutator transaction binding the contract method 0xf8a15607.
 //
-// Solidity: function deployMetaTx(address from, bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes signature, bytes senderSignature) returns(bool success, address deployedAddress)
-func (_Relay *RelayTransactorSession) DeployMetaTx(from common.Address, _byteCode []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, from, _byteCode, gasLimit, nonce, signature, senderSignature)
+// Solidity: function deployMetaTx(bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success, address deployedAddress)
+func (_Relay *RelayTransactorSession) DeployMetaTx(_byteCode []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
+	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, _byteCode, gasLimit, nonce, senderSignature)
 }
 
-// RelayMetaTx is a paid mutator transaction binding the contract method 0xc2d55cff.
+// RelayMetaTx is a paid mutator transaction binding the contract method 0x5508afc8.
 //
-// Solidity: function relayMetaTx(address from, address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes signature, bytes senderSignature) returns(bool success)
-func (_Relay *RelayTransactor) RelayMetaTx(opts *bind.TransactOpts, from common.Address, to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.contract.Transact(opts, "relayMetaTx", from, to, encodedFunction, gasLimit, nonce, signature, senderSignature)
+// Solidity: function relayMetaTx(address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success)
+func (_Relay *RelayTransactor) RelayMetaTx(opts *bind.TransactOpts, to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "relayMetaTx", to, encodedFunction, gasLimit, nonce, senderSignature)
 }
 
-// RelayMetaTx is a paid mutator transaction binding the contract method 0xc2d55cff.
+// RelayMetaTx is a paid mutator transaction binding the contract method 0x5508afc8.
 //
-// Solidity: function relayMetaTx(address from, address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes signature, bytes senderSignature) returns(bool success)
-func (_Relay *RelaySession) RelayMetaTx(from common.Address, to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, from, to, encodedFunction, gasLimit, nonce, signature, senderSignature)
+// Solidity: function relayMetaTx(address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success)
+func (_Relay *RelaySession) RelayMetaTx(to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
+	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, to, encodedFunction, gasLimit, nonce, senderSignature)
 }
 
-// RelayMetaTx is a paid mutator transaction binding the contract method 0xc2d55cff.
+// RelayMetaTx is a paid mutator transaction binding the contract method 0x5508afc8.
 //
-// Solidity: function relayMetaTx(address from, address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes signature, bytes senderSignature) returns(bool success)
-func (_Relay *RelayTransactorSession) RelayMetaTx(from common.Address, to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, from, to, encodedFunction, gasLimit, nonce, signature, senderSignature)
+// Solidity: function relayMetaTx(address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success)
+func (_Relay *RelayTransactorSession) RelayMetaTx(to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
+	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, to, encodedFunction, gasLimit, nonce, senderSignature)
 }
 
 // SetAccounIngress is a paid mutator transaction binding the contract method 0x4473d59d.
@@ -446,139 +446,6 @@ func (_Relay *RelaySession) SetGasUsedLastBlocks(newGasUsed *big.Int) (*types.Tr
 // Solidity: function setGasUsedLastBlocks(uint256 newGasUsed) returns()
 func (_Relay *RelayTransactorSession) SetGasUsedLastBlocks(newGasUsed *big.Int) (*types.Transaction, error) {
 	return _Relay.Contract.SetGasUsedLastBlocks(&_Relay.TransactOpts, newGasUsed)
-}
-
-// RelayBadSignerIterator is returned from FilterBadSigner and is used to iterate over the raw logs and unpacked data for BadSigner events raised by the Relay contract.
-type RelayBadSignerIterator struct {
-	Event *RelayBadSigner // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *RelayBadSignerIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(RelayBadSigner)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(RelayBadSigner)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *RelayBadSignerIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *RelayBadSignerIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// RelayBadSigner represents a BadSigner event raised by the Relay contract.
-type RelayBadSigner struct {
-	IsSigner bool
-	Raw      types.Log // Blockchain specific contextual infos
-}
-
-// FilterBadSigner is a free log retrieval operation binding the contract event 0xe6165a380cd95618636231550f7a5d7eeb162fc03e95877bfb14fff55f6c13a7.
-//
-// Solidity: event BadSigner(bool isSigner)
-func (_Relay *RelayFilterer) FilterBadSigner(opts *bind.FilterOpts) (*RelayBadSignerIterator, error) {
-
-	logs, sub, err := _Relay.contract.FilterLogs(opts, "BadSigner")
-	if err != nil {
-		return nil, err
-	}
-	return &RelayBadSignerIterator{contract: _Relay.contract, event: "BadSigner", logs: logs, sub: sub}, nil
-}
-
-// WatchBadSigner is a free log subscription operation binding the contract event 0xe6165a380cd95618636231550f7a5d7eeb162fc03e95877bfb14fff55f6c13a7.
-//
-// Solidity: event BadSigner(bool isSigner)
-func (_Relay *RelayFilterer) WatchBadSigner(opts *bind.WatchOpts, sink chan<- *RelayBadSigner) (event.Subscription, error) {
-
-	logs, sub, err := _Relay.contract.WatchLogs(opts, "BadSigner")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(RelayBadSigner)
-				if err := _Relay.contract.UnpackLog(event, "BadSigner", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseBadSigner is a log parse operation binding the contract event 0xe6165a380cd95618636231550f7a5d7eeb162fc03e95877bfb14fff55f6c13a7.
-//
-// Solidity: event BadSigner(bool isSigner)
-func (_Relay *RelayFilterer) ParseBadSigner(log types.Log) (*RelayBadSigner, error) {
-	event := new(RelayBadSigner)
-	if err := _Relay.contract.UnpackLog(event, "BadSigner", log); err != nil {
-		return nil, err
-	}
-	return event, nil
 }
 
 // RelayBadTransactionSentIterator is returned from FilterBadTransactionSent and is used to iterate over the raw logs and unpacked data for BadTransactionSent events raised by the Relay contract.
@@ -716,6 +583,139 @@ func (_Relay *RelayFilterer) ParseBadTransactionSent(log types.Log) (*RelayBadTr
 	return event, nil
 }
 
+// RelayBlockFrequencyChangedIterator is returned from FilterBlockFrequencyChanged and is used to iterate over the raw logs and unpacked data for BlockFrequencyChanged events raised by the Relay contract.
+type RelayBlockFrequencyChangedIterator struct {
+	Event *RelayBlockFrequencyChanged // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RelayBlockFrequencyChangedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RelayBlockFrequencyChanged)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RelayBlockFrequencyChanged)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RelayBlockFrequencyChangedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RelayBlockFrequencyChangedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RelayBlockFrequencyChanged represents a BlockFrequencyChanged event raised by the Relay contract.
+type RelayBlockFrequencyChanged struct {
+	BlocksFrequency uint8
+	Raw             types.Log // Blockchain specific contextual infos
+}
+
+// FilterBlockFrequencyChanged is a free log retrieval operation binding the contract event 0x6a932ca0009e3fb0c426e581df15813db79663e58595745f84d2c57c4fc36005.
+//
+// Solidity: event BlockFrequencyChanged(uint8 _blocksFrequency)
+func (_Relay *RelayFilterer) FilterBlockFrequencyChanged(opts *bind.FilterOpts) (*RelayBlockFrequencyChangedIterator, error) {
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "BlockFrequencyChanged")
+	if err != nil {
+		return nil, err
+	}
+	return &RelayBlockFrequencyChangedIterator{contract: _Relay.contract, event: "BlockFrequencyChanged", logs: logs, sub: sub}, nil
+}
+
+// WatchBlockFrequencyChanged is a free log subscription operation binding the contract event 0x6a932ca0009e3fb0c426e581df15813db79663e58595745f84d2c57c4fc36005.
+//
+// Solidity: event BlockFrequencyChanged(uint8 _blocksFrequency)
+func (_Relay *RelayFilterer) WatchBlockFrequencyChanged(opts *bind.WatchOpts, sink chan<- *RelayBlockFrequencyChanged) (event.Subscription, error) {
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "BlockFrequencyChanged")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RelayBlockFrequencyChanged)
+				if err := _Relay.contract.UnpackLog(event, "BlockFrequencyChanged", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseBlockFrequencyChanged is a log parse operation binding the contract event 0x6a932ca0009e3fb0c426e581df15813db79663e58595745f84d2c57c4fc36005.
+//
+// Solidity: event BlockFrequencyChanged(uint8 _blocksFrequency)
+func (_Relay *RelayFilterer) ParseBlockFrequencyChanged(log types.Log) (*RelayBlockFrequencyChanged, error) {
+	event := new(RelayBlockFrequencyChanged)
+	if err := _Relay.contract.UnpackLog(event, "BlockFrequencyChanged", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
 // RelayContractDeployedIterator is returned from FilterContractDeployed and is used to iterate over the raw logs and unpacked data for ContractDeployed events raised by the Relay contract.
 type RelayContractDeployedIterator struct {
 	Event *RelayContractDeployed // Event containing the contract specifics and raw log
@@ -785,28 +785,48 @@ func (it *RelayContractDeployedIterator) Close() error {
 
 // RelayContractDeployed represents a ContractDeployed event raised by the Relay contract.
 type RelayContractDeployed struct {
+	Relay            common.Address
+	From             common.Address
 	ContractDeployed common.Address
 	Raw              types.Log // Blockchain specific contextual infos
 }
 
-// FilterContractDeployed is a free log retrieval operation binding the contract event 0x8ffcdc15a283d706d38281f500270d8b5a656918f555de0913d7455e3e6bc1bf.
+// FilterContractDeployed is a free log retrieval operation binding the contract event 0x8a14d1d7200360982eafa429b53edf408f7f589e6da6558f3c116c7f708327b3.
 //
-// Solidity: event ContractDeployed(address contractDeployed)
-func (_Relay *RelayFilterer) FilterContractDeployed(opts *bind.FilterOpts) (*RelayContractDeployedIterator, error) {
+// Solidity: event ContractDeployed(address indexed relay, address indexed from, address contractDeployed)
+func (_Relay *RelayFilterer) FilterContractDeployed(opts *bind.FilterOpts, relay []common.Address, from []common.Address) (*RelayContractDeployedIterator, error) {
 
-	logs, sub, err := _Relay.contract.FilterLogs(opts, "ContractDeployed")
+	var relayRule []interface{}
+	for _, relayItem := range relay {
+		relayRule = append(relayRule, relayItem)
+	}
+	var fromRule []interface{}
+	for _, fromItem := range from {
+		fromRule = append(fromRule, fromItem)
+	}
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "ContractDeployed", relayRule, fromRule)
 	if err != nil {
 		return nil, err
 	}
 	return &RelayContractDeployedIterator{contract: _Relay.contract, event: "ContractDeployed", logs: logs, sub: sub}, nil
 }
 
-// WatchContractDeployed is a free log subscription operation binding the contract event 0x8ffcdc15a283d706d38281f500270d8b5a656918f555de0913d7455e3e6bc1bf.
+// WatchContractDeployed is a free log subscription operation binding the contract event 0x8a14d1d7200360982eafa429b53edf408f7f589e6da6558f3c116c7f708327b3.
 //
-// Solidity: event ContractDeployed(address contractDeployed)
-func (_Relay *RelayFilterer) WatchContractDeployed(opts *bind.WatchOpts, sink chan<- *RelayContractDeployed) (event.Subscription, error) {
+// Solidity: event ContractDeployed(address indexed relay, address indexed from, address contractDeployed)
+func (_Relay *RelayFilterer) WatchContractDeployed(opts *bind.WatchOpts, sink chan<- *RelayContractDeployed, relay []common.Address, from []common.Address) (event.Subscription, error) {
 
-	logs, sub, err := _Relay.contract.WatchLogs(opts, "ContractDeployed")
+	var relayRule []interface{}
+	for _, relayItem := range relay {
+		relayRule = append(relayRule, relayItem)
+	}
+	var fromRule []interface{}
+	for _, fromItem := range from {
+		fromRule = append(fromRule, fromItem)
+	}
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "ContractDeployed", relayRule, fromRule)
 	if err != nil {
 		return nil, err
 	}
@@ -838,9 +858,9 @@ func (_Relay *RelayFilterer) WatchContractDeployed(opts *bind.WatchOpts, sink ch
 	}), nil
 }
 
-// ParseContractDeployed is a log parse operation binding the contract event 0x8ffcdc15a283d706d38281f500270d8b5a656918f555de0913d7455e3e6bc1bf.
+// ParseContractDeployed is a log parse operation binding the contract event 0x8a14d1d7200360982eafa429b53edf408f7f589e6da6558f3c116c7f708327b3.
 //
-// Solidity: event ContractDeployed(address contractDeployed)
+// Solidity: event ContractDeployed(address indexed relay, address indexed from, address contractDeployed)
 func (_Relay *RelayFilterer) ParseContractDeployed(log types.Log) (*RelayContractDeployed, error) {
 	event := new(RelayContractDeployed)
 	if err := _Relay.contract.UnpackLog(event, "ContractDeployed", log); err != nil {
@@ -1252,6 +1272,139 @@ func (_Relay *RelayFilterer) WatchGasUsedByTransaction(opts *bind.WatchOpts, sin
 func (_Relay *RelayFilterer) ParseGasUsedByTransaction(log types.Log) (*RelayGasUsedByTransaction, error) {
 	event := new(RelayGasUsedByTransaction)
 	if err := _Relay.contract.UnpackLog(event, "GasUsedByTransaction", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// RelayNodeAddedIterator is returned from FilterNodeAdded and is used to iterate over the raw logs and unpacked data for NodeAdded events raised by the Relay contract.
+type RelayNodeAddedIterator struct {
+	Event *RelayNodeAdded // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RelayNodeAddedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RelayNodeAdded)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RelayNodeAdded)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RelayNodeAddedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RelayNodeAddedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RelayNodeAdded represents a NodeAdded event raised by the Relay contract.
+type RelayNodeAdded struct {
+	NewNode common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterNodeAdded is a free log retrieval operation binding the contract event 0xb25d03aaf308d7291709be1ea28b800463cf3a9a4c4a5555d7333a964c1dfebd.
+//
+// Solidity: event NodeAdded(address newNode)
+func (_Relay *RelayFilterer) FilterNodeAdded(opts *bind.FilterOpts) (*RelayNodeAddedIterator, error) {
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "NodeAdded")
+	if err != nil {
+		return nil, err
+	}
+	return &RelayNodeAddedIterator{contract: _Relay.contract, event: "NodeAdded", logs: logs, sub: sub}, nil
+}
+
+// WatchNodeAdded is a free log subscription operation binding the contract event 0xb25d03aaf308d7291709be1ea28b800463cf3a9a4c4a5555d7333a964c1dfebd.
+//
+// Solidity: event NodeAdded(address newNode)
+func (_Relay *RelayFilterer) WatchNodeAdded(opts *bind.WatchOpts, sink chan<- *RelayNodeAdded) (event.Subscription, error) {
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "NodeAdded")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RelayNodeAdded)
+				if err := _Relay.contract.UnpackLog(event, "NodeAdded", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseNodeAdded is a log parse operation binding the contract event 0xb25d03aaf308d7291709be1ea28b800463cf3a9a4c4a5555d7333a964c1dfebd.
+//
+// Solidity: event NodeAdded(address newNode)
+func (_Relay *RelayFilterer) ParseNodeAdded(log types.Log) (*RelayNodeAdded, error) {
+	event := new(RelayNodeAdded)
+	if err := _Relay.contract.UnpackLog(event, "NodeAdded", log); err != nil {
 		return nil, err
 	}
 	return event, nil
@@ -1676,139 +1829,6 @@ func (_Relay *RelayFilterer) ParseRelayed(log types.Log) (*RelayRelayed, error) 
 	return event, nil
 }
 
-// RelayTransactionExecutedIterator is returned from FilterTransactionExecuted and is used to iterate over the raw logs and unpacked data for TransactionExecuted events raised by the Relay contract.
-type RelayTransactionExecutedIterator struct {
-	Event *RelayTransactionExecuted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *RelayTransactionExecutedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(RelayTransactionExecuted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(RelayTransactionExecuted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *RelayTransactionExecutedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *RelayTransactionExecutedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// RelayTransactionExecuted represents a TransactionExecuted event raised by the Relay contract.
-type RelayTransactionExecuted struct {
-	Executed bool
-	Raw      types.Log // Blockchain specific contextual infos
-}
-
-// FilterTransactionExecuted is a free log retrieval operation binding the contract event 0xc077ddec907d959be03138bc8b6b428bc84ce2e142cd159804ec957c0ce80c7b.
-//
-// Solidity: event TransactionExecuted(bool executed)
-func (_Relay *RelayFilterer) FilterTransactionExecuted(opts *bind.FilterOpts) (*RelayTransactionExecutedIterator, error) {
-
-	logs, sub, err := _Relay.contract.FilterLogs(opts, "TransactionExecuted")
-	if err != nil {
-		return nil, err
-	}
-	return &RelayTransactionExecutedIterator{contract: _Relay.contract, event: "TransactionExecuted", logs: logs, sub: sub}, nil
-}
-
-// WatchTransactionExecuted is a free log subscription operation binding the contract event 0xc077ddec907d959be03138bc8b6b428bc84ce2e142cd159804ec957c0ce80c7b.
-//
-// Solidity: event TransactionExecuted(bool executed)
-func (_Relay *RelayFilterer) WatchTransactionExecuted(opts *bind.WatchOpts, sink chan<- *RelayTransactionExecuted) (event.Subscription, error) {
-
-	logs, sub, err := _Relay.contract.WatchLogs(opts, "TransactionExecuted")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(RelayTransactionExecuted)
-				if err := _Relay.contract.UnpackLog(event, "TransactionExecuted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTransactionExecuted is a log parse operation binding the contract event 0xc077ddec907d959be03138bc8b6b428bc84ce2e142cd159804ec957c0ce80c7b.
-//
-// Solidity: event TransactionExecuted(bool executed)
-func (_Relay *RelayFilterer) ParseTransactionExecuted(log types.Log) (*RelayTransactionExecuted, error) {
-	event := new(RelayTransactionExecuted)
-	if err := _Relay.contract.UnpackLog(event, "TransactionExecuted", log); err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
 // RelayTransactionRelayedIterator is returned from FilterTransactionRelayed and is used to iterate over the raw logs and unpacked data for TransactionRelayed events raised by the Relay contract.
 type RelayTransactionRelayedIterator struct {
 	Event *RelayTransactionRelayed // Event containing the contract specifics and raw log
@@ -1881,14 +1901,13 @@ type RelayTransactionRelayed struct {
 	Relay    common.Address
 	From     common.Address
 	To       common.Address
-	Selector [4]byte
-	Charge   *big.Int
+	Executed bool
 	Raw      types.Log // Blockchain specific contextual infos
 }
 
-// FilterTransactionRelayed is a free log retrieval operation binding the contract event 0x2a8e164a2bd95ffaf59651ebd8e75e4e879d97cab53c11dde9dfdbcceb1e6780.
+// FilterTransactionRelayed is a free log retrieval operation binding the contract event 0xfed6f0abc4f5e1923377ee51313db072532b591ea23ea4b4c44a4457e7e5f417.
 //
-// Solidity: event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bytes4 selector, uint256 charge)
+// Solidity: event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bool executed)
 func (_Relay *RelayFilterer) FilterTransactionRelayed(opts *bind.FilterOpts, relay []common.Address, from []common.Address, to []common.Address) (*RelayTransactionRelayedIterator, error) {
 
 	var relayRule []interface{}
@@ -1911,9 +1930,9 @@ func (_Relay *RelayFilterer) FilterTransactionRelayed(opts *bind.FilterOpts, rel
 	return &RelayTransactionRelayedIterator{contract: _Relay.contract, event: "TransactionRelayed", logs: logs, sub: sub}, nil
 }
 
-// WatchTransactionRelayed is a free log subscription operation binding the contract event 0x2a8e164a2bd95ffaf59651ebd8e75e4e879d97cab53c11dde9dfdbcceb1e6780.
+// WatchTransactionRelayed is a free log subscription operation binding the contract event 0xfed6f0abc4f5e1923377ee51313db072532b591ea23ea4b4c44a4457e7e5f417.
 //
-// Solidity: event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bytes4 selector, uint256 charge)
+// Solidity: event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bool executed)
 func (_Relay *RelayFilterer) WatchTransactionRelayed(opts *bind.WatchOpts, sink chan<- *RelayTransactionRelayed, relay []common.Address, from []common.Address, to []common.Address) (event.Subscription, error) {
 
 	var relayRule []interface{}
@@ -1961,9 +1980,9 @@ func (_Relay *RelayFilterer) WatchTransactionRelayed(opts *bind.WatchOpts, sink 
 	}), nil
 }
 
-// ParseTransactionRelayed is a log parse operation binding the contract event 0x2a8e164a2bd95ffaf59651ebd8e75e4e879d97cab53c11dde9dfdbcceb1e6780.
+// ParseTransactionRelayed is a log parse operation binding the contract event 0xfed6f0abc4f5e1923377ee51313db072532b591ea23ea4b4c44a4457e7e5f417.
 //
-// Solidity: event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bytes4 selector, uint256 charge)
+// Solidity: event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bool executed)
 func (_Relay *RelayFilterer) ParseTransactionRelayed(log types.Log) (*RelayTransactionRelayed, error) {
 	event := new(RelayTransactionRelayed)
 	if err := _Relay.contract.UnpackLog(event, "TransactionRelayed", log); err != nil {
