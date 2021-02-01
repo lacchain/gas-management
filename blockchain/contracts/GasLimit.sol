@@ -8,7 +8,7 @@ contract GasLimit{
 
     using SafeMath for uint256;
 
-    uint256 constant MAX_GASBLOCK_LIMIT = 20000000;//200000000;
+    uint256 constant MAX_GASBLOCK_LIMIT = 200000000;
     uint256 constant GASUSED_RELAYHUB = 200000;
     
     mapping(address => uint8) private countExceeded; 
@@ -20,6 +20,8 @@ contract GasLimit{
     uint256 private currentGasLimit;
 
     mapping(address => uint) private gasLimits;
+
+    mapping (address => uint256) private indexOf; //1 based indexing. 0 means non-existent
 
     uint256 private gasUsedLastBlocks;
 
@@ -59,6 +61,7 @@ contract GasLimit{
 
     function setBlocksFrequency(uint8 _blocksFrequency) external evaluateCurrencyBlock{
         blocksFrequency = _blocksFrequency;
+        emit BlockFrequencyChanged(blocksFrequency);
     }
 
     function _hasEnoughGas(uint256 gas) internal view returns (bool){
@@ -151,10 +154,16 @@ contract GasLimit{
         return false;
     }
 
+    function exists(address node) internal view returns (bool) {
+        return indexOf[node] != 0;
+    }
+
     function addNode(address newNode) external returns(bool){
-        if(gasLimits[newNode]==0){
+        if(indexOf[newNode] == 0){
             writerNodes.push(newNode);
+            indexOf[newNode] = writerNodes.length;
             nodeAdded = true;
+            emit NodeAdded(newNode);
         }
         return true;
     }
@@ -196,6 +205,8 @@ contract GasLimit{
         return (tranxSent[_address],successfulTranx[_address],totalTranxLastBlocks);
     }*/
 
+    event NodeAdded(address newNode);
+    event BlockFrequencyChanged(uint8 _blocksFrequency);
     event Recalculated(bool result);
     event GasLimitSet(uint256 blockNumber, uint256 gasUsedLastBlocks, uint256 averageLastBlocks, uint256 newGasLimit);
     event GasLimitExceeded(address node, uint256 blockNumber, uint8 countExceeded);

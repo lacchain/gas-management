@@ -15,7 +15,7 @@ interface IRelayHub {
         MaxBlockGasLimit,
         BadOriginalSender,
         BadNonce,
-        BadNodeSigner,
+        NodeNotAllowed,
         NotEnoughGas,
         IsNotContract,
         EmptyCode
@@ -52,12 +52,10 @@ interface IRelayHub {
      */
 
     function relayMetaTx(
-        address from,
         address to,
         bytes calldata encodedFunction,
         uint256 gasLimit,
         uint256 nonce,
-        bytes calldata signature,
         bytes calldata senderSignature
     ) external returns(bool);
 
@@ -74,5 +72,5 @@ interface IRelayHub {
      *
      * `charge` is the Ether value deducted from the recipient's balance, paid to the relay's owner.
      */
-    event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bytes4 selector, uint256 charge);
+    event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bool executed);
 }
