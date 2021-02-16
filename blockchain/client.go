@@ -211,8 +211,13 @@ func (ec *Client) GetTransactionCount(contractAddress common.Address, address co
 	log.GeneralLogger.Println("RelayHub Contract instanced:",contractAddress.Hex())
 
 	count, err := contract.GetNonce(&bind.CallOpts{}, address)
+	
 	if err != nil {
 		return nil,err
+	}
+
+	if count == nil{
+		return big.NewInt(0), nil
 	}
 
 	return count,nil

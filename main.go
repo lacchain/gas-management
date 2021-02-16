@@ -42,7 +42,12 @@ func main() {
 	config = getConfigFromFile()
 
 	relaySignerService = new(service.RelaySignerService)
-	relaySignerService.Init(config)
+	err := relaySignerService.Init(config)
+	if err != nil{
+		log.GeneralLogger.Println("File Key reading error:", err)
+    	return
+	}
+
 	setupRoutes()
 }
 
