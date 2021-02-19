@@ -36,6 +36,8 @@ const (
 	subscribeMethodSuffix           = "_subscribe"
 	unsubscribeMethodSuffix         = "_unsubscribe"
 	notificationMethodSuffix        = "_subscription"
+	privTransactionMethodPreffix    = "priv_"
+	privSendRawTransactionMethodPreffix = "eea_"
 	sendRawTransactionMethodSuffix  = "_sendRawTransaction"
 	getTransactionReceiptSuffix     = "_getTransactionReceipt"
 	getTransactionCountSuffix       = "_getTransactionCount"
@@ -83,6 +85,16 @@ func (msg *JsonrpcMessage) isSubscribe() bool {
 
 func (msg *JsonrpcMessage) isUnsubscribe() bool {
 	return strings.HasSuffix(msg.Method, unsubscribeMethodSuffix)
+}
+
+//IsPrivTransaction ...
+func (msg *JsonrpcMessage) IsPrivTransaction() bool {
+	return strings.HasPrefix(msg.Method, privTransactionMethodPreffix)
+}
+
+//IsPrivRawTransaction ...
+func (msg *JsonrpcMessage) IsPrivRawTransaction() bool {
+	return strings.HasPrefix(msg.Method, privSendRawTransactionMethodPreffix)
 }
 
 //IsRawTransaction ...

@@ -73,7 +73,12 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 
 	log.GeneralLogger.Println("JSON-RPC Method:",rpcMessage.Method);
 
-	if (rpcMessage.IsRawTransaction()){
+	if (rpcMessage.IsPrivTransaction() || rpcMessage.IsPrivRawTransaction()){
+		r.Body=rdr2
+		log.GeneralLogger.Println("Is a private Transaction, forward to Besu->Orion")
+		
+		serveReverseProxy(config.Application.NodeURL,w,r)
+	}else if (rpcMessage.IsRawTransaction()){
 		log.GeneralLogger.Println("Is a rawTransaction")
 		var params []string
 		err = json.Unmarshal(rpcMessage.Params, &params)
@@ -161,7 +166,7 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}else{
 		r.Body=rdr2
-		log.GeneralLogger.Println("Is not a rawTransaction")
+		log.GeneralLogger.Println("Is another kind of transaction, reverse proxy")
 		
 		serveReverseProxy(config.Application.NodeURL,w,r)
 	}
