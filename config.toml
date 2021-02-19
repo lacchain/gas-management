@@ -1,5 +1,5 @@
 [application]
-nodeURL = "http://34.75.103.207:4545"
+nodeURL = "http://34.75.159.76:4545"
 contractAddress = "0x7446001Ff298580c3139E3E82a15bBaBFA0C8590"
 nodeKeyPath = "/root/lacchain/data/key"  
 nodeAddressPath = "/root/lacchain/data/nodeAddress"
