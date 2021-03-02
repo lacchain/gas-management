@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.0 <0.7.0;
 
 import "./lib/SafeMath.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract GasLimit{
+contract GasLimit is AccessControl {
 
     using SafeMath for uint256;
 
-    uint256 constant MAX_GASBLOCK_LIMIT = 200000000;
-    uint256 constant GASUSED_RELAYHUB = 200000;
+//    bytes32 public constant ACCOUNT_CONTRACT_ROLE = keccak256("ACCOUNT_CONTRACT_ROLE");
+    uint256 internal maxGasBlockLimit = 200000000;
+    uint256 internal gasUsedRelayHub = 200000;
     
     mapping(address => uint8) private countExceeded; 
 
@@ -44,6 +46,7 @@ contract GasLimit{
         blockCalculateExecuted = block.number;
         blocksFrequency = _blocksFrequency;
         accountIngress = _accountIngress;
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     modifier evaluateCurrencyBlock () {
@@ -59,9 +62,9 @@ contract GasLimit{
         _;
     }
 
-    function setBlocksFrequency(uint8 _blocksFrequency) external evaluateCurrencyBlock{
+    function setBlocksFrequency(uint8 _blocksFrequency) onlyAdmin external evaluateCurrencyBlock{
         blocksFrequency = _blocksFrequency;
-        emit BlockFrequencyChanged(blocksFrequency);
+        emit BlockFrequencyChanged(msg.sender, blocksFrequency);
     }
 
     function _hasEnoughGas(uint256 gas) internal view returns (bool){
@@ -77,21 +80,21 @@ contract GasLimit{
     }
 
     function calculateGasLimit() internal  {
-        uint256 newGasLimit = (80*MAX_GASBLOCK_LIMIT)/100;
-        if (averageLastBlocks<=((20*MAX_GASBLOCK_LIMIT)/100)){
-            newGasLimit = 5*(MAX_GASBLOCK_LIMIT/writerNodes.length);
-        }else if(averageLastBlocks<=((40*MAX_GASBLOCK_LIMIT)/100)){
-            newGasLimit = 4*(MAX_GASBLOCK_LIMIT/writerNodes.length);
-        }else if(averageLastBlocks<=((60*MAX_GASBLOCK_LIMIT)/100)){
-            newGasLimit = 3*(MAX_GASBLOCK_LIMIT/writerNodes.length);
-        }else if(averageLastBlocks<=((80*MAX_GASBLOCK_LIMIT)/100)){
-            newGasLimit = 2*(MAX_GASBLOCK_LIMIT/writerNodes.length);
+        uint256 newGasLimit = (80*maxGasBlockLimit)/100;
+        if (averageLastBlocks<=((20*maxGasBlockLimit)/100)){
+            newGasLimit = 5*(maxGasBlockLimit/writerNodes.length);
+        }else if(averageLastBlocks<=((40*maxGasBlockLimit)/100)){
+            newGasLimit = 4*(maxGasBlockLimit/writerNodes.length);
+        }else if(averageLastBlocks<=((60*maxGasBlockLimit)/100)){
+            newGasLimit = 3*(maxGasBlockLimit/writerNodes.length);
+        }else if(averageLastBlocks<=((80*maxGasBlockLimit)/100)){
+            newGasLimit = 2*(maxGasBlockLimit/writerNodes.length);
         }else{
-            newGasLimit = MAX_GASBLOCK_LIMIT/writerNodes.length;
+            newGasLimit = maxGasBlockLimit/writerNodes.length;
         }
 
-        if (newGasLimit > (80*MAX_GASBLOCK_LIMIT)/100){
-            newGasLimit = (80*MAX_GASBLOCK_LIMIT)/100;
+        if (newGasLimit > (80*maxGasBlockLimit)/100){
+            newGasLimit = (80*maxGasBlockLimit)/100;
         }
         _setGasLimit(gasUsedLastBlocks,newGasLimit);
     }
@@ -111,24 +114,24 @@ contract GasLimit{
         return gasLimits[msg.sender];
     }
 
-    function _addGasUsed(uint256 gasUsed) internal returns (uint256,uint256){
-        if (gasUsed > gasLimits[msg.sender]){
-            gasLimits[msg.sender] = 0;
+    function _addGasUsed(address _sender, uint256 gasUsed) internal returns (uint256,uint256){
+        if (gasUsed > gasLimits[_sender]){
+            gasLimits[_sender] = 0;
             gasUsedLastBlocks = gasUsedLastBlocks.add(gasUsed);
             _penalizeNode();
         }else{
-            gasLimits[msg.sender] = gasLimits[msg.sender].sub(gasUsed);
+            gasLimits[_sender] = gasLimits[_sender].sub(gasUsed);
             gasUsedLastBlocks = gasUsedLastBlocks.add(gasUsed);
         }
 
-        return (gasLimits[msg.sender],gasUsedLastBlocks);
+        return (gasLimits[_sender],gasUsedLastBlocks);
     }
 
     function getGasUsedLastBlocks() external view returns (uint256){
         return gasUsedLastBlocks;
     }
 
-    function setGasUsedLastBlocks(uint256 newGasUsed) external {
+    function setGasUsedLastBlocks(uint256 newGasUsed) onlyAdmin external {
         gasUsedLastBlocks = newGasUsed;
     }
 
@@ -158,7 +161,7 @@ contract GasLimit{
         return indexOf[node] != 0;
     }
 
-    function addNode(address newNode) external returns(bool){
+    function addNode(address newNode) onlyAccountContract external returns(bool){
         if(indexOf[newNode] == 0){
             writerNodes.push(newNode);
             indexOf[newNode] = writerNodes.length;
@@ -168,14 +171,21 @@ contract GasLimit{
         return true;
     }
 
-    function deleteNode(uint16 index) external {
-        if (index >= writerNodes.length) return;
+    function deleteNode(address node) onlyAccountContract external {
+        uint index = indexOf[node];
+        require(index>0, "Node doesn't exist");
+        
+        if (index > writerNodes.length) return;
 
-        for (uint i = index; i<writerNodes.length-1; i++){
-            writerNodes[i] = writerNodes[i+1];
-        }
+        address lastNode = writerNodes[writerNodes.length - 1];
+        writerNodes[index-1] = lastNode;
+        
+        indexOf[lastNode] = index;
+        indexOf[node] = 0;
+
         delete writerNodes[writerNodes.length-1];
         writerNodes.pop();
+        emit NodeDeleted(node);
     }
 
     function getNodes() external view returns (uint){
@@ -197,16 +207,37 @@ contract GasLimit{
         }
     }
 
-    function setAccounIngress(address _accountIngress) public {
-        accountIngress = _accountIngress;
+    function setMaxGasBlockLimit(uint256 _maxGasBlockLimit) onlyAdmin public {
+        maxGasBlockLimit = _maxGasBlockLimit;
+        emit MaxGasBlockLimitChanged(msg.sender, maxGasBlockLimit);
     }
 
-    /*function getTransactionss(address _address) public view returns(uint8,uint8,uint256){
-        return (tranxSent[_address],successfulTranx[_address],totalTranxLastBlocks);
-    }*/
+    function setGasUsedRelayHub(uint256 _gasUsedRelayHub) onlyAdmin public {
+        gasUsedRelayHub = _gasUsedRelayHub;
+        emit GasUsedRelayHubChanged(msg.sender, gasUsedRelayHub);
+    }
+
+    function setAccounIngress(address _accountIngress) onlyAdmin public {
+        accountIngress = _accountIngress;
+        emit AccountIngressChanged(msg.sender, _accountIngress);
+    }
+
+    modifier onlyAdmin(){
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not Admin");
+        _;
+    }
+
+    modifier onlyAccountContract(){
+        require(msg.sender == accountIngress, "Caller is not Account Contract");
+        _;
+    }
 
     event NodeAdded(address newNode);
-    event BlockFrequencyChanged(uint8 _blocksFrequency);
+    event NodeDeleted(address oldNode);
+    event AccountIngressChanged(address admin, address newAddress);
+    event BlockFrequencyChanged(address admin, uint8 blocksFrequency);
+    event MaxGasBlockLimitChanged(address admin, uint256 maxGasBlockLimit);
+    event GasUsedRelayHubChanged(address admin, uint256 gasUsedRelayHub);
     event Recalculated(bool result);
     event GasLimitSet(uint256 blockNumber, uint256 gasUsedLastBlocks, uint256 averageLastBlocks, uint256 newGasLimit);
     event GasLimitExceeded(address node, uint256 blockNumber, uint8 countExceeded);
