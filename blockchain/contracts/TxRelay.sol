@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.0 <0.7.0;
 
 import "./IRelayHub.sol";
 import "./lib/ECDSA.sol";
@@ -19,7 +19,9 @@ contract TxRelay is GasLimit,IRelayHub{
 
     address msgSender;
 
-    constructor(uint8 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress) public{}
+    constructor(uint8 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress) public{
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
 
     function relayMetaTx(
         address to,
@@ -29,39 +31,44 @@ contract TxRelay is GasLimit,IRelayHub{
         bytes calldata senderSignature
     ) external evaluateCurrencyBlock override returns (bool success){
         address from = _getOriginalSender(to,encodedFunction,gasLimit,nonce,senderSignature,false);
+        nonces[from]++; //if we are going to do tx, update nonce
 
-        if (gasLimit > MAX_GASBLOCK_LIMIT){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+        if (nonce != nonces[from] -1){
+            _decreaseGasUsed(gasUsedRelayHub);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.BadNonce);
+            return false;
+        }
+
+        if (gasLimit > maxGasBlockLimit){
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.MaxBlockGasLimit);
             return false;
         }
 
         if (!exists(msg.sender)){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.NodeNotAllowed);
             return false;
         }
-
-        nonces[from]++; //if we are going to do tx, update nonce
 
         emit Relayed(from,msg.sender);
 
         uint256 gasUsed = gasleft();
 
         if(!_hasEnoughGas(gasUsed)){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.NotEnoughGas);
             return false;
         }
 
         if (_isContract(to)){
             msgSender = from;
-            bool executed = _executeCall(to,0,encodedFunction);
-            emit TransactionRelayed(msg.sender, from, to, executed);
+            (bool executed, bytes memory output) = _executeCall(to,0,encodedFunction);
+            emit TransactionRelayed(msg.sender, from, to, executed, output);
             gasUsed = gasUsed.sub(gasleft());
             _decreaseGasUsed(gasUsed);
         }else{
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.IsNotContract);
             return false;
         }
@@ -76,27 +83,32 @@ contract TxRelay is GasLimit,IRelayHub{
         bytes calldata senderSignature
     ) external evaluateCurrencyBlock returns (bool success, address deployedAddress){
         address from = _getOriginalSender(address(0),_byteCode,gasLimit,nonce,senderSignature,true);
+        nonces[from]++; //if we are going to do tx, update nonce
 
-        if (gasLimit > block.gaslimit){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+        if (nonce != nonces[from] -1){
+            _decreaseGasUsed(gasUsedRelayHub);
+            emit BadTransactionSent(msg.sender, from, ErrorCode.BadNonce);
+            return (false, address(0));
+        }
+
+        if (gasLimit > maxGasBlockLimit){
+            _decreaseGasUsed(gasUsedRelayHub);
              emit BadTransactionSent(msg.sender, from, ErrorCode.MaxBlockGasLimit);
             return (false, address(0));
         }
 
         if (!exists(msg.sender)){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.NodeNotAllowed);
             return (false, address(0));
         }
-
-        nonces[from]++; //if we are going to do tx, update nonce
 
         emit Relayed(from,msg.sender);
 
         uint256 gasUsed = gasleft();
 
         if(!_hasEnoughGas(gasUsed)){
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.NotEnoughGas);
             return (false,address(0));
         }
@@ -109,7 +121,7 @@ contract TxRelay is GasLimit,IRelayHub{
             _decreaseGasUsed(gasUsed);
             return (true,deployedAddress);
         }else{
-            _decreaseGasUsed(GASUSED_RELAYHUB);
+            _decreaseGasUsed(gasUsedRelayHub);
             emit BadTransactionSent(msg.sender, from, ErrorCode.EmptyCode);
             return (false,address(0));
         }
@@ -135,11 +147,14 @@ contract TxRelay is GasLimit,IRelayHub{
      * @param _value amount ether to send
      * @param _data transaction to send
      */
-    function _executeCall(address _to, uint256 _value, bytes memory _data) private returns (bool success){
+    function _executeCall(address _to, uint256 _value, bytes memory _data) private returns (bool success, bytes memory output){
         // solium-disable-next-line security/no-inline-assembly
-        assembly {
+        /*assembly {
             success:= call(gas(), _to, _value, add(_data, 0x20), mload(_data), 0, 0)
-        }
+            let size := returndatasize()
+            output:= returndatacopy(add(_data, 0x20), 0, size)
+        }*/
+        (success, output) = _to.call{gas:gasleft(), value:_value}(_data);
     }
 
     function getNonce(address from) external override view returns (uint256){
@@ -163,8 +178,13 @@ contract TxRelay is GasLimit,IRelayHub{
         return (size > 0);
     }
 
+    function decreaseGasUsed(address _sender, uint256 gasUsed) onlyAccountContract external returns (bool){
+        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(_sender, gasUsed);
+        emit GasUsedByTransaction(_sender, block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
+    }
+
     function _decreaseGasUsed(uint256 gasUsed) private {
-        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(gasUsed);
+        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(msg.sender, gasUsed);
         emit GasUsedByTransaction(msg.sender, block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
     }
 

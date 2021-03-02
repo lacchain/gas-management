@@ -77,6 +77,19 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 		r.Body=rdr2
 		log.GeneralLogger.Println("Is a private Transaction, forward to Besu->Orion")
 		
+		var params []string
+		err = json.Unmarshal(rpcMessage.Params, &params)
+		if err != nil {
+			log.GeneralLogger.Println("Error Unmarshaling Json RPC Params")
+			log.GeneralLogger.Println(err)
+		}
+
+		//fmt.Println("Param 0:",params[0])
+
+		decodeTransaction,_ := util.GetTransaction(params[0][2:])
+
+		relaySignerService.DecreaseGasUsed(decodeTransaction.To().Hex())
+
 		serveReverseProxy(config.Application.NodeURL,w,r)
 	}else if (rpcMessage.IsRawTransaction()){
 		log.GeneralLogger.Println("Is a rawTransaction")

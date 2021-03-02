@@ -126,8 +126,6 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 		fmt.Println("deployed contract eventKeccak:",eventContractDeployed)
 		fmt.Println("transaction relayed eventKeccak:",eventTransactionRelayed)
 
-		
-
 		for _,log := range receipt.Logs {
 		//	fmt.Println(log.Topics[0].Hex())
 			if log.Topics[0].Hex() == "0x"+eventContractDeployed {
@@ -154,9 +152,9 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 	result.ID = id
 	if (receiptReverted != nil){
 		return result.Response(receiptReverted)
-	}else{
-		return result.Response(receipt)
 	}
+	return result.Response(receipt)
+	
 }
 
 func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from string) (*rpc.JsonrpcMessage){
@@ -182,6 +180,35 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 
 	result.ID = id
 	return result.Response(count)
+}
+
+func (service *RelaySignerService) DecreaseGasUsed(to string) (bool){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		handleError(err)
+	}
+	defer client.Close()
+
+	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
+    if err != nil {
+        log.GeneralLogger.Fatal(err)
+	}
+
+	options, err := client.ConfigTransaction(privateKey,30000)
+	if err != nil {
+	 	handleErrorRPCMessage(err)
+	}
+
+	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
+	address := common.HexToAddress(to)
+
+	err, _ = client.DecreaseGasUsed(contractAddress, options, address, new(big.Int).SetUint64(25000))
+	if err != nil {
+		handleError(err)
+	}
+	
+	return true
 }
 
 func transactionRelayedFailed(data []byte)(bool, []byte){

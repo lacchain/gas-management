@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.0 <0.7.0;
 
 /**
  * @dev Interface for `RelayHub`, the core contract of the GSN. Users should not need to interact with this contract
@@ -72,5 +72,5 @@ interface IRelayHub {
      *
      * `charge` is the Ether value deducted from the recipient's balance, paid to the relay's owner.
      */
-    event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bool executed);
+    event TransactionRelayed(address indexed relay, address indexed from, address indexed to, bool executed, bytes output);
 }
