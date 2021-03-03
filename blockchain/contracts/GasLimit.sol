@@ -3,9 +3,9 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "./lib/SafeMath.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+//import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract GasLimit is AccessControl {
+contract GasLimit {
 
     using SafeMath for uint256;
 
@@ -46,7 +46,7 @@ contract GasLimit is AccessControl {
         blockCalculateExecuted = block.number;
         blocksFrequency = _blocksFrequency;
         accountIngress = _accountIngress;
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    //    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     modifier evaluateCurrencyBlock () {
@@ -223,13 +223,18 @@ contract GasLimit is AccessControl {
     }
 
     modifier onlyAdmin(){
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not Admin");
+    //    require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not Admin");
         _;
     }
 
     modifier onlyAccountContract(){
         require(msg.sender == accountIngress, "Caller is not Account Contract");
         _;
+    }
+
+    modifier onlyAccountPermissioned(){
+        require(exists(msg.sender));
+        _;   
     }
 
     event NodeAdded(address newNode);

@@ -73,11 +73,16 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 
 	log.GeneralLogger.Println("JSON-RPC Method:",rpcMessage.Method);
 
-	if (rpcMessage.IsPrivTransaction() || rpcMessage.IsPrivRawTransaction()){
+	if (rpcMessage.IsPrivTransaction()){
 		r.Body=rdr2
 		log.GeneralLogger.Println("Is a private Transaction, forward to Besu->Orion")
+
+		serveReverseProxy(config.Application.NodeURL,w,r)
+	}else if (rpcMessage.IsPrivRawTransaction()){
+		r.Body=rdr2
+		log.GeneralLogger.Println("Is a private send Transaction, decrease gas used")
 		
-		var params []string
+		/*var params []string
 		err = json.Unmarshal(rpcMessage.Params, &params)
 		if err != nil {
 			log.GeneralLogger.Println("Error Unmarshaling Json RPC Params")
@@ -86,10 +91,11 @@ func signTransaction(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Println("Param 0:",params[0])
 
-		decodeTransaction,_ := util.GetTransaction(params[0][2:])
+		decodeTransaction,_ := util.GetTransaction(params[0][2:])*/
 
-		relaySignerService.DecreaseGasUsed(decodeTransaction.To().Hex())
+		relaySignerService.DecreaseGasUsed()
 
+		log.GeneralLogger.Println("forward to Besu->Orion")
 		serveReverseProxy(config.Application.NodeURL,w,r)
 	}else if (rpcMessage.IsRawTransaction()){
 		log.GeneralLogger.Println("Is a rawTransaction")

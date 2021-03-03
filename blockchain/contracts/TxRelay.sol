@@ -20,7 +20,7 @@ contract TxRelay is GasLimit,IRelayHub{
     address msgSender;
 
     constructor(uint8 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress) public{
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    //    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function relayMetaTx(
@@ -178,9 +178,8 @@ contract TxRelay is GasLimit,IRelayHub{
         return (size > 0);
     }
 
-    function decreaseGasUsed(address _sender, uint256 gasUsed) onlyAccountContract external returns (bool){
-        (uint256 newGasLimit,uint256 gasUsedLastBlocks) = _addGasUsed(_sender, gasUsed);
-        emit GasUsedByTransaction(_sender, block.number, gasUsed, newGasLimit, gasUsedLastBlocks);
+    function decreaseGasUsed(uint256 gasUsed) evaluateCurrencyBlock onlyAccountPermissioned external returns (bool){
+        _decreaseGasUsed(gasUsed);
     }
 
     function _decreaseGasUsed(uint256 gasUsed) private {
