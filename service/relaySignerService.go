@@ -182,7 +182,7 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 	return result.Response(count)
 }
 
-func (service *RelaySignerService) DecreaseGasUsed(to string) (bool){
+func (service *RelaySignerService) DecreaseGasUsed() (bool){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
@@ -201,9 +201,8 @@ func (service *RelaySignerService) DecreaseGasUsed(to string) (bool){
 	}
 
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
-	address := common.HexToAddress(to)
 
-	err, _ = client.DecreaseGasUsed(contractAddress, options, address, new(big.Int).SetUint64(25000))
+	err, _ = client.DecreaseGasUsed(contractAddress, options, new(big.Int).SetUint64(25000))
 	if err != nil {
 		handleError(err)
 	}

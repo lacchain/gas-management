@@ -224,7 +224,7 @@ func (ec *Client) GetTransactionCount(contractAddress common.Address, address co
 }
 
 //SendMetatransaction into blockchain
-func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.TransactOpts, from common.Address, gasUsed *big.Int) (error, *common.Hash) {
+func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.TransactOpts, gasUsed *big.Int) (error, *common.Hash) {
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -233,12 +233,10 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 	}
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:",contractAddress.Hex())
-
-	log.GeneralLogger.Println("from:", from.Hex())
 	
 	var tx *types.Transaction
 	
-	tx, err = contract.DecreaseGasUsed(options, from, gasUsed)
+	tx, err = contract.DecreaseGasUsed(options, gasUsed)
 	
 	if err != nil {
 		msg := fmt.Sprintf("failed executing contract")
