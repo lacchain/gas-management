@@ -1,5 +1,6 @@
 # Logs
 log/
+log/idbServiceLog.log
 logs
 *.log
 npm-debug.log*
