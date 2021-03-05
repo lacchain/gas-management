@@ -13,16 +13,22 @@ const (
 	NoType ErrorType = iota
 	// BadTransaction error
 	BadTransaction
-	// FailedTransacion error
+	// FailedTransaction error
 	FailedTransaction
 	// FailedConnection error
 	FailedConnection
-    // FileNotFound error
+    // FailedKeystore error
 	FailedKeystore
-	// FailedConfigTransaction
+	// FailedReadFile error
+	FailedReadFile
+	// FailedConfigTransaction error
 	FailedConfigTransaction
-	// FailedContract
+	// FailedContract error
 	FailedContract
+	// CallBlockchainFailed error
+	CallBlockchainFailed
+	// MalformedRawTransaction error
+	MalformedRawTransaction
 )	
 
 type customError struct {

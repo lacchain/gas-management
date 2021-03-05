@@ -13,10 +13,8 @@ import (
 	"fmt"
 	"strings"
 	"math/big"
-//	"crypto/ecdsa"
 	"encoding/hex"
 	sha "golang.org/x/crypto/sha3"
-//	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -42,6 +40,8 @@ func (service *RelaySignerService) Init(_config *model.Config)(error){
 
 	key, err := ioutil.ReadFile(service.Config.Application.NodeKeyPath)
     if err != nil {
+		msg := fmt.Sprintf("fail to read key file")
+		err = errors.FailedReadFile.Wrapf(err,msg)
         return err
 	}
 	service.Config.Application.Key = string(key[2:66])
@@ -53,7 +53,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		handleError(err)
+		HandleErrorRPCMessage(id, err)
 	}
 	defer client.Close()
 	
@@ -62,32 +62,15 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
         log.GeneralLogger.Fatal(err)
 	}
 
-//	publicKey := privateKey.Public()
-//	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-//    if !ok {
-//        log.GeneralLogger.Fatal("error casting public key to ECDSA")
-//	}
-	
-//	address := crypto.PubkeyToAddress(*publicKeyECDSA)
-
 	options, err := client.ConfigTransaction(privateKey,gasLimit.Uint64())
 	if err != nil {
-		return handleErrorRPCMessage(err)
+		return HandleErrorRPCMessage(id, err)
 	}
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
-	
-	/*if(!client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(gasLimit.Uint64(),contractAddress,from, to, encodedFunction, gasLimit, nonce, signature))){
-		log.GeneralLogger.Println("Transaction will fail, then is rejected")
-		result := new(rpc.JsonrpcMessage)
 
-		result.ID = id
-
-		return result
-	}*/
-
-	err, tx := client.SendMetatransaction(contractAddress, options, from, to, encodedFunction, gasLimit, nonce, signature, senderSignature)
+	tx, err := client.SendMetatransaction(contractAddress, options, from, to, encodedFunction, gasLimit, nonce, signature, senderSignature)
 	if err != nil {
-		return handleErrorRPCMessage(err)
+		return HandleErrorRPCMessage(id, err)
 	}
 
 	log.GeneralLogger.Println("tx",tx)
@@ -98,7 +81,8 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, from 
 	return result.Response(tx)
 }
 
-func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,transactionId string) (*rpc.JsonrpcMessage){
+//GetTransactionReceipt from blockchain
+func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,transactionID string) (*rpc.JsonrpcMessage){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
@@ -106,7 +90,7 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 	}
 	defer client.Close()
 
-	receipt,err := client.GetTransactionReceipt(common.HexToHash(transactionId))
+	receipt,err := client.GetTransactionReceipt(common.HexToHash(transactionID))
 	if err != nil {
 		handleError(err)
 	}
@@ -157,6 +141,7 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 	
 }
 
+//GetTransactionCount of account
 func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from string) (*rpc.JsonrpcMessage){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
@@ -173,15 +158,13 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 		handleError(err)
 	}
 
-	if count!=nil{
-		
-	}
 	result := new(rpc.JsonrpcMessage)
 
 	result.ID = id
 	return result.Response(count)
 }
 
+//DecreaseGasUsed by node
 func (service *RelaySignerService) DecreaseGasUsed() (bool){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
@@ -197,17 +180,37 @@ func (service *RelaySignerService) DecreaseGasUsed() (bool){
 
 	options, err := client.ConfigTransaction(privateKey,30000)
 	if err != nil {
-	 	handleErrorRPCMessage(err)
+	 	handleError(err)
 	}
 
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
-	err, _ = client.DecreaseGasUsed(contractAddress, options, new(big.Int).SetUint64(25000))
+	_, err = client.DecreaseGasUsed(contractAddress, options, new(big.Int).SetUint64(25000))
 	if err != nil {
 		handleError(err)
 	}
 	
 	return true
+}
+
+//IsTargetPermitted DEPRECATED
+func (service *RelaySignerService) IsTargetPermitted(to string)(bool){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		handleError(err)
+	}
+	defer client.Close()
+
+	contractAddress := common.HexToAddress(service.Config.Application.AccountContractAddress)
+	address := common.HexToAddress(to)
+
+	isPermitted,err := client.IsTargetPermitted(contractAddress, address)
+	if err != nil {
+		handleError(err)
+	}
+
+	return isPermitted
 }
 
 func transactionRelayedFailed(data []byte)(bool, []byte){
@@ -249,6 +252,9 @@ func handleError(err error)(int){
 	  return 100
 }
 
-func handleErrorRPCMessage(err error)(*rpc.JsonrpcMessage){
-	return nil
+//HandleErrorRPCMessage ...
+func HandleErrorRPCMessage(id json.RawMessage, err error)(*rpc.JsonrpcMessage){
+	result := new(rpc.JsonrpcMessage)
+	result.ID = id
+	return result.ErrorResponse(err)
 }

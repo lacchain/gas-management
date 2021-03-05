@@ -2,7 +2,7 @@ package util
 
 import(
 	"fmt"
-	"errors"
+//	"errors"
 	"log"
 	"strconv"
 	"encoding/hex"
@@ -14,6 +14,7 @@ import(
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/lacchain/gas-relay-signer/sha3"
+	"github.com/lacchain/gas-relay-signer/errors"
 )
 
 //SignPayload ...
@@ -58,7 +59,7 @@ func SignPayload(_privateKey, signingAddr string, destinationAddress *common.Add
 	return sig,nil 
 }
 
-//Hash 
+//Hash ...
 func Hash(from string, to *common.Address, encodedFunction []byte, gasLimit, nonce string) ([]byte) {
 	var hash []byte
 	if (to != nil){
@@ -93,6 +94,7 @@ func Hash(from string, to *common.Address, encodedFunction []byte, gasLimit, non
 	return hash
 }
 
+//Sign ...
 func Sign(hash []byte, privateKey *ecdsa.PrivateKey) ([]byte,error) {
 	signature, err := crypto.Sign(hash, privateKey)
     if err != nil {
@@ -129,12 +131,13 @@ func Sign(hash []byte, privateKey *ecdsa.PrivateKey) ([]byte,error) {
 	return signature,nil
 }
 
-//GetTransaction
+//GetTransaction ...
 func GetTransaction(rawTx string)(*types.Transaction, error){
 	rawTxBytes, err := hex.DecodeString(rawTx)
 
 	if err != nil {
-		log.Println("Error decoding Raw transaction",err)
+		msg := fmt.Sprintf("Error Decoding Raw Transaction")
+		err = errors.MalformedRawTransaction.Wrapf(err,msg)
 		return nil, err
     }
 
