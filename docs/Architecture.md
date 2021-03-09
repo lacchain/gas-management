@@ -67,6 +67,12 @@ After the transaction is verified, this transaction will go directly to the Rela
 
 As additional validation, it is verified that the nonce sent is greater than the previous one to guarantee that the transaction is unique and does not repeat itself. Before the transaction is forwarded to a recipient contract, it is verified that the node has not consumed all the assigned GAS, in case the node has enough gas then the transaction is forwarded and after execution in the recipient contract the amount of GAS used is reduced for that node.
 
+### Private Transactions
+
+![private_transactions](images/private_transactions.png)
+
+When a private transaction is sent, it goes through the RelaySigner which call to Management Gas contrat to decrease the gas used, which is 25000. Then it redirects the transaction without modifying to the Besu process and this communicates with the Orion service which share the transaction with the participating nodes of the private transaction.
+
 ### Bad Transactions
 
 ![send_bad_transaction](images/send_bad_transaction.png)
