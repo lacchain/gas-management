@@ -77,7 +77,7 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bi
 }
 
 //SendMetatransaction into blockchain
-func (ec *Client) SendMetatransaction(contractAddress common.Address, options *bind.TransactOpts, from common.Address, to *common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, signature []byte, senderSignature []byte) (*common.Hash,error) {
+func (ec *Client) SendMetatransaction(contractAddress common.Address, options *bind.TransactOpts, to *common.Address, signingData []byte, v uint8, r [32]byte, s [32]byte ) (*common.Hash,error) {
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -87,7 +87,7 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:",contractAddress.Hex())
 
-	log.GeneralLogger.Println("Metatransaction-from:", from.Hex())
+	/*log.GeneralLogger.Println("Metatransaction-from:", from.Hex())
 	if (to!=nil){
 		log.GeneralLogger.Println("Metatransaction to:", to.Hex())
 	}
@@ -95,13 +95,13 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 	log.GeneralLogger.Println("Metatransaction gasLimit:", gasLimit)
 	log.GeneralLogger.Println("Metatransaction nonce:", nonce)
 	log.GeneralLogger.Println("Metatransaction signature:", hexutil.Encode(signature))
-
+*/
 	var tx *types.Transaction
 	
 	if (to != nil){
-		tx, err = contract.RelayMetaTx(options, *to, encodedFunction, gasLimit, nonce, senderSignature)
+		tx, err = contract.RelayMetaTx(options, signingData, v, r, s)
 	}else{
-		tx, err = contract.DeployMetaTx(options, encodedFunction, gasLimit, nonce, senderSignature)
+		tx, err = contract.DeployMetaTx(options, signingData, v, r, s)
 	}
 	if err != nil {
 		msg := fmt.Sprintf("failed executing contract")
@@ -231,7 +231,7 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 	
 	var tx *types.Transaction
 	
-	tx, err = contract.DecreaseGasUsed(options, gasUsed)
+	tx, err = contract.IncreaseGasUsed(options, gasUsed)
 	
 	if err != nil {
 		msg := fmt.Sprintf("failed executing contract")
