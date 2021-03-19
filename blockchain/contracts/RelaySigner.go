@@ -27,7 +27,7 @@ var (
 )
 
 // RelayABI is the input ABI used to generate the binding from.
-const RelayABI = "[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAddress\",\"type\":\"address\"}],\"name\":\"AccountIngressChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"originalSender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIRelayHub.ErrorCode\",\"name\":\"errorCode\",\"type\":\"uint8\"}],\"name\":\"BadTransactionSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"BlockFrequencyChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"contractDeployed\",\"type\":\"address\"}],\"name\":\"ContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"countExceeded\",\"type\":\"uint8\"}],\"name\":\"GasLimitExceeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newGasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimitSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"}],\"name\":\"GasUsedByTransaction\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedRelayHub\",\"type\":\"uint256\"}],\"name\":\"GasUsedRelayHubChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"maxGasBlockLimit\",\"type\":\"uint256\"}],\"name\":\"MaxGasBlockLimitChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"NodeAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"NodeBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldNode\",\"type\":\"address\"}],\"name\":\"NodeDeleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"result\",\"type\":\"bool\"}],\"name\":\"Recalculated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"executed\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"addNode\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"}],\"name\":\"decreaseGasUsed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"}],\"name\":\"deleteNode\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_byteCode\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"deployMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"deployedAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasUsedLastBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMsgSender\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNodes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"encodedFunction\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"name\":\"setAccounIngress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"setBlocksFrequency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newGasUsed\",\"type\":\"uint256\"}],\"name\":\"setGasUsedLastBlocks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gasUsedRelayHub\",\"type\":\"uint256\"}],\"name\":\"setGasUsedRelayHub\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_maxGasBlockLimit\",\"type\":\"uint256\"}],\"name\":\"setMaxGasBlockLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const RelayABI = "[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAddress\",\"type\":\"address\"}],\"name\":\"AccountIngressChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"originalSender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIRelayHub.ErrorCode\",\"name\":\"errorCode\",\"type\":\"uint8\"}],\"name\":\"BadTransactionSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"BlockFrequencyChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"contractDeployed\",\"type\":\"address\"}],\"name\":\"ContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"countExceeded\",\"type\":\"uint8\"}],\"name\":\"GasLimitExceeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newGasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimitSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"}],\"name\":\"GasUsedByTransaction\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedRelayHub\",\"type\":\"uint256\"}],\"name\":\"GasUsedRelayHubChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"maxGasBlockLimit\",\"type\":\"uint256\"}],\"name\":\"MaxGasBlockLimitChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"NodeAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"NodeBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldNode\",\"type\":\"address\"}],\"name\":\"NodeDeleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"decodedFunction\",\"type\":\"bytes\"}],\"name\":\"Parameters\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"result\",\"type\":\"bool\"}],\"name\":\"Recalculated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"executed\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"addNode\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"}],\"name\":\"deleteNode\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasUsedLastBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNodes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getRoleMember\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleMemberCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"name\":\"setAccounIngress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"setBlocksFrequency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newGasUsed\",\"type\":\"uint256\"}],\"name\":\"setGasUsedLastBlocks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gasUsedRelayHub\",\"type\":\"uint256\"}],\"name\":\"setGasUsedRelayHub\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_maxGasBlockLimit\",\"type\":\"uint256\"}],\"name\":\"setMaxGasBlockLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"signingData\",\"type\":\"bytes\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"signingData\",\"type\":\"bytes\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"deployMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"deployedAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMsgSender\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"}],\"name\":\"increaseGasUsed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // Relay is an auto generated Go binding around an Ethereum contract.
 type Relay struct {
@@ -171,6 +171,32 @@ func (_Relay *RelayTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 	return _Relay.Contract.contract.Transact(opts, method, params...)
 }
 
+// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+//
+// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
+func (_Relay *RelayCaller) DEFAULTADMINROLE(opts *bind.CallOpts) ([32]byte, error) {
+	var (
+		ret0 = new([32]byte)
+	)
+	out := ret0
+	err := _Relay.contract.Call(opts, out, "DEFAULT_ADMIN_ROLE")
+	return *ret0, err
+}
+
+// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+//
+// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
+func (_Relay *RelaySession) DEFAULTADMINROLE() ([32]byte, error) {
+	return _Relay.Contract.DEFAULTADMINROLE(&_Relay.CallOpts)
+}
+
+// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+//
+// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
+func (_Relay *RelayCallerSession) DEFAULTADMINROLE() ([32]byte, error) {
+	return _Relay.Contract.DEFAULTADMINROLE(&_Relay.CallOpts)
+}
+
 // GetGasLimit is a free data retrieval call binding the contract method 0x1a93d1c3.
 //
 // Solidity: function getGasLimit() view returns(uint256)
@@ -301,6 +327,110 @@ func (_Relay *RelayCallerSession) GetNonce(from common.Address) (*big.Int, error
 	return _Relay.Contract.GetNonce(&_Relay.CallOpts, from)
 }
 
+// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+//
+// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
+func (_Relay *RelayCaller) GetRoleAdmin(opts *bind.CallOpts, role [32]byte) ([32]byte, error) {
+	var (
+		ret0 = new([32]byte)
+	)
+	out := ret0
+	err := _Relay.contract.Call(opts, out, "getRoleAdmin", role)
+	return *ret0, err
+}
+
+// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+//
+// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
+func (_Relay *RelaySession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
+	return _Relay.Contract.GetRoleAdmin(&_Relay.CallOpts, role)
+}
+
+// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+//
+// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
+func (_Relay *RelayCallerSession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
+	return _Relay.Contract.GetRoleAdmin(&_Relay.CallOpts, role)
+}
+
+// GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
+//
+// Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
+func (_Relay *RelayCaller) GetRoleMember(opts *bind.CallOpts, role [32]byte, index *big.Int) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _Relay.contract.Call(opts, out, "getRoleMember", role, index)
+	return *ret0, err
+}
+
+// GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
+//
+// Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
+func (_Relay *RelaySession) GetRoleMember(role [32]byte, index *big.Int) (common.Address, error) {
+	return _Relay.Contract.GetRoleMember(&_Relay.CallOpts, role, index)
+}
+
+// GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
+//
+// Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
+func (_Relay *RelayCallerSession) GetRoleMember(role [32]byte, index *big.Int) (common.Address, error) {
+	return _Relay.Contract.GetRoleMember(&_Relay.CallOpts, role, index)
+}
+
+// GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
+//
+// Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
+func (_Relay *RelayCaller) GetRoleMemberCount(opts *bind.CallOpts, role [32]byte) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _Relay.contract.Call(opts, out, "getRoleMemberCount", role)
+	return *ret0, err
+}
+
+// GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
+//
+// Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
+func (_Relay *RelaySession) GetRoleMemberCount(role [32]byte) (*big.Int, error) {
+	return _Relay.Contract.GetRoleMemberCount(&_Relay.CallOpts, role)
+}
+
+// GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
+//
+// Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
+func (_Relay *RelayCallerSession) GetRoleMemberCount(role [32]byte) (*big.Int, error) {
+	return _Relay.Contract.GetRoleMemberCount(&_Relay.CallOpts, role)
+}
+
+// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+//
+// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
+func (_Relay *RelayCaller) HasRole(opts *bind.CallOpts, role [32]byte, account common.Address) (bool, error) {
+	var (
+		ret0 = new(bool)
+	)
+	out := ret0
+	err := _Relay.contract.Call(opts, out, "hasRole", role, account)
+	return *ret0, err
+}
+
+// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+//
+// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
+func (_Relay *RelaySession) HasRole(role [32]byte, account common.Address) (bool, error) {
+	return _Relay.Contract.HasRole(&_Relay.CallOpts, role, account)
+}
+
+// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+//
+// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
+func (_Relay *RelayCallerSession) HasRole(role [32]byte, account common.Address) (bool, error) {
+	return _Relay.Contract.HasRole(&_Relay.CallOpts, role, account)
+}
+
 // AddNode is a paid mutator transaction binding the contract method 0x9d95f1cc.
 //
 // Solidity: function addNode(address newNode) returns(bool)
@@ -320,27 +450,6 @@ func (_Relay *RelaySession) AddNode(newNode common.Address) (*types.Transaction,
 // Solidity: function addNode(address newNode) returns(bool)
 func (_Relay *RelayTransactorSession) AddNode(newNode common.Address) (*types.Transaction, error) {
 	return _Relay.Contract.AddNode(&_Relay.TransactOpts, newNode)
-}
-
-// DecreaseGasUsed is a paid mutator transaction binding the contract method 0x0240d71c.
-//
-// Solidity: function decreaseGasUsed(uint256 gasUsed) returns(bool)
-func (_Relay *RelayTransactor) DecreaseGasUsed(opts *bind.TransactOpts, gasUsed *big.Int) (*types.Transaction, error) {
-	return _Relay.contract.Transact(opts, "decreaseGasUsed", gasUsed)
-}
-
-// DecreaseGasUsed is a paid mutator transaction binding the contract method 0x0240d71c.
-//
-// Solidity: function decreaseGasUsed(uint256 gasUsed) returns(bool)
-func (_Relay *RelaySession) DecreaseGasUsed(gasUsed *big.Int) (*types.Transaction, error) {
-	return _Relay.Contract.DecreaseGasUsed(&_Relay.TransactOpts, gasUsed)
-}
-
-// DecreaseGasUsed is a paid mutator transaction binding the contract method 0x0240d71c.
-//
-// Solidity: function decreaseGasUsed(uint256 gasUsed) returns(bool)
-func (_Relay *RelayTransactorSession) DecreaseGasUsed(gasUsed *big.Int) (*types.Transaction, error) {
-	return _Relay.Contract.DecreaseGasUsed(&_Relay.TransactOpts, gasUsed)
 }
 
 // DeleteNode is a paid mutator transaction binding the contract method 0x2d4ede93.
@@ -364,46 +473,130 @@ func (_Relay *RelayTransactorSession) DeleteNode(node common.Address) (*types.Tr
 	return _Relay.Contract.DeleteNode(&_Relay.TransactOpts, node)
 }
 
-// DeployMetaTx is a paid mutator transaction binding the contract method 0xf8a15607.
+// DeployMetaTx is a paid mutator transaction binding the contract method 0x4b802a36.
 //
-// Solidity: function deployMetaTx(bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success, address deployedAddress)
-func (_Relay *RelayTransactor) DeployMetaTx(opts *bind.TransactOpts, _byteCode []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.contract.Transact(opts, "deployMetaTx", _byteCode, gasLimit, nonce, senderSignature)
+// Solidity: function deployMetaTx(bytes signingData, uint8 v, bytes32 r, bytes32 s) returns(bool success, address deployedAddress)
+func (_Relay *RelayTransactor) DeployMetaTx(opts *bind.TransactOpts, signingData []byte, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "deployMetaTx", signingData, v, r, s)
 }
 
-// DeployMetaTx is a paid mutator transaction binding the contract method 0xf8a15607.
+// DeployMetaTx is a paid mutator transaction binding the contract method 0x4b802a36.
 //
-// Solidity: function deployMetaTx(bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success, address deployedAddress)
-func (_Relay *RelaySession) DeployMetaTx(_byteCode []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, _byteCode, gasLimit, nonce, senderSignature)
+// Solidity: function deployMetaTx(bytes signingData, uint8 v, bytes32 r, bytes32 s) returns(bool success, address deployedAddress)
+func (_Relay *RelaySession) DeployMetaTx(signingData []byte, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, signingData, v, r, s)
 }
 
-// DeployMetaTx is a paid mutator transaction binding the contract method 0xf8a15607.
+// DeployMetaTx is a paid mutator transaction binding the contract method 0x4b802a36.
 //
-// Solidity: function deployMetaTx(bytes _byteCode, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success, address deployedAddress)
-func (_Relay *RelayTransactorSession) DeployMetaTx(_byteCode []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, _byteCode, gasLimit, nonce, senderSignature)
+// Solidity: function deployMetaTx(bytes signingData, uint8 v, bytes32 r, bytes32 s) returns(bool success, address deployedAddress)
+func (_Relay *RelayTransactorSession) DeployMetaTx(signingData []byte, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _Relay.Contract.DeployMetaTx(&_Relay.TransactOpts, signingData, v, r, s)
 }
 
-// RelayMetaTx is a paid mutator transaction binding the contract method 0x5508afc8.
+// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
 //
-// Solidity: function relayMetaTx(address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success)
-func (_Relay *RelayTransactor) RelayMetaTx(opts *bind.TransactOpts, to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.contract.Transact(opts, "relayMetaTx", to, encodedFunction, gasLimit, nonce, senderSignature)
+// Solidity: function grantRole(bytes32 role, address account) returns()
+func (_Relay *RelayTransactor) GrantRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "grantRole", role, account)
 }
 
-// RelayMetaTx is a paid mutator transaction binding the contract method 0x5508afc8.
+// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
 //
-// Solidity: function relayMetaTx(address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success)
-func (_Relay *RelaySession) RelayMetaTx(to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, to, encodedFunction, gasLimit, nonce, senderSignature)
+// Solidity: function grantRole(bytes32 role, address account) returns()
+func (_Relay *RelaySession) GrantRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.Contract.GrantRole(&_Relay.TransactOpts, role, account)
 }
 
-// RelayMetaTx is a paid mutator transaction binding the contract method 0x5508afc8.
+// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
 //
-// Solidity: function relayMetaTx(address to, bytes encodedFunction, uint256 gasLimit, uint256 nonce, bytes senderSignature) returns(bool success)
-func (_Relay *RelayTransactorSession) RelayMetaTx(to common.Address, encodedFunction []byte, gasLimit *big.Int, nonce *big.Int, senderSignature []byte) (*types.Transaction, error) {
-	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, to, encodedFunction, gasLimit, nonce, senderSignature)
+// Solidity: function grantRole(bytes32 role, address account) returns()
+func (_Relay *RelayTransactorSession) GrantRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.Contract.GrantRole(&_Relay.TransactOpts, role, account)
+}
+
+// IncreaseGasUsed is a paid mutator transaction binding the contract method 0x2e74335a.
+//
+// Solidity: function increaseGasUsed(uint256 gasUsed) returns(bool)
+func (_Relay *RelayTransactor) IncreaseGasUsed(opts *bind.TransactOpts, gasUsed *big.Int) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "increaseGasUsed", gasUsed)
+}
+
+// IncreaseGasUsed is a paid mutator transaction binding the contract method 0x2e74335a.
+//
+// Solidity: function increaseGasUsed(uint256 gasUsed) returns(bool)
+func (_Relay *RelaySession) IncreaseGasUsed(gasUsed *big.Int) (*types.Transaction, error) {
+	return _Relay.Contract.IncreaseGasUsed(&_Relay.TransactOpts, gasUsed)
+}
+
+// IncreaseGasUsed is a paid mutator transaction binding the contract method 0x2e74335a.
+//
+// Solidity: function increaseGasUsed(uint256 gasUsed) returns(bool)
+func (_Relay *RelayTransactorSession) IncreaseGasUsed(gasUsed *big.Int) (*types.Transaction, error) {
+	return _Relay.Contract.IncreaseGasUsed(&_Relay.TransactOpts, gasUsed)
+}
+
+// RelayMetaTx is a paid mutator transaction binding the contract method 0xa04fb2ad.
+//
+// Solidity: function relayMetaTx(bytes signingData, uint8 v, bytes32 r, bytes32 s) returns(bool success)
+func (_Relay *RelayTransactor) RelayMetaTx(opts *bind.TransactOpts, signingData []byte, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "relayMetaTx", signingData, v, r, s)
+}
+
+// RelayMetaTx is a paid mutator transaction binding the contract method 0xa04fb2ad.
+//
+// Solidity: function relayMetaTx(bytes signingData, uint8 v, bytes32 r, bytes32 s) returns(bool success)
+func (_Relay *RelaySession) RelayMetaTx(signingData []byte, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, signingData, v, r, s)
+}
+
+// RelayMetaTx is a paid mutator transaction binding the contract method 0xa04fb2ad.
+//
+// Solidity: function relayMetaTx(bytes signingData, uint8 v, bytes32 r, bytes32 s) returns(bool success)
+func (_Relay *RelayTransactorSession) RelayMetaTx(signingData []byte, v uint8, r [32]byte, s [32]byte) (*types.Transaction, error) {
+	return _Relay.Contract.RelayMetaTx(&_Relay.TransactOpts, signingData, v, r, s)
+}
+
+// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+//
+// Solidity: function renounceRole(bytes32 role, address account) returns()
+func (_Relay *RelayTransactor) RenounceRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "renounceRole", role, account)
+}
+
+// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+//
+// Solidity: function renounceRole(bytes32 role, address account) returns()
+func (_Relay *RelaySession) RenounceRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.Contract.RenounceRole(&_Relay.TransactOpts, role, account)
+}
+
+// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+//
+// Solidity: function renounceRole(bytes32 role, address account) returns()
+func (_Relay *RelayTransactorSession) RenounceRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.Contract.RenounceRole(&_Relay.TransactOpts, role, account)
+}
+
+// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+//
+// Solidity: function revokeRole(bytes32 role, address account) returns()
+func (_Relay *RelayTransactor) RevokeRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.contract.Transact(opts, "revokeRole", role, account)
+}
+
+// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+//
+// Solidity: function revokeRole(bytes32 role, address account) returns()
+func (_Relay *RelaySession) RevokeRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.Contract.RevokeRole(&_Relay.TransactOpts, role, account)
+}
+
+// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+//
+// Solidity: function revokeRole(bytes32 role, address account) returns()
+func (_Relay *RelayTransactorSession) RevokeRole(role [32]byte, account common.Address) (*types.Transaction, error) {
+	return _Relay.Contract.RevokeRole(&_Relay.TransactOpts, role, account)
 }
 
 // SetAccounIngress is a paid mutator transaction binding the contract method 0x4473d59d.
@@ -1678,14 +1871,15 @@ func (it *RelayMaxGasBlockLimitChangedIterator) Close() error {
 
 // RelayMaxGasBlockLimitChanged represents a MaxGasBlockLimitChanged event raised by the Relay contract.
 type RelayMaxGasBlockLimitChanged struct {
+	BlockNumber      *big.Int
 	Admin            common.Address
 	MaxGasBlockLimit *big.Int
 	Raw              types.Log // Blockchain specific contextual infos
 }
 
-// FilterMaxGasBlockLimitChanged is a free log retrieval operation binding the contract event 0x5817ee78126ec7751164bec1bc7a2c219f8180984c458310e3fba45eb5efa8b8.
+// FilterMaxGasBlockLimitChanged is a free log retrieval operation binding the contract event 0x2eda5665530e0f918783d2a5e33519c436ef2275f0960978c0a3b9258483339b.
 //
-// Solidity: event MaxGasBlockLimitChanged(address admin, uint256 maxGasBlockLimit)
+// Solidity: event MaxGasBlockLimitChanged(uint256 blockNumber, address admin, uint256 maxGasBlockLimit)
 func (_Relay *RelayFilterer) FilterMaxGasBlockLimitChanged(opts *bind.FilterOpts) (*RelayMaxGasBlockLimitChangedIterator, error) {
 
 	logs, sub, err := _Relay.contract.FilterLogs(opts, "MaxGasBlockLimitChanged")
@@ -1695,9 +1889,9 @@ func (_Relay *RelayFilterer) FilterMaxGasBlockLimitChanged(opts *bind.FilterOpts
 	return &RelayMaxGasBlockLimitChangedIterator{contract: _Relay.contract, event: "MaxGasBlockLimitChanged", logs: logs, sub: sub}, nil
 }
 
-// WatchMaxGasBlockLimitChanged is a free log subscription operation binding the contract event 0x5817ee78126ec7751164bec1bc7a2c219f8180984c458310e3fba45eb5efa8b8.
+// WatchMaxGasBlockLimitChanged is a free log subscription operation binding the contract event 0x2eda5665530e0f918783d2a5e33519c436ef2275f0960978c0a3b9258483339b.
 //
-// Solidity: event MaxGasBlockLimitChanged(address admin, uint256 maxGasBlockLimit)
+// Solidity: event MaxGasBlockLimitChanged(uint256 blockNumber, address admin, uint256 maxGasBlockLimit)
 func (_Relay *RelayFilterer) WatchMaxGasBlockLimitChanged(opts *bind.WatchOpts, sink chan<- *RelayMaxGasBlockLimitChanged) (event.Subscription, error) {
 
 	logs, sub, err := _Relay.contract.WatchLogs(opts, "MaxGasBlockLimitChanged")
@@ -1732,9 +1926,9 @@ func (_Relay *RelayFilterer) WatchMaxGasBlockLimitChanged(opts *bind.WatchOpts, 
 	}), nil
 }
 
-// ParseMaxGasBlockLimitChanged is a log parse operation binding the contract event 0x5817ee78126ec7751164bec1bc7a2c219f8180984c458310e3fba45eb5efa8b8.
+// ParseMaxGasBlockLimitChanged is a log parse operation binding the contract event 0x2eda5665530e0f918783d2a5e33519c436ef2275f0960978c0a3b9258483339b.
 //
-// Solidity: event MaxGasBlockLimitChanged(address admin, uint256 maxGasBlockLimit)
+// Solidity: event MaxGasBlockLimitChanged(uint256 blockNumber, address admin, uint256 maxGasBlockLimit)
 func (_Relay *RelayFilterer) ParseMaxGasBlockLimitChanged(log types.Log) (*RelayMaxGasBlockLimitChanged, error) {
 	event := new(RelayMaxGasBlockLimitChanged)
 	if err := _Relay.contract.UnpackLog(event, "MaxGasBlockLimitChanged", log); err != nil {
@@ -2143,6 +2337,142 @@ func (_Relay *RelayFilterer) ParseNodeDeleted(log types.Log) (*RelayNodeDeleted,
 	return event, nil
 }
 
+// RelayParametersIterator is returned from FilterParameters and is used to iterate over the raw logs and unpacked data for Parameters events raised by the Relay contract.
+type RelayParametersIterator struct {
+	Event *RelayParameters // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RelayParametersIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RelayParameters)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RelayParameters)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RelayParametersIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RelayParametersIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RelayParameters represents a Parameters event raised by the Relay contract.
+type RelayParameters struct {
+	Nonce           *big.Int
+	GasLimit        *big.Int
+	To              common.Address
+	DecodedFunction []byte
+	Raw             types.Log // Blockchain specific contextual infos
+}
+
+// FilterParameters is a free log retrieval operation binding the contract event 0x7cad50c38b02aa7e6f3cbcd18e919ffab3c54a7d49c09ae59bb59bf3c2be6dfe.
+//
+// Solidity: event Parameters(uint256 nonce, uint256 gasLimit, address to, bytes decodedFunction)
+func (_Relay *RelayFilterer) FilterParameters(opts *bind.FilterOpts) (*RelayParametersIterator, error) {
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "Parameters")
+	if err != nil {
+		return nil, err
+	}
+	return &RelayParametersIterator{contract: _Relay.contract, event: "Parameters", logs: logs, sub: sub}, nil
+}
+
+// WatchParameters is a free log subscription operation binding the contract event 0x7cad50c38b02aa7e6f3cbcd18e919ffab3c54a7d49c09ae59bb59bf3c2be6dfe.
+//
+// Solidity: event Parameters(uint256 nonce, uint256 gasLimit, address to, bytes decodedFunction)
+func (_Relay *RelayFilterer) WatchParameters(opts *bind.WatchOpts, sink chan<- *RelayParameters) (event.Subscription, error) {
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "Parameters")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RelayParameters)
+				if err := _Relay.contract.UnpackLog(event, "Parameters", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseParameters is a log parse operation binding the contract event 0x7cad50c38b02aa7e6f3cbcd18e919ffab3c54a7d49c09ae59bb59bf3c2be6dfe.
+//
+// Solidity: event Parameters(uint256 nonce, uint256 gasLimit, address to, bytes decodedFunction)
+func (_Relay *RelayFilterer) ParseParameters(log types.Log) (*RelayParameters, error) {
+	event := new(RelayParameters)
+	if err := _Relay.contract.UnpackLog(event, "Parameters", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
 // RelayRecalculatedIterator is returned from FilterRecalculated and is used to iterate over the raw logs and unpacked data for Recalculated events raised by the Relay contract.
 type RelayRecalculatedIterator struct {
 	Event *RelayRecalculated // Event containing the contract specifics and raw log
@@ -2423,6 +2753,489 @@ func (_Relay *RelayFilterer) WatchRelayed(opts *bind.WatchOpts, sink chan<- *Rel
 func (_Relay *RelayFilterer) ParseRelayed(log types.Log) (*RelayRelayed, error) {
 	event := new(RelayRelayed)
 	if err := _Relay.contract.UnpackLog(event, "Relayed", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// RelayRoleAdminChangedIterator is returned from FilterRoleAdminChanged and is used to iterate over the raw logs and unpacked data for RoleAdminChanged events raised by the Relay contract.
+type RelayRoleAdminChangedIterator struct {
+	Event *RelayRoleAdminChanged // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RelayRoleAdminChangedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RelayRoleAdminChanged)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RelayRoleAdminChanged)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RelayRoleAdminChangedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RelayRoleAdminChangedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RelayRoleAdminChanged represents a RoleAdminChanged event raised by the Relay contract.
+type RelayRoleAdminChanged struct {
+	Role              [32]byte
+	PreviousAdminRole [32]byte
+	NewAdminRole      [32]byte
+	Raw               types.Log // Blockchain specific contextual infos
+}
+
+// FilterRoleAdminChanged is a free log retrieval operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
+//
+// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
+func (_Relay *RelayFilterer) FilterRoleAdminChanged(opts *bind.FilterOpts, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (*RelayRoleAdminChangedIterator, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var previousAdminRoleRule []interface{}
+	for _, previousAdminRoleItem := range previousAdminRole {
+		previousAdminRoleRule = append(previousAdminRoleRule, previousAdminRoleItem)
+	}
+	var newAdminRoleRule []interface{}
+	for _, newAdminRoleItem := range newAdminRole {
+		newAdminRoleRule = append(newAdminRoleRule, newAdminRoleItem)
+	}
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "RoleAdminChanged", roleRule, previousAdminRoleRule, newAdminRoleRule)
+	if err != nil {
+		return nil, err
+	}
+	return &RelayRoleAdminChangedIterator{contract: _Relay.contract, event: "RoleAdminChanged", logs: logs, sub: sub}, nil
+}
+
+// WatchRoleAdminChanged is a free log subscription operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
+//
+// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
+func (_Relay *RelayFilterer) WatchRoleAdminChanged(opts *bind.WatchOpts, sink chan<- *RelayRoleAdminChanged, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (event.Subscription, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var previousAdminRoleRule []interface{}
+	for _, previousAdminRoleItem := range previousAdminRole {
+		previousAdminRoleRule = append(previousAdminRoleRule, previousAdminRoleItem)
+	}
+	var newAdminRoleRule []interface{}
+	for _, newAdminRoleItem := range newAdminRole {
+		newAdminRoleRule = append(newAdminRoleRule, newAdminRoleItem)
+	}
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "RoleAdminChanged", roleRule, previousAdminRoleRule, newAdminRoleRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RelayRoleAdminChanged)
+				if err := _Relay.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRoleAdminChanged is a log parse operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
+//
+// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
+func (_Relay *RelayFilterer) ParseRoleAdminChanged(log types.Log) (*RelayRoleAdminChanged, error) {
+	event := new(RelayRoleAdminChanged)
+	if err := _Relay.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// RelayRoleGrantedIterator is returned from FilterRoleGranted and is used to iterate over the raw logs and unpacked data for RoleGranted events raised by the Relay contract.
+type RelayRoleGrantedIterator struct {
+	Event *RelayRoleGranted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RelayRoleGrantedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RelayRoleGranted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RelayRoleGranted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RelayRoleGrantedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RelayRoleGrantedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RelayRoleGranted represents a RoleGranted event raised by the Relay contract.
+type RelayRoleGranted struct {
+	Role    [32]byte
+	Account common.Address
+	Sender  common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterRoleGranted is a free log retrieval operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
+//
+// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
+func (_Relay *RelayFilterer) FilterRoleGranted(opts *bind.FilterOpts, role [][32]byte, account []common.Address, sender []common.Address) (*RelayRoleGrantedIterator, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "RoleGranted", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return &RelayRoleGrantedIterator{contract: _Relay.contract, event: "RoleGranted", logs: logs, sub: sub}, nil
+}
+
+// WatchRoleGranted is a free log subscription operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
+//
+// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
+func (_Relay *RelayFilterer) WatchRoleGranted(opts *bind.WatchOpts, sink chan<- *RelayRoleGranted, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "RoleGranted", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RelayRoleGranted)
+				if err := _Relay.contract.UnpackLog(event, "RoleGranted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRoleGranted is a log parse operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
+//
+// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
+func (_Relay *RelayFilterer) ParseRoleGranted(log types.Log) (*RelayRoleGranted, error) {
+	event := new(RelayRoleGranted)
+	if err := _Relay.contract.UnpackLog(event, "RoleGranted", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// RelayRoleRevokedIterator is returned from FilterRoleRevoked and is used to iterate over the raw logs and unpacked data for RoleRevoked events raised by the Relay contract.
+type RelayRoleRevokedIterator struct {
+	Event *RelayRoleRevoked // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RelayRoleRevokedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RelayRoleRevoked)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RelayRoleRevoked)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RelayRoleRevokedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RelayRoleRevokedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RelayRoleRevoked represents a RoleRevoked event raised by the Relay contract.
+type RelayRoleRevoked struct {
+	Role    [32]byte
+	Account common.Address
+	Sender  common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterRoleRevoked is a free log retrieval operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
+//
+// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
+func (_Relay *RelayFilterer) FilterRoleRevoked(opts *bind.FilterOpts, role [][32]byte, account []common.Address, sender []common.Address) (*RelayRoleRevokedIterator, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _Relay.contract.FilterLogs(opts, "RoleRevoked", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return &RelayRoleRevokedIterator{contract: _Relay.contract, event: "RoleRevoked", logs: logs, sub: sub}, nil
+}
+
+// WatchRoleRevoked is a free log subscription operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
+//
+// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
+func (_Relay *RelayFilterer) WatchRoleRevoked(opts *bind.WatchOpts, sink chan<- *RelayRoleRevoked, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error) {
+
+	var roleRule []interface{}
+	for _, roleItem := range role {
+		roleRule = append(roleRule, roleItem)
+	}
+	var accountRule []interface{}
+	for _, accountItem := range account {
+		accountRule = append(accountRule, accountItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+
+	logs, sub, err := _Relay.contract.WatchLogs(opts, "RoleRevoked", roleRule, accountRule, senderRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RelayRoleRevoked)
+				if err := _Relay.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRoleRevoked is a log parse operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
+//
+// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
+func (_Relay *RelayFilterer) ParseRoleRevoked(log types.Log) (*RelayRoleRevoked, error) {
+	event := new(RelayRoleRevoked)
+	if err := _Relay.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
 		return nil, err
 	}
 	return event, nil

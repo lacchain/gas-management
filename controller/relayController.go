@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"sync"
-	"math/big"
+//	"math/big"
 	"net/http/httputil"
 	"net/http"
 	"net/url"
@@ -17,7 +17,10 @@ import (
 	"github.com/lacchain/gas-relay-signer/service"
 	log "github.com/lacchain/gas-relay-signer/util"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/rlp"
+	
 	"github.com/ethereum/go-ethereum/common/hexutil"
+//	"github.com/ethereum/go-ethereum/common"
 )
 
 var lock sync.Mutex
@@ -110,21 +113,32 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 		log.GeneralLogger.Println("Nonce",decodeTransaction.Nonce())
 		log.GeneralLogger.Println("GasPrice:",decodeTransaction.GasPrice())
 		log.GeneralLogger.Println("Value:",decodeTransaction.Value())
-		v,r,s := decodeTransaction.RawSignatureValues();
+		v,rInt,sInt := decodeTransaction.RawSignatureValues();
 
-		log.GeneralLogger.Println(fmt.Sprintf("Signature R %064x",r))
-		log.GeneralLogger.Println(fmt.Sprintf("Signature S %064x",s))
+		log.GeneralLogger.Println(fmt.Sprintf("Signature R %064x",rInt))
+		log.GeneralLogger.Println(fmt.Sprintf("Signature S %064x",sInt))
 		log.GeneralLogger.Println(fmt.Sprintf("Signature V %x",v))
 
-		log.GeneralLogger.Println("senderSignature:",fmt.Sprintf("%064x",r)+fmt.Sprintf("%064x",s)+fmt.Sprintf("%x",v))
+		var r [32]byte
+		var s [32]byte
+		rBytes,_ :=hex.DecodeString(fmt.Sprintf("%064x",rInt))
+		sBytes,_ :=hex.DecodeString(fmt.Sprintf("%064x",sInt))
 
-		senderSignature, err := hex.DecodeString(fmt.Sprintf("%064x",r)+fmt.Sprintf("%064x",s)+fmt.Sprintf("%x",v))
+		copy(r[:],rBytes)
+		fmt.Println(rBytes)
+		fmt.Println(r)
+		copy(s[:],sBytes)
+		
+
+		log.GeneralLogger.Println("senderSignature:",fmt.Sprintf("%064x",rInt)+fmt.Sprintf("%064x",sInt)+fmt.Sprintf("%x",v))
+
+		/*senderSignature, err := hex.DecodeString(fmt.Sprintf("%064x",r)+fmt.Sprintf("%064x",s)+fmt.Sprintf("%x",v))
 
 		if err != nil {
 			data := handleError(rpcMessage.ID, err)
 			w.Write(data)
 			return
-		}
+		}*/
 
 		signature, err := util.SignPayload(controller.RelaySignerService.Config.Application.Key, message.From().Hex(), decodeTransaction.To(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce())
 		if err != nil {
@@ -135,8 +149,23 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 
 		log.GeneralLogger.Println("signature:",signature)
 
+		var signingDataTx *model.RawTransaction
+
+		if (decodeTransaction.To() != nil){
+			signingDataTx = model.NewTransaction(decodeTransaction.Nonce(), *decodeTransaction.To(), decodeTransaction.Value(), decodeTransaction.Gas(), decodeTransaction.GasPrice(), decodeTransaction.Data())
+		}else{
+			signingDataTx = model.NewContractCreation(decodeTransaction.Nonce(), decodeTransaction.Value(), decodeTransaction.Gas(), decodeTransaction.GasPrice(), decodeTransaction.Data())
+		}
+
+		signingDataRLP, err := rlp.EncodeToBytes(signingDataTx.Data)
+		if err != nil {
+			fmt.Println("encode error: ", err)
+		}
+
+		log.GeneralLogger.Println("SigningDataRLP:",hexutil.Encode(signingDataRLP))
+
 		lock.Lock()
-		response := controller.RelaySignerService.SendMetatransaction(rpcMessage.ID, message.From(), decodeTransaction.To(), decodeTransaction.Data(), new(big.Int).SetUint64(decodeTransaction.Gas()), new(big.Int).SetUint64(decodeTransaction.Nonce()), signature,senderSignature)
+		response := controller.RelaySignerService.SendMetatransaction(rpcMessage.ID, decodeTransaction.To(), signingDataRLP, uint8(v.Uint64()), r, s)
 		lock.Unlock()
 		data, err := json.Marshal(response)
 		w.Write(data)
