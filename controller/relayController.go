@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"sync"
-//	"math/big"
 	"net/http/httputil"
 	"net/http"
 	"net/url"
@@ -20,7 +19,6 @@ import (
 	"github.com/ethereum/go-ethereum/rlp"
 	
 	"github.com/ethereum/go-ethereum/common/hexutil"
-//	"github.com/ethereum/go-ethereum/common"
 )
 
 var lock sync.Mutex
@@ -101,12 +99,6 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 		log.GeneralLogger.Println("From:",message.From().Hex())
 		if (decodeTransaction.To() != nil){
 			log.GeneralLogger.Println("To:",decodeTransaction.To().Hex())
-
-		/*	if (relaySignerService.IsTargetPermitted(decodeTransaction.To().Hex())){
-				relaySignerService.DecreaseGasUsed()
-				log.GeneralLogger.Println("Old Smart Contract --> forward to Besu")
-				serveReverseProxy(config.Application.NodeURL,w,r)
-			} */
 		}
 		log.GeneralLogger.Println("Data:",hexutil.Encode(decodeTransaction.Data()))
 		log.GeneralLogger.Println("GasLimit:",decodeTransaction.Gas())
@@ -131,14 +123,6 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 		
 
 		log.GeneralLogger.Println("senderSignature:",fmt.Sprintf("%064x",rInt)+fmt.Sprintf("%064x",sInt)+fmt.Sprintf("%x",v))
-
-		/*senderSignature, err := hex.DecodeString(fmt.Sprintf("%064x",r)+fmt.Sprintf("%064x",s)+fmt.Sprintf("%x",v))
-
-		if err != nil {
-			data := handleError(rpcMessage.ID, err)
-			w.Write(data)
-			return
-		}*/
 
 		signature, err := util.SignPayload(controller.RelaySignerService.Config.Application.Key, message.From().Hex(), decodeTransaction.To(), decodeTransaction.Data(), decodeTransaction.Gas(), decodeTransaction.Nonce())
 		if err != nil {
