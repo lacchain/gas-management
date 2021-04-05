@@ -9,12 +9,10 @@ import (
 	"fmt"
 	"log"
 	"io/ioutil"
-//	"math/big"
 	"encoding/hex"
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/rpc"
-//	"github.com/lacchain/gas-relay-signer/util"
-//	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func TestInit ( t *testing.T ){
@@ -149,8 +147,6 @@ func TestSendMetatransaction (t *testing.T ){
 	var params []string
 	_ = json.Unmarshal(rpcMessage.Params, &params)
 
-	//decodeTransaction,_ := util.GetTransaction(params[0][2:])
-
 	dir, _ :=os.Getwd()
 	
 	createKeyMock(dir+"/keyMock")
@@ -160,20 +156,14 @@ func TestSendMetatransaction (t *testing.T ){
 	relaySignerService := new(RelaySignerService)
 	_ = relaySignerService.Init(&config)
 
-	//from := common.HexToAddress("0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1")
-	//signature := "0xf6cd53daf9d99c9bd77da7176fee9fe1534fb650a775ca75bf3dfe56ea87691c1fbff46265c2ed0408eaa9d13bce7374aa13349f5c3019453b646dc853a7b35d1b"
-	//senderSignature := "28934b543809922b277e85f6bcf7b1f25e937de05c5138e17fdfa480ba74e84b55a2a611763ffcb748547408093551928c9549f95a0a9cabd3b1f1f2e166cc161b"
-
-	//sig,_  := hex.DecodeString(signature)
+	to := common.HexToAddress("0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1")
 
 	encodedFunction,_ := hex.DecodeString("0xf861808082ea6094fd32cfc2e71611626d6368a41f915d0077a306a180b8446057361d000000000000000000000000000000000000000000000000000000000000003c000000000000000000000000173cf75f0905338597fcd38f5ce13e6840b230e9")
-
-	//senderSig,_  := hex.DecodeString(senderSignature)
 
 	var r [32]byte
 	var s [32]byte
 
-	jsonResponse := relaySignerService.SendMetatransaction(rpcMessage.ID,encodedFunction,27,r,s)
+	jsonResponse := relaySignerService.SendMetatransaction(rpcMessage.ID,&to,encodedFunction,27,r,s)
 
 	err := os.Remove("keyMock") 
     if err != nil {
