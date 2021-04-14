@@ -41,6 +41,7 @@ const (
 	sendRawTransactionMethodSuffix  = "_sendRawTransaction"
 	getTransactionReceiptSuffix     = "_getTransactionReceipt"
 	getTransactionCountSuffix       = "_getTransactionCount"
+	getBlockByNumber  				= "_getBlockByNumber"
 
 	defaultWriteTimeout = 10 * time.Second // used if context has no deadline
 )
@@ -110,6 +111,11 @@ func (msg *JsonrpcMessage) IsGetTransactionReceipt() bool {
 //IsGetTransactionCount ...
 func (msg *JsonrpcMessage) IsGetTransactionCount() bool {
 	return strings.HasSuffix(msg.Method, getTransactionCountSuffix)
+}
+
+//IsGetBlockByNumber ...
+func (msg *JsonrpcMessage) IsGetBlockByNumber() bool {
+	return strings.HasSuffix(msg.Method, getBlockByNumber)
 }
 
 func (msg *JsonrpcMessage) namespace() string {

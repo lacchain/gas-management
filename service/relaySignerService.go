@@ -14,6 +14,7 @@ import (
 	"strings"
 	"math/big"
 	"encoding/hex"
+	"crypto/ecdsa"
 	sha "golang.org/x/crypto/sha3"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -62,11 +63,41 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
         log.GeneralLogger.Fatal(err)
 	}
 
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+    if !ok {
+        log.GeneralLogger.Fatal("error casting public key to ECDSA")
+	}
+	
+	address := crypto.PubkeyToAddress(*publicKeyECDSA)
+
 	options, err := client.ConfigTransaction(privateKey,2000000)
 	if err != nil {
 		return HandleErrorRPCMessage(id, err)
 	}
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
+
+	codeResponse := client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(options,to,contractAddress,signingData,v,r,s))
+
+	if( codeResponse != 6){
+		log.GeneralLogger.Println("Transaction will fail, then is rejected")
+		switch codeResponse {
+		case 0:
+			err = errors.New("transaction gas limit exceeds block gas limit") 
+		case 1:
+			err = errors.New("Invalid Signature") 
+		case 2:
+			err = errors.New("Incorrect Nonce") 
+		case 3:
+			err = errors.New("Intrinsic gas exceeds gas limit") 
+		case 4:
+			err = errors.New("Recepient is not a contract") 
+		case 5:
+			err = errors.New("Empty code can't be deployed") 
+		}
+		
+		return HandleErrorRPCMessage(id, err)
+	}
 
 	tx, err := client.SendMetatransaction(contractAddress, options, to, signingData, v, r, s)
 	if err != nil {
@@ -162,6 +193,55 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 
 	result.ID = id
 	return result.Response(count)
+}
+
+//GetGasLimit of account
+func (service *RelaySignerService) GetGasLimit() (uint64){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		handleError(err)
+	}
+	defer client.Close()
+
+	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
+
+	gasLimit,err := client.GetGasLimit(contractAddress)
+	if err != nil {
+		handleError(err)
+	}
+
+	log.GeneralLogger.Println("gasLimit:",gasLimit.Uint64())
+
+	return gasLimit.Uint64()
+}
+
+//GetBlockByNumber ...
+func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumber *big.Int) (*rpc.JsonrpcMessage){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		handleError(err)
+	}
+	defer client.Close()
+
+	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
+
+	blockDetails,count,err := client.GetBlockByNumber(contractAddress, blockNumber)
+	if err != nil {
+		handleError(err)
+	}
+
+	var blockMap map[string]interface{}
+	jsonBlock,_ := json.Marshal(blockDetails)
+
+	json.Unmarshal(jsonBlock, &blockMap)
+	blockMap["gasLimit"] = hexutil.EncodeUint64(count)
+
+	result := new(rpc.JsonrpcMessage)
+
+	result.ID = id
+	return result.Response(blockMap)
 }
 
 //DecreaseGasUsed by node

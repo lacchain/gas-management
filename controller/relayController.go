@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"errors"
+	"math/big"
 	"encoding/json"
 	"encoding/hex"
 	"fmt"
@@ -96,6 +98,13 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 			return
     	}
 
+		if decodeTransaction.Gas() > controller.RelaySignerService.GetGasLimit() {
+			err := errors.New("transaction gas limit exceeds block gas limit") 
+			data := handleError(rpcMessage.ID, err)
+			w.Write(data)
+			return
+		}
+
 		log.GeneralLogger.Println("From:",message.From().Hex())
 		if (decodeTransaction.To() != nil){
 			log.GeneralLogger.Println("To:",decodeTransaction.To().Hex())
@@ -167,7 +176,6 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 		data, _ := json.Marshal(response)
 		w.Write(data)
 		return
-
 	}else if(rpcMessage.IsGetTransactionCount()){
 		log.GeneralLogger.Println("Is getTransactionCount")
 		var params []string
@@ -178,6 +186,35 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 			return
 		}
 		response := controller.RelaySignerService.GetTransactionCount(rpcMessage.ID,params[0])
+		data, _ := json.Marshal(response)
+		w.Write(data)
+		return
+	}else if(rpcMessage.IsGetBlockByNumber()){
+		log.GeneralLogger.Println("Is getBlockByNumber")
+		var params []interface{}
+		err = json.Unmarshal(rpcMessage.Params, &params)
+		if err != nil {
+			data := handleError(rpcMessage.ID, err)
+			w.Write(data)
+			return
+		}
+
+		var blockNumber *big.Int
+
+		if params[0].(string)[0:2] == "0x"{
+			number, err := hexutil.DecodeUint64(params[0].(string))
+			if err != nil {
+				data := handleError(rpcMessage.ID, err)
+				w.Write(data)
+				return
+			}
+	
+			blockNumber = new(big.Int).SetUint64(number)
+		}else if (params[0].(string) == "earliest"){
+			blockNumber = new(big.Int).SetUint64(0)
+		}
+
+		response := controller.RelaySignerService.GetBlockByNumber(rpcMessage.ID,blockNumber)
 		data, _ := json.Marshal(response)
 		w.Write(data)
 		return
