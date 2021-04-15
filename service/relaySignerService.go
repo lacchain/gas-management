@@ -22,7 +22,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/lacchain/gas-relay-signer/rpc"
 	bl "github.com/lacchain/gas-relay-signer/blockchain"
-	log "github.com/lacchain/gas-relay-signer/util"
+	log "github.com/lacchain/gas-relay-signer/audit"
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/errors"
 )
@@ -41,7 +41,7 @@ func (service *RelaySignerService) Init(_config *model.Config)(error){
 
 	key, err := ioutil.ReadFile(service.Config.Application.NodeKeyPath)
     if err != nil {
-		msg := fmt.Sprintf("fail to read key file")
+		msg := "fail to read key file"
 		err = errors.FailedReadFile.Wrapf(err,msg)
         return err
 	}
@@ -49,7 +49,7 @@ func (service *RelaySignerService) Init(_config *model.Config)(error){
 	return nil
 }
 
-//SendMetatransaction saving the hash into blockchain
+//SendMetatransaction to blockchain
 func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *common.Address, signingData []byte, v uint8, r, s [32]byte) (*rpc.JsonrpcMessage) {
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)

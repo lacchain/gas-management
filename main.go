@@ -19,7 +19,7 @@ import (
 	"github.com/lacchain/gas-relay-signer/model"
 	"github.com/lacchain/gas-relay-signer/service"
 	"github.com/lacchain/gas-relay-signer/controller"
-	log "github.com/lacchain/gas-relay-signer/util"
+	log "github.com/lacchain/gas-relay-signer/audit"
 )
 
 var config *model.Config
