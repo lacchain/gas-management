@@ -20,10 +20,11 @@ import (
 	log "github.com/lacchain/gas-relay-signer/audit"
 )
 
-//const RelayABI = "[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isSigner\",\"type\":\"bool\"}],\"name\":\"BadSigner\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"originalSender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIRelayHub.ErrorCode\",\"name\":\"errorCode\",\"type\":\"uint8\"}],\"name\":\"BadTransactionSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"contractDeployed\",\"type\":\"address\"}],\"name\":\"ContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"countExceeded\",\"type\":\"uint8\"}],\"name\":\"GasLimitExceeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newGasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimitSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"}],\"name\":\"GasUsedByTransaction\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"NodeBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"result\",\"type\":\"bool\"}],\"name\":\"Recalculated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"executed\",\"type\":\"bool\"}],\"name\":\"TransactionExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"selector\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"charge\",\"type\":\"uint256\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"addNode\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"index\",\"type\":\"uint16\"}],\"name\":\"deleteNode\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_byteCode\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"deployMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"deployedAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasUsedLastBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMsgSender\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNodes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"encodedFunction\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"senderSignature\",\"type\":\"bytes\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"name\":\"setAccounIngress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"setBlocksFrequency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newGasUsed\",\"type\":\"uint256\"}],\"name\":\"setGasUsedLastBlocks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
-const gasUsedByRelay = 300000
-const relayMetaTxMethod = "relayMetaTx"
-const deployMetaTxMethod = "deployMetaTx"
+const (
+	gasUsedByRelay = 300000
+	relayMetaTxMethod = "relayMetaTx"
+	deployMetaTxMethod = "deployMetaTx"
+)
 
 //Client to manage connection to Ethereum
 type Client struct {
@@ -35,7 +36,7 @@ func (ec *Client) Connect(nodeURL string) error {
 	client, err := ethclient.Dial(nodeURL)
 	if err != nil {
 		msg := fmt.Sprintf("Can't connect to node %s", nodeURL)
-		err = errors.FailedConnection.Wrapf(err, msg)
+		err = errors.FailedConnection.Wrapf(err, msg, -32100)
 		return err
 	}
 
@@ -56,14 +57,14 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bi
 	nonce, err := ec.client.PendingNonceAt(context.Background(), auth.From)
 	if err != nil {
 		msg := fmt.Sprintf("can't get pending nonce for:%s", auth.From)
-		err = errors.FailedConfigTransaction.Wrapf(err, msg)
+		err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
 	gasPrice, err := ec.client.SuggestGasPrice(context.Background())
 	if err != nil {
-		msg := fmt.Sprintf("can't get gas price suggested")
-		err = errors.FailedConfigTransaction.Wrapf(err, msg)
+		msg := "can't get gas price suggested"
+		err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
@@ -82,21 +83,13 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
-		err = errors.FailedContract.Wrapf(err, msg)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
-
-	/*log.GeneralLogger.Println("Metatransaction-from:", from.Hex())
-	if (to!=nil){
-		log.GeneralLogger.Println("Metatransaction to:", to.Hex())
-	}
-	log.GeneralLogger.Println("Metatransaction encodedFunction:", hexutil.Encode(encodedFunction))
-	log.GeneralLogger.Println("Metatransaction gasLimit:", gasLimit)
-	log.GeneralLogger.Println("Metatransaction nonce:", nonce)
-	log.GeneralLogger.Println("Metatransaction signature:", hexutil.Encode(signature))
-	*/
+	log.GeneralLogger.Println("Metatransaction signingData:", hexutil.Encode(signingData))
+	
 	var tx *types.Transaction
 
 	if to != nil {
@@ -105,52 +98,50 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 		tx, err = contract.DeployMetaTx(options, signingData, v, r, s)
 	}
 	if err != nil {
-		msg := fmt.Sprintf("failed executing contract")
-		err = errors.BadTransaction.Wrapf(err, msg)
+		msg := "failed executing smart contract"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
 	if len(tx.Hash()) == 0 {
-		msg := fmt.Sprintf("failed executing transaction relay Metatransaction")
-		err = errors.FailedTransaction.Wrapf(err, msg)
+		msg := "failed executing transaction relay Metatransaction"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
 		return nil, err
 	}
-	log.GeneralLogger.Printf("MetaTrx sent: %s", tx.Hash().Hex())
+	log.GeneralLogger.Printf("MetaTransaction sent: %s", tx.Hash().Hex())
 
 	transactionHash := tx.Hash()
 
 	return &transactionHash, nil
 }
 
-func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *types.Transaction) uint64 {
+func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *types.Transaction) (uint64,error) {
 	client, err := rpc.DialHTTP(nodeURL)
 	if err != nil {
-		log.GeneralLogger.Fatal(err)
+		msg := fmt.Sprintf("Can't connect to node %s", nodeURL)
+		err = errors.FailedConnection.Wrapf(err, msg, -32100)
+		return 7,err
 	}
 	defer client.Close()
 
 	var result string
 	err = client.Call(&result, "eth_call", createCallMsgFromTransaction(from, tx), "pending")
 	if err != nil {
-		log.GeneralLogger.Fatal("Cannot not get revert reason: " + err.Error())
-		return 7
+		msg := "Can not get revert reason"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
+		return 7, err
 	}
-	log.GeneralLogger.Println("result:", result)
 	value := new(big.Int)
 
 	hexResult := strings.Replace(result, "0x", "", -1)
 	value.SetString(hexResult, 16)
-	log.GeneralLogger.Println("transaction result code:", value)
+	log.GeneralLogger.Println("simulate transaction result code:", value)
 	
-	return value.Uint64()
+	return value.Uint64(),nil
 }
 
 func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) model.CallRequest {
-
-	log.GeneralLogger.Println("Call From:", from.Hex())
-	log.GeneralLogger.Println("Call To:", tx.To().Hex())
-	log.GeneralLogger.Println("Call Data:", hexutil.Encode(tx.Data()))
-	log.GeneralLogger.Println("Call GasLimit:", hexutil.EncodeUint64(tx.Gas()))
+	log.GeneralLogger.Printf("Call=[From:%x,To:%x,Data:%x,gasLimit:%x", from.Hex(), tx.To().Hex(), hexutil.Encode(tx.Data()), hexutil.EncodeUint64(tx.Gas()))
 
 	return model.CallRequest{
 		From: from.Hex(),
@@ -160,22 +151,30 @@ func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) mo
 	}
 }
 
-func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Address, relayAddress common.Address, signingData []byte, v uint8, r , s [32]byte) *types.Transaction {
+func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Address, relayAddress common.Address, signingData []byte, v uint8, r , s [32]byte) (*types.Transaction,error) {
 	testabi, err := abi.JSON(strings.NewReader(relay.RelayABI))
 	if err != nil {
-		log.GeneralLogger.Println("Error decoding ABI")
+		msg := "Error decoding ABI"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
+		return nil, err
 	}
 
 	var bytesData []byte
 
 	if to!=nil {
-		bytesData, _ = testabi.Pack(relayMetaTxMethod, signingData, v, r, s)
+		bytesData, err = testabi.Pack(relayMetaTxMethod, signingData, v, r, s)
 	} else {
-		bytesData, _ = testabi.Pack(deployMetaTxMethod, signingData, v, r, s)
+		bytesData, err = testabi.Pack(deployMetaTxMethod, signingData, v, r, s)
+	}
+
+	if err != nil {
+		msg := "Error encoding transaction"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
+		return nil, err
 	}
 
 	tx := types.NewTransaction(options.Nonce.Uint64(), relayAddress, big.NewInt(0), options.GasLimit, big.NewInt(0), bytesData)
-	return tx
+	return tx,nil
 }
 
 //GetTransactionReceipt ...
@@ -183,7 +182,7 @@ func (ec *Client) GetTransactionReceipt(transactionHash common.Hash) (*types.Rec
 	receipt, err := ec.client.TransactionReceipt(context.Background(), transactionHash)
 	if err != nil {
 		msg := fmt.Sprintf("failed get transaction receipt %s", transactionHash.Hex())
-		err = errors.CallBlockchainFailed.Wrapf(err, msg)
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
@@ -197,7 +196,7 @@ func (ec *Client) GetTransactionCount(contractAddress common.Address, address co
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
-		err = errors.FailedContract.Wrapf(err, msg)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
@@ -207,7 +206,7 @@ func (ec *Client) GetTransactionCount(contractAddress common.Address, address co
 
 	if err != nil {
 		msg := fmt.Sprintf("failed get transaction count for %s", address.Hex())
-		err = errors.CallBlockchainFailed.Wrapf(err, msg)
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
@@ -219,7 +218,7 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
-		err = errors.FailedContract.Wrapf(err, msg)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
@@ -230,14 +229,14 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 	tx, err = contract.IncreaseGasUsed(options, gasUsed)
 
 	if err != nil {
-		msg := fmt.Sprintf("failed executing contract")
-		err = errors.BadTransaction.Wrapf(err, msg)
+		msg := "failed executing contract"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
 	if len(tx.Hash()) == 0 {
-		msg := fmt.Sprintf("failed executing transaction decrease gas")
-		err = errors.FailedTransaction.Wrapf(err, msg)
+		msg := "failed executing transaction decrease gas"
+		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 	log.GeneralLogger.Printf("Decreased Gas Tx sent: %s", tx.Hash().Hex())
@@ -252,7 +251,7 @@ func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *
 	response, err := ec.client.BlockByNumber(context.Background(), blockNumber)
 	if err != nil {
 		msg := fmt.Sprintf("failed get block by number %d", blockNumber.Uint64())
-		err = errors.CallBlockchainFailed.Wrapf(err, msg)
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, 0, err
 	}
 
@@ -269,7 +268,7 @@ func (ec *Client) GetGasLimit(contractAddress common.Address)(*big.Int,error){
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
-		err = errors.FailedContract.Wrapf(err, msg)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
@@ -279,29 +278,9 @@ func (ec *Client) GetGasLimit(contractAddress common.Address)(*big.Int,error){
 
 	if err != nil {
 		msg := fmt.Sprintf("failed get gasLimit from %s",contractAddress.Hex())
-		err = errors.CallBlockchainFailed.Wrapf(err, msg)
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
 	return gasLimit, nil
-}
-
-//IsTargetPermitted DEPRECATED...
-func (ec *Client) IsTargetPermitted(contractAddress common.Address, address common.Address) (bool, error) {
-	contract, err := relay.NewAccount(contractAddress, ec.client)
-	if err != nil {
-		msg := fmt.Sprintf("can't instance Account Permissioning contract %s", contractAddress)
-		err = errors.FailedContract.Wrapf(err, msg)
-		return false, err
-	}
-
-	log.GeneralLogger.Println("Account Permissioning Contract instanced:", contractAddress.Hex())
-
-	isPermitted, err := contract.DestinationPermitted(&bind.CallOpts{}, address)
-
-	if err != nil {
-		return false, err
-	}
-
-	return isPermitted, nil
 }
