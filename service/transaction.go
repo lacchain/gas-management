@@ -103,7 +103,7 @@ func Sign(hash []byte, privateKey *ecdsa.PrivateKey) ([]byte,error) {
 	fmt.Println("signature length:",len(signature))
 
 	if len(signature) != 65 {
-		return nil,errors.New("signature malformed")
+		return nil,errors.New("signature malformed",-32010)
 	}
 
 	fmt.Println("V byte:",hexutil.Encode(signature[64:65]))
@@ -113,7 +113,7 @@ func Sign(hash []byte, privateKey *ecdsa.PrivateKey) ([]byte,error) {
 	} else if (hexutil.Encode(signature[64:65]) == "0x01") {
 		v1 = "1c"
 	} else {
-		return nil, errors.New("bad V parameter")
+		return nil, errors.New("bad V parameter",-32011)
 	}
 
 	vParameter,err := hex.DecodeString(v1)
@@ -135,8 +135,8 @@ func GetTransaction(rawTx string)(*types.Transaction, error){
 	rawTxBytes, err := hex.DecodeString(rawTx)
 
 	if err != nil {
-		msg := fmt.Sprintf("Error Decoding Raw Transaction")
-		err = errors.MalformedRawTransaction.Wrapf(err,msg)
+		msg := "Error Decoding Raw Transaction"
+		err = errors.MalformedRawTransaction.Wrapf(err,msg,-32012)
 		return nil, err
     }
 

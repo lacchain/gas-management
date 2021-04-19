@@ -61,7 +61,7 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 		r.Body=rdr2
 		log.GeneralLogger.Println("Is a private send Transaction, decrease gas used")
 
-		controller.RelaySignerService.DecreaseGasUsed()
+		controller.RelaySignerService.DecreaseGasUsed(rpcMessage.ID)
 
 		log.GeneralLogger.Println("forward to Besu->Orion")
 		serveReverseProxy(controller.Config.Application.NodeURL,w,r)
@@ -151,7 +151,7 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 
 func handleError(messageID json.RawMessage, err error) ([]byte) {
 	log.GeneralLogger.Println(err)
-	data, _ := json.Marshal(service.HandleErrorRPCMessage(messageID,err))
+	data, _ := json.Marshal(service.HandleError(messageID,err))
 	
 	return data
 }

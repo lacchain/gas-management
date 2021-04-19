@@ -42,7 +42,7 @@ func (service *RelaySignerService) Init(_config *model.Config)(error){
 	key, err := ioutil.ReadFile(service.Config.Application.NodeKeyPath)
     if err != nil {
 		msg := "fail to read key file"
-		err = errors.FailedReadFile.Wrapf(err,msg)
+		err = errors.FailedReadFile.Wrapf(err,msg, -32602)
         return err
 	}
 	service.Config.Application.Key = string(key[2:66])
@@ -54,7 +54,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		HandleErrorRPCMessage(id, err)
+		HandleError(id, err)
 	}
 	defer client.Close()
 	
@@ -73,38 +73,45 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 
 	options, err := client.ConfigTransaction(privateKey,2000000)
 	if err != nil {
-		return HandleErrorRPCMessage(id, err)
+		return HandleError(id, err)
 	}
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
-	codeResponse := client.SimulateTransaction(service.Config.Application.NodeURL,address,client.GenerateTransaction(options,to,contractAddress,signingData,v,r,s))
+	callTx,err := client.GenerateTransaction(options,to,contractAddress,signingData,v,r,s)
+	if err != nil {
+		return HandleError(id, err)
+	}
+	codeResponse,err := client.SimulateTransaction(service.Config.Application.NodeURL,address,callTx)
+	if err != nil {
+		return HandleError(id, err)
+	}
 
 	if( codeResponse != 6){
 		log.GeneralLogger.Println("Transaction will fail, then is rejected")
 		switch codeResponse {
 		case 0:
-			err = errors.New("transaction gas limit exceeds block gas limit") 
+			err = errors.New("transaction gas limit exceeds block gas limit",-32005) 
 		case 1:
-			err = errors.New("Invalid Signature") 
+			err = errors.New("Invalid Signature",-32002) 
 		case 2:
-			err = errors.New("Incorrect Nonce") 
+			err = errors.New("Incorrect Nonce",-32006) 
 		case 3:
-			err = errors.New("Intrinsic gas exceeds gas limit") 
+			err = errors.New("Intrinsic gas exceeds gas limit",-32003) 
 		case 4:
-			err = errors.New("Recepient is not a contract") 
+			err = errors.New("Recepient is not a contract",-32004) 
 		case 5:
-			err = errors.New("Empty code can't be deployed") 
+			err = errors.New("Empty code can't be deployed",-32001) 
 		}
 		
-		return HandleErrorRPCMessage(id, err)
+		return HandleError(id, err)
 	}
 
 	tx, err := client.SendMetatransaction(contractAddress, options, to, signingData, v, r, s)
 	if err != nil {
-		return HandleErrorRPCMessage(id, err)
+		return HandleError(id, err)
 	}
 
-	log.GeneralLogger.Println("tx",tx)
+	log.GeneralLogger.Println("transaction",tx)
 
 	result := new(rpc.JsonrpcMessage)
 
@@ -117,13 +124,13 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 	defer client.Close()
 
 	receipt,err := client.GetTransactionReceipt(common.HexToHash(transactionID))
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 
 	var receiptReverted map[string]interface{}
@@ -149,7 +156,7 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 				receipt.ContractAddress = common.BytesToAddress(log.Data)
 			}
 			if log.Topics[0].Hex() == "0x"+eventTransactionRelayed {
-				executed, output := transactionRelayedFailed(log.Data)
+				executed, output := transactionRelayedFailed(id,log.Data)
 				if !executed{
 					receipt.Status = uint64(0)
 					fmt.Println("Reverse Error:",hexutil.Encode(output))
@@ -177,7 +184,7 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 	defer client.Close()
 
@@ -186,7 +193,7 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 
 	count,err := client.GetTransactionCount(contractAddress, address)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 
 	result := new(rpc.JsonrpcMessage)
@@ -196,11 +203,11 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 }
 
 //GetGasLimit of account
-func (service *RelaySignerService) GetGasLimit() (uint64){
+func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 	defer client.Close()
 
@@ -208,7 +215,7 @@ func (service *RelaySignerService) GetGasLimit() (uint64){
 
 	gasLimit,err := client.GetGasLimit(contractAddress)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 
 	log.GeneralLogger.Println("gasLimit:",gasLimit.Uint64())
@@ -221,7 +228,7 @@ func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumb
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 	defer client.Close()
 
@@ -229,7 +236,7 @@ func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumb
 
 	blockDetails,count,err := client.GetBlockByNumber(contractAddress, blockNumber)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 
 	var blockMap map[string]interface{}
@@ -245,11 +252,11 @@ func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumb
 }
 
 //DecreaseGasUsed by node
-func (service *RelaySignerService) DecreaseGasUsed() (bool){
+func (service *RelaySignerService) DecreaseGasUsed(id json.RawMessage) (bool){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 	defer client.Close()
 
@@ -260,40 +267,20 @@ func (service *RelaySignerService) DecreaseGasUsed() (bool){
 
 	options, err := client.ConfigTransaction(privateKey,30000)
 	if err != nil {
-	 	handleError(err)
+	 	HandleError(id,err)
 	}
 
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
 	_, err = client.DecreaseGasUsed(contractAddress, options, new(big.Int).SetUint64(25000))
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 	
 	return true
 }
 
-//IsTargetPermitted DEPRECATED
-func (service *RelaySignerService) IsTargetPermitted(to string)(bool){
-	client := new(bl.Client)
-	err := client.Connect(service.Config.Application.NodeURL)
-	if err != nil {
-		handleError(err)
-	}
-	defer client.Close()
-
-	contractAddress := common.HexToAddress(service.Config.Application.AccountContractAddress)
-	address := common.HexToAddress(to)
-
-	isPermitted,err := client.IsTargetPermitted(contractAddress, address)
-	if err != nil {
-		handleError(err)
-	}
-
-	return isPermitted
-}
-
-func transactionRelayedFailed(data []byte)(bool, []byte){
+func transactionRelayedFailed(id json.RawMessage,data []byte)(bool, []byte){
 	var transactionRelayedEvent struct {
 		Relay   	common.Address
 		From      	common.Address
@@ -304,7 +291,7 @@ func transactionRelayedFailed(data []byte)(bool, []byte){
 
 	relayHubAbi, err := abi.JSON(strings.NewReader(RelayABI))
 	if err != nil {
-		handleError(err)
+		HandleError(id,err)
 	}
 
 	err = relayHubAbi.Unpack(&transactionRelayedEvent, "TransactionRelayed", data)
@@ -316,24 +303,9 @@ func transactionRelayedFailed(data []byte)(bool, []byte){
 	return transactionRelayedEvent.Executed, transactionRelayedEvent.Output;
 }
 
-func handleError(err error)(int){
-	errorType := errors.GetType(err)
-   	switch errorType {
-    	case errors.FailedConnection: 
-			log.GeneralLogger.Fatal(err.Error())
-		case errors.FailedKeystore:
-			log.GeneralLogger.Fatal(err.Error())	
-		case errors.FailedConfigTransaction:
-			log.GeneralLogger.Println(err.Error())
-			return 100  
-		default: 
-			log.GeneralLogger.Println("otro error:",err)
-	   }
-	  return 100
-}
-
-//HandleErrorRPCMessage ...
-func HandleErrorRPCMessage(id json.RawMessage, err error)(*rpc.JsonrpcMessage){
+//HandleError
+func HandleError(id json.RawMessage, err error)(*rpc.JsonrpcMessage){
+	log.GeneralLogger.Println(err.Error())
 	result := new(rpc.JsonrpcMessage)
 	result.ID = id
 	return result.ErrorResponse(err)

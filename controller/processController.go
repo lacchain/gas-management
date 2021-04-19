@@ -107,7 +107,7 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		return
     }
 
-	if decodeTransaction.Gas() > relaySignerService.GetGasLimit() {
+	if decodeTransaction.Gas() > relaySignerService.GetGasLimit(rpcMessage.ID) {
 		err := errors.New("transaction gas limit exceeds block gas limit") 
 		data := handleError(rpcMessage.ID, err)
 		w.Write(data)
