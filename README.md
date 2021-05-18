@@ -1,25 +1,28 @@
-# Gas Relay Signer
+# Rotation Validator
 
-This is a relay signer that can generate and sign meta-transactions.
+This component is a client used to rotate the validator nodes in LACChain network
 
 ## Prerequisites
 
-* Go 1.12+ installation or later
+* Being a validator node in LACChain network
+* Go 1.13+ installation or later
 * **GOPATH** environment variable is set correctly
 
 ## Install
 
 ```
-$ git clone https://github.com/lacchain/gas-relay-signer
+$ git clone https://github.com/lacchain/rotation-validator
 
-$ cd gas-relay-signer
+$ cd rotation-validator
 $ go build
 ```
 
 ## Run
 
+Execute the executable file generated previously in a Validator node
+
 ```
-$ gas-relay-signer
+$ ./rotation-validator
 ```
 
 ## Copyright 2020 LACChain

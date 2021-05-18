@@ -160,7 +160,7 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 	log.GeneralLogger.Println("SigningDataRLP:",hexutil.Encode(signingDataRLP))
 
 	lock.Lock()
-	response := relaySignerService.SendMetatransaction(rpcMessage.ID, decodeTransaction.To(), signingDataRLP, uint8(v.Uint64()), r, s)
+	response := relaySignerService.SendMetatransaction(rpcMessage.ID, decodeTransaction.To(), decodeTransaction.Gas(), signingDataRLP, uint8(v.Uint64()), r, s)
 	lock.Unlock()
 	data, err := json.Marshal(response)
 	w.Write(data)

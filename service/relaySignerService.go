@@ -50,7 +50,7 @@ func (service *RelaySignerService) Init(_config *model.Config)(error){
 }
 
 //SendMetatransaction to blockchain
-func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *common.Address, signingData []byte, v uint8, r, s [32]byte) (*rpc.JsonrpcMessage) {
+func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *common.Address, gasLimit uint64, signingData []byte, v uint8, r, s [32]byte) (*rpc.JsonrpcMessage) {
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
@@ -71,7 +71,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 	
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 
-	options, err := client.ConfigTransaction(privateKey,2000000)
+	options, err := client.ConfigTransaction(privateKey,gasLimit)
 	if err != nil {
 		return HandleError(id, err)
 	}
