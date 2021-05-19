@@ -71,59 +71,12 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 	}else if (rpcMessage.IsGetTransactionReceipt()){
 		processGetTransactionReceipt(controller.RelaySignerService,rpcMessage, w)
 		return
-		/*r.Body=rdr2
-		log.GeneralLogger.Println("Is getTransactionReceipt")
-		var params []string
-		err = json.Unmarshal(rpcMessage.Params, &params)
-		if err != nil {
-			log.GeneralLogger.Println(err)
-			err := errors.New("internal error")
-			data := handleError(rpcMessage.ID, err)
-			w.Write(data)
-			return
-		}
-		response := controller.RelaySignerService.GetTransactionReceipt(rpcMessage.ID,params[0][2:])
-		data, _ := json.Marshal(response)
-		w.Write(data)
-		return*/
 	}else if(rpcMessage.IsGetTransactionCount()){
 		processTransactionCount(controller.RelaySignerService,rpcMessage, w)
 		return
 	}else if(rpcMessage.IsGetBlockByNumber()){
 		processGetBlockByNumber(controller.RelaySignerService,rpcMessage, w)
 		return
-		/*log.GeneralLogger.Println("Is getBlockByNumber")
-		var params []interface{}
-		err = json.Unmarshal(rpcMessage.Params, &params)
-		if err != nil {
-			log.GeneralLogger.Println(err)
-			err := errors.New("internal error")
-			data := handleError(rpcMessage.ID, err)
-			w.Write(data)
-			return
-		}
-
-		var blockNumber *big.Int
-
-		if params[0].(string)[0:2] == "0x"{
-			number, err := hexutil.DecodeUint64(params[0].(string))
-			if err != nil {
-				log.GeneralLogger.Println(err)
-				err := errors.New("invalid params")
-				data := handleError(rpcMessage.ID, err)
-				w.Write(data)
-				return
-			}
-	
-			blockNumber = new(big.Int).SetUint64(number)
-		}else if (params[0].(string) == "earliest"){
-			blockNumber = new(big.Int).SetUint64(0)
-		}
-
-		response := controller.RelaySignerService.GetBlockByNumber(rpcMessage.ID,blockNumber)
-		data, _ := json.Marshal(response)
-		w.Write(data)
-		return*/
 	}else{
 		r.Body=rdr2
 		log.GeneralLogger.Println("Is another type of transaction, reverse proxy")

@@ -132,16 +132,16 @@ func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *t
 		return 7, err
 	}
 	value := new(big.Int)
-
+    log.GeneralLogger.Println("simulate result:",result)
 	hexResult := strings.Replace(result, "0x", "", -1)
-	value.SetString(hexResult, 16)
+	value.SetString(string([]byte(hexResult)[:64]), 16)
 	log.GeneralLogger.Println("simulate transaction result code:", value)
 	
 	return value.Uint64(),nil
 }
 
 func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) model.CallRequest {
-	log.GeneralLogger.Printf("Call=[From:%x,To:%x,Data:%x,gasLimit:%x", from.Hex(), tx.To().Hex(), hexutil.Encode(tx.Data()), hexutil.EncodeUint64(tx.Gas()))
+	log.GeneralLogger.Printf("Call=[From:%s,To:%s,Data:%s,gasLimit:%s", from.Hex(), tx.To().Hex(), hexutil.Encode(tx.Data()), hexutil.EncodeUint64(tx.Gas()))
 
 	return model.CallRequest{
 		From: from.Hex(),
@@ -164,6 +164,7 @@ func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Add
 	if to!=nil {
 		bytesData, err = testabi.Pack(relayMetaTxMethod, signingData, v, r, s)
 	} else {
+		fmt.Println("DEPLOYYYY")
 		bytesData, err = testabi.Pack(deployMetaTxMethod, signingData, v, r, s)
 	}
 

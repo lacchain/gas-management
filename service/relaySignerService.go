@@ -218,7 +218,7 @@ func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
 		HandleError(id,err)
 	}
 
-	log.GeneralLogger.Println("gasLimit:",gasLimit.Uint64())
+	log.GeneralLogger.Println("block logic gasLimit:",gasLimit.Uint64())
 
 	return gasLimit.Uint64()
 }
