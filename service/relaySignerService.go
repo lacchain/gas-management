@@ -71,7 +71,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 	
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 
-	options, err := client.ConfigTransaction(privateKey,gasLimit)
+	options, err := client.ConfigTransaction(privateKey,gasLimit,true)
 	if err != nil {
 		return HandleError(id, err)
 	}
@@ -106,7 +106,11 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 		return HandleError(id, err)
 	}
 
-	tx, err := client.SendMetatransaction(contractAddress, options, to, signingData, v, r, s)
+	optionsSendTransaction, err := client.ConfigTransaction(privateKey,gasLimit,false)
+	if err != nil {
+		return HandleError(id, err)
+	}
+	tx, err := client.SendMetatransaction(contractAddress, optionsSendTransaction, to, signingData, v, r, s)
 	if err != nil {
 		return HandleError(id, err)
 	}
@@ -265,7 +269,7 @@ func (service *RelaySignerService) DecreaseGasUsed(id json.RawMessage) (bool){
         log.GeneralLogger.Fatal(err)
 	}
 
-	options, err := client.ConfigTransaction(privateKey,30000)
+	options, err := client.ConfigTransaction(privateKey,30000,false)
 	if err != nil {
 	 	HandleError(id,err)
 	}

@@ -51,14 +51,26 @@ func (ec *Client) Close() {
 }
 
 //ConfigTransaction from ethereum address contract
-func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64) (*bind.TransactOpts, error) {
+func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64, pending bool) (*bind.TransactOpts, error) {
 	auth := bind.NewKeyedTransactor(key)
 
-	nonce, err := ec.client.PendingNonceAt(context.Background(), auth.From)
-	if err != nil {
-		msg := fmt.Sprintf("can't get pending nonce for:%s", auth.From)
-		err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
-		return nil, err
+	var nonce uint64
+	var err error
+
+	if (pending){
+		nonce, err = ec.client.PendingNonceAt(context.Background(), auth.From)
+		if err != nil {
+			msg := fmt.Sprintf("can't get pending nonce for:%s", auth.From)
+			err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
+			return nil, err
+		}
+	} else{
+		nonce, err = ec.client.NonceAt(context.Background(), auth.From, nil)
+		if err != nil {
+			msg := fmt.Sprintf("can't get latest nonce for:%s", auth.From)
+			err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
+			return nil, err
+		}
 	}
 
 	gasPrice, err := ec.client.SuggestGasPrice(context.Background())
