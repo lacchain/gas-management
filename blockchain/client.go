@@ -68,7 +68,7 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64, pend
 		nonce, err = ec.client.NonceAt(context.Background(), auth.From, nil)
 		if err != nil {
 			msg := fmt.Sprintf("can't get latest nonce for:%s", auth.From)
-			err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
+			err = errors.FailedConfigTransaction.Wrapf(err, msg, -32604)
 			return nil, err
 		}
 	}

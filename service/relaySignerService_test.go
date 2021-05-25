@@ -15,6 +15,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+var sequence uint8 = 0
+
 func TestInit ( t *testing.T ){
 	dir, _ :=os.Getwd()
 	
@@ -160,10 +162,13 @@ func TestSendMetatransaction (t *testing.T ){
 
 	encodedFunction,_ := hex.DecodeString("0xf861808082ea6094fd32cfc2e71611626d6368a41f915d0077a306a180b8446057361d000000000000000000000000000000000000000000000000000000000000003c000000000000000000000000173cf75f0905338597fcd38f5ce13e6840b230e9")
 
+	var gasLimit uint64
 	var r [32]byte
 	var s [32]byte
 
-	jsonResponse := relaySignerService.SendMetatransaction(rpcMessage.ID,&to,encodedFunction,27,r,s)
+	gasLimit = 200000
+
+	jsonResponse := relaySignerService.SendMetatransaction(rpcMessage.ID,&to,gasLimit,encodedFunction,27,r,s)
 
 	err := os.Remove("keyMock") 
     if err != nil {
@@ -172,7 +177,7 @@ func TestSendMetatransaction (t *testing.T ){
 
 	log.Println(jsonResponse.String())
 
-	if jsonResponse.String() != `{"jsonrpc":"2.0","id":2914410858336929,"result":"0x14a3de987e26221acace292844e6ea3d8d512f0119e917389d4465a6066300f4"}` {
+	if jsonResponse.String() != `{"jsonrpc":"2.0","id":2914410858336929,"result":"0x4aea2982dd375d4b47f7d684239e40e60b41efc1d2b11bcfb3090a5dcf77a33c"}` {
 		t.Errorf("Incorrect transactionHash was gotten")
 	}
 }
@@ -194,7 +199,15 @@ func mockGetNonce(w http.ResponseWriter, r *http.Request) {
 }
 
 func mockSendMetatransaction(w http.ResponseWriter, r *http.Request) {
-	_, _ = w.Write([]byte(`{"jsonrpc" : "2.0","id" : 53,"result" : "0x9"}`))
+	switch sequence {
+	case 0,1,3,4:
+		_, _ = w.Write([]byte(`{"jsonrpc" : "2.0","id" : 53,"result" : "0x6"}`))
+	case 2:
+		_, _ = w.Write([]byte(`{"jsonrpc" : "2.0","id" : 53,"result" : "0x0000000000000000000000000000000000000000000000000000000000000006"}`))
+	case 5:
+		_, _ = w.Write([]byte(`{"jsonrpc" : "2.0","id" : 53,"result" : "0x0000000000000000000000000000000000000000000000000000000000000006"}`))
+	}
+	sequence++
 }
 
 func mockGetReceipt(w http.ResponseWriter, r *http.Request) {
