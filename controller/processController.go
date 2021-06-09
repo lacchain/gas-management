@@ -28,9 +28,15 @@ func processGetTransactionReceipt(relaySignerService *service.RelaySignerService
 		return
 	}
 	response := relaySignerService.GetTransactionReceipt(rpcMessage.ID,params[0][2:])
-	data, _ := json.Marshal(response)
+	data, err := json.Marshal(response)
+	if err != nil {
+		log.GeneralLogger.Println(err)
+		err := errors.New("internal error")
+		data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+	}
 	w.Write(data)
-	return
 }
 
 func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpcMessage rpc.JsonrpcMessage, w http.ResponseWriter) {
@@ -63,7 +69,14 @@ func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpc
 	}
 
 	response := relaySignerService.GetBlockByNumber(rpcMessage.ID,blockNumber)
-	data, _ := json.Marshal(response)
+	data, err := json.Marshal(response)
+	if err != nil {
+		log.GeneralLogger.Println(err)
+		err := errors.New("internal error")
+		data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+	}
 	w.Write(data)
 }
 
@@ -79,7 +92,14 @@ func processTransactionCount(relaySignerService *service.RelaySignerService, rpc
 		return
 	}
 	response := relaySignerService.GetTransactionCount(rpcMessage.ID,params[0])
-	data, _ := json.Marshal(response)
+	data, err := json.Marshal(response)
+	if err != nil {
+		log.GeneralLogger.Println(err)
+		err := errors.New("internal error")
+		data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+	}
 	w.Write(data)
 }
 
@@ -107,12 +127,28 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		return
     }
 
-	if decodeTransaction.Gas() > relaySignerService.GetGasLimit(rpcMessage.ID) {
+	if relaySignerService.Config.Security.PermissionsEnabled{
+		if !relaySignerService.VerifySender(message.From(), rpcMessage.ID){
+			err := errors.New("account sender is not permitted to send transactions")
+			data := handleError(rpcMessage.ID, err)
+			w.Write(data)
+			return
+		}
+	}
+
+	if !relaySignerService.VerifyGasLimit(decodeTransaction.Gas(), rpcMessage.ID){
 		err := errors.New("transaction gas limit exceeds block gas limit") 
 		data := handleError(rpcMessage.ID, err)
 		w.Write(data)
 		return
 	}
+
+	/*if decodeTransaction.Gas() > relaySignerService.GetGasLimit(rpcMessage.ID) {
+		err := errors.New("transaction gas limit exceeds block gas limit") 
+		data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+	}*/
 
 	log.GeneralLogger.Println("From:",message.From().Hex())
 	if (decodeTransaction.To() != nil){
@@ -160,8 +196,15 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 	log.GeneralLogger.Println("SigningDataRLP:",hexutil.Encode(signingDataRLP))
 
 	lock.Lock()
+	defer lock.Unlock()
 	response := relaySignerService.SendMetatransaction(rpcMessage.ID, decodeTransaction.To(), decodeTransaction.Gas(), signingDataRLP, uint8(v.Uint64()), r, s)
-	lock.Unlock()
 	data, err := json.Marshal(response)
+	if err != nil {
+		log.GeneralLogger.Println(err)
+		err := errors.New("internal error")
+		data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+	}
 	w.Write(data)
 }

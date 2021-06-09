@@ -1,7 +1,6 @@
 [application]
 nodeURL = "http://34.75.159.76:4545"
 contractAddress = "0xE2Aa96695EF268eCbf693d5ab276D5CBEA2A2251"
-accountContractAddress = "0x1CaFf993d5f0053156761682263c1614c7C37D7C"
 nodeKeyPath = "/root/lacchain/data/key"  
 nodeAddressPath = "/root/lacchain/data/nodeAddress"
 port = 9001
@@ -11,3 +10,7 @@ agent = "/home/adrian/.ethereum/keystore/UTC--2020-06-26T19-00-23.241896464Z--bc
 
 [passphrase]
 agent = "Peru123."
+
+[security]
+permissionsEnabled = true
+accountContractAddress = "0x1CaFf993d5f0053156761682263c1614c7C37D7C"

@@ -21,6 +21,10 @@ const (
 	FailedKeystore
 	// FailedReadFile error
 	FailedReadFile
+	// FailedReadEnv error
+	FailedReadEnv
+	// FailedKeyConfig error
+	FailedKeyConfig
 	// FailedConfigTransaction error
 	FailedConfigTransaction
 	// FailedContract error
@@ -29,6 +33,8 @@ const (
 	CallBlockchainFailed
 	// MalformedRawTransaction error
 	MalformedRawTransaction
+	//InvalidAddress error
+	InvalidAddress
 )	
 
 type customError struct {

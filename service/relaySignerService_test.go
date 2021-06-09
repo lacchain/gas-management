@@ -21,6 +21,7 @@ func TestInit ( t *testing.T ){
 	dir, _ :=os.Getwd()
 	
 	createKeyMock(dir+"/keyMock")
+	setKeyMock()
 
 	applicationConfig := model.ApplicationConfig{NodeKeyPath: dir+"/keyMock"}
 	config := model.Config{Application: applicationConfig}
@@ -48,10 +49,12 @@ func TestFailInit (t *testing.T ){
 	config := model.Config{Application: applicationConfig}
 	relaySignerService := new(RelaySignerService)
 	
+	os.Unsetenv("WRITER_KEY")
+
 	err := relaySignerService.Init(&config)
 
-    if err.Error() != "fail to read key file: open ./keyMock: no such file or directory"{
-        t.Errorf("A non-existent file shouldn't be loaded")
+    if err.Error() != "Environment variable WRITER_KEY not set"{
+        t.Errorf("A environment variable shouldn't be set")
     }
 }
 
@@ -152,6 +155,7 @@ func TestSendMetatransaction (t *testing.T ){
 	dir, _ :=os.Getwd()
 	
 	createKeyMock(dir+"/keyMock")
+	setKeyMock()
 
 	applicationConfig := model.ApplicationConfig{NodeURL: srv.URL+"/sendMetatransaction", ContractAddress: "0x0ae2Da68515Ef8DC4bBCa1fA1bcE00C508b2Af4B", NodeKeyPath: dir+"/keyMock"}
 	config := model.Config{Application: applicationConfig}
@@ -394,4 +398,8 @@ func createKeyMock(path string) {
     if err != nil{
 		fmt.Println("err:",err)
 	}
+}
+
+func setKeyMock(){
+	os.Setenv("WRITER_KEY","0xb3e7374dca5ca90c3899dbb2c978051437fb15534c945bf59df16d6c80be27c0")
 }
