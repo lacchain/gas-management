@@ -3,7 +3,6 @@ package model
 type ApplicationConfig struct {
 	NodeURL string `mapstructure:"nodeURL"`
 	ContractAddress string `mapstructure:"contractAddress"`
-	AccountContractAddress string `mapstructure:"accountContractAddress"`
 	NodeKeyPath string `mapstructure:"nodeKeyPath"`
 	NodeAddressPath string `mapstructure:"nodeAddressPath"`
 	Key string `mapstructure:"key"`
@@ -18,8 +17,14 @@ type PassphraseConfig struct {
 	Agent string `mapstructure:"agent"`
 }
 
+type SecurityConfig struct {
+	PermissionsEnabled bool `mapstructure:"permissionsEnabled"`
+	AccountContractAddress string `mapstructure:"accountContractAddress"`
+}
+
 type Config struct {
 	Application  ApplicationConfig `mapstructure:"application"`
 	KeyStore  KeyStoreConfig `mapstructure:"keystore"`
 	Passphrase PassphraseConfig   `mapstructure:"passphrase"`
+	Security SecurityConfig `mapstructure:"security"`
 }

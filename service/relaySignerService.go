@@ -9,7 +9,8 @@ package service
 
 import (
 	"encoding/json"
-	"io/ioutil"
+//	"io/ioutil"
+	"os"
 	"fmt"
 	"strings"
 	"math/big"
@@ -29,6 +30,8 @@ import (
 
 const RelayABI = "[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAddress\",\"type\":\"address\"}],\"name\":\"AccountIngressChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"originalSender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIRelayHub.ErrorCode\",\"name\":\"errorCode\",\"type\":\"uint8\"}],\"name\":\"BadTransactionSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"BlockFrequencyChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"contractDeployed\",\"type\":\"address\"}],\"name\":\"ContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"countExceeded\",\"type\":\"uint8\"}],\"name\":\"GasLimitExceeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageLastBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newGasLimit\",\"type\":\"uint256\"}],\"name\":\"GasLimitSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedLastBlocks\",\"type\":\"uint256\"}],\"name\":\"GasUsedByTransaction\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasUsedRelayHub\",\"type\":\"uint256\"}],\"name\":\"GasUsedRelayHubChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"maxGasBlockLimit\",\"type\":\"uint256\"}],\"name\":\"MaxGasBlockLimitChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"NodeAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockNumber\",\"type\":\"uint256\"}],\"name\":\"NodeBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldNode\",\"type\":\"address\"}],\"name\":\"NodeDeleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasLimit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"decodedFunction\",\"type\":\"bytes\"}],\"name\":\"Parameters\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"result\",\"type\":\"bool\"}],\"name\":\"Recalculated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"Relayed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relay\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"executed\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"output\",\"type\":\"bytes\"}],\"name\":\"TransactionRelayed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newNode\",\"type\":\"address\"}],\"name\":\"addNode\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"}],\"name\":\"deleteNode\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGasUsedLastBlocks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNodes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getRoleMember\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleMemberCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_accountIngress\",\"type\":\"address\"}],\"name\":\"setAccounIngress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_blocksFrequency\",\"type\":\"uint8\"}],\"name\":\"setBlocksFrequency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newGasUsed\",\"type\":\"uint256\"}],\"name\":\"setGasUsedLastBlocks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gasUsedRelayHub\",\"type\":\"uint256\"}],\"name\":\"setGasUsedRelayHub\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_maxGasBlockLimit\",\"type\":\"uint256\"}],\"name\":\"setMaxGasBlockLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"signingData\",\"type\":\"bytes\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"relayMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"signingData\",\"type\":\"bytes\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"deployMetaTx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"deployedAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"}],\"name\":\"getNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getMsgSender\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"gasUsed\",\"type\":\"uint256\"}],\"name\":\"increaseGasUsed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
+const ENVIRONMENT_KEY_NAME = "WRITER_KEY"
+
 //RelaySignerService is the main service
 type RelaySignerService struct {
 	// The service's configuration
@@ -39,13 +42,29 @@ type RelaySignerService struct {
 func (service *RelaySignerService) Init(_config *model.Config)(error){
 	service.Config = _config
 
-	key, err := ioutil.ReadFile(service.Config.Application.NodeKeyPath)
+    key, exist := os.LookupEnv(ENVIRONMENT_KEY_NAME)
+    if !exist {
+		return errors.FailedReadEnv.New("Environment variable WRITER_KEY not set", -32602)
+    } 
+
+	privateKey, err := crypto.HexToECDSA(string(key[2:66]))
     if err != nil {
-		msg := "fail to read key file"
-		err = errors.FailedReadFile.Wrapf(err,msg, -32602)
-        return err
+        return errors.FailedKeyConfig.New("Invalid ECDSA Key", -32602)
 	}
+
+	publicKey := privateKey.Public()
+	_, ok := publicKey.(*ecdsa.PublicKey)
+    if !ok {
+        return errors.FailedKeyConfig.New("Invalid ECDSA Public Key", -32602)
+	}
+
 	service.Config.Application.Key = string(key[2:66])
+
+	if service.Config.Security.PermissionsEnabled{
+		if !(common.IsHexAddress(service.Config.Security.AccountContractAddress)){
+			return errors.InvalidAddress.New("Invalid Account Smart Contract Address",-32608)
+		}
+	}
 	return nil
 }
 
@@ -60,24 +79,25 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 	
 	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
     if err != nil {
-        log.GeneralLogger.Fatal(err)
+        HandleError(id, err)
 	}
 
-	publicKey := privateKey.Public()
+	/*publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
     if !ok {
-        log.GeneralLogger.Fatal("error casting public key to ECDSA")
-	}
+		err := errors.New("error casting public key to ECDSA", -32602)
+		HandleError(id, err)
+	}*/
 	
-	address := crypto.PubkeyToAddress(*publicKeyECDSA)
+	//address := crypto.PubkeyToAddress(*publicKeyECDSA)
 
-	options, err := client.ConfigTransaction(privateKey,gasLimit,true)
+	/*options, err := client.ConfigTransaction(privateKey,gasLimit,true)
 	if err != nil {
 		return HandleError(id, err)
-	}
+	}*/
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
-	callTx,err := client.GenerateTransaction(options,to,contractAddress,signingData,v,r,s)
+	/*callTx,err := client.GenerateTransaction(options,to,contractAddress,signingData,v,r,s)
 	if err != nil {
 		return HandleError(id, err)
 	}
@@ -86,12 +106,12 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 		return HandleError(id, err)
 	}
 
-	if( codeResponse != 6){
+	if( codeResponse != 8){
 		log.GeneralLogger.Println("Transaction will fail, then is rejected")
 		switch codeResponse {
 		case 0:
 			err = errors.New("transaction gas limit exceeds block gas limit",-32005) 
-		case 1:
+		case 1,6:
 			err = errors.New("Invalid Signature",-32002) 
 		case 2:
 			err = errors.New("Incorrect Nonce",-32006) 
@@ -101,10 +121,12 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 			err = errors.New("Recepient is not a contract",-32004) 
 		case 5:
 			err = errors.New("Empty code can't be deployed",-32001) 
+		case 7:
+			err = errors.New("Invalid recipient smart contract ",-32007) 
 		}
 		
 		return HandleError(id, err)
-	}
+	}*/
 
 	optionsSendTransaction, err := client.ConfigTransaction(privateKey,gasLimit,false)
 	if err != nil {
@@ -165,7 +187,10 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 					receipt.Status = uint64(0)
 					fmt.Println("Reverse Error:",hexutil.Encode(output))
 
-					jsonReceipt,_ := json.Marshal(receipt)
+					jsonReceipt,err := json.Marshal(receipt)
+					if err != nil{
+						HandleError(id,err)
+					}
 
 					json.Unmarshal(jsonReceipt, &receiptReverted)
 					receiptReverted["revertReason"] = hexutil.Encode(output)
@@ -217,7 +242,7 @@ func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
 
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 
-	gasLimit,err := client.GetGasLimit(contractAddress)
+	gasLimit,err := client.GetMaxBlockGasLimit(contractAddress)
 	if err != nil {
 		HandleError(id,err)
 	}
@@ -244,7 +269,10 @@ func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumb
 	}
 
 	var blockMap map[string]interface{}
-	jsonBlock,_ := json.Marshal(blockDetails)
+	jsonBlock,err := json.Marshal(blockDetails)
+	if err != nil{
+		HandleError(id,err)
+	}
 
 	json.Unmarshal(jsonBlock, &blockMap)
 	blockMap["gasLimit"] = hexutil.EncodeUint64(count)
@@ -253,6 +281,73 @@ func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumb
 
 	result.ID = id
 	return result.Response(blockMap)
+}
+
+//VerifyGasLimit sent a transaction
+func (service *RelaySignerService) VerifyGasLimit(gasLimit uint64, id json.RawMessage) (bool){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		HandleError(id,err)
+	}
+	defer client.Close()
+
+	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
+    if err != nil {
+        HandleError(id, err)
+	}
+
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+    if !ok {
+		err := errors.New("error casting public key to ECDSA", -32602)
+		HandleError(id, err)
+	}
+	
+	nodeAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+
+	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
+
+	maxBlockGasLimit,err := client.GetMaxBlockGasLimit(contractAddress)
+	if err != nil {
+		HandleError(id,err)
+	}
+
+	log.GeneralLogger.Println("logic block gasLimit:",maxBlockGasLimit.Uint64())
+
+	nodeGasLimit,err := client.GetGasLimit(contractAddress, nodeAddress)
+	if err != nil {
+		HandleError(id,err)
+	}
+
+	log.GeneralLogger.Println("node gasLimit:",nodeGasLimit.Uint64())
+
+	if (gasLimit > maxBlockGasLimit.Uint64()) || (gasLimit > nodeGasLimit.Uint64()) {
+		return false
+	}
+
+	return true
+}
+
+//VerifySender sent a transaction
+func (service *RelaySignerService) VerifySender(sender common.Address, id json.RawMessage) (bool){
+	client := new(bl.Client)
+	err := client.Connect(service.Config.Application.NodeURL)
+	if err != nil {
+		HandleError(id,err)
+	}
+	defer client.Close()
+
+	contractAddress := common.HexToAddress(service.Config.Security.AccountContractAddress)
+
+	isPermitted,err := client.AccountPermitted(contractAddress, sender)
+	if err != nil {
+		HandleError(id,err)
+	}
+
+	log.GeneralLogger.Println("sender is permitted:",isPermitted)
+
+	return isPermitted
 }
 
 //DecreaseGasUsed by node

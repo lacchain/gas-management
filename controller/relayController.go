@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"sync"
+//	"errors"
 	"net/http/httputil"
 	"net/http"
 	"net/url"
@@ -35,7 +36,10 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 
 	log.GeneralLogger.Println("Body:", r.Body)
 
-	buf, _ := ioutil.ReadAll(r.Body)
+	buf, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		handleError(nil,err)
+	}
 	rdr1 := ioutil.NopCloser(bytes.NewBuffer(buf))
 	rdr2 := ioutil.NopCloser(bytes.NewBuffer(buf))
 
@@ -43,7 +47,7 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 
 	var rpcMessage rpc.JsonrpcMessage
 
-	err := json.NewDecoder(rdr1).Decode(&rpcMessage)
+	err = json.NewDecoder(rdr1).Decode(&rpcMessage)
 	if err != nil {
 		log.GeneralLogger.Println("Invalid params")
 		log.GeneralLogger.Println(err)
@@ -74,21 +78,25 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 	}else if(rpcMessage.IsGetTransactionCount()){
 		processTransactionCount(controller.RelaySignerService,rpcMessage, w)
 		return
-	}else if(rpcMessage.IsGetBlockByNumber()){
-		processGetBlockByNumber(controller.RelaySignerService,rpcMessage, w)
-		return
-	}else{
-		r.Body=rdr2
-		log.GeneralLogger.Println("Is another type of transaction, reverse proxy")
-		
-		serveReverseProxy(controller.Config.Application.NodeURL,w,r)
-	}
+	//}else if(rpcMessage.IsGetBlockByNumber()){
+	//	processGetBlockByNumber(controller.RelaySignerService,rpcMessage, w)
+	//	return
+	}//else{
+	//	r.Body=rdr2
+		//err := errors.New("method is not supported")
+		//data := handleError(rpcMessage.ID, err)
+		//w.Write(data)
+		//return
+	//	serveReverseProxy(controller.Config.Application.NodeURL,w,r)
+	//}
 }
 
 func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request) {
 	// parse the url
-	url, _ := url.Parse(target)
-
+	url, err := url.Parse(target)
+	if err != nil {
+		handleError(nil,err)
+	}
 	// create the reverse proxy
 	proxy := httputil.NewSingleHostReverseProxy(url)
 
@@ -104,7 +112,10 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 
 func handleError(messageID json.RawMessage, err error) ([]byte) {
 	log.GeneralLogger.Println(err)
-	data, _ := json.Marshal(service.HandleError(messageID,err))
+	data, err := json.Marshal(service.HandleError(messageID,err))
+	if err != nil {
+		log.GeneralLogger.Println("Error trying to marshall a response to client")
+	}
 	
 	return data
 }

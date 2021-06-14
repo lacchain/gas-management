@@ -260,24 +260,46 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 }
 
 //GetBlockByNumber ...
-func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *big.Int) (*types.Block, uint64, error){
-	response, err := ec.client.BlockByNumber(context.Background(), blockNumber)
+func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *big.Int) (*types.Header, uint64, error){
+	block, err := ec.client.HeaderByNumber(context.Background(), blockNumber)
 	if err != nil {
 		msg := fmt.Sprintf("failed get block by number %d", blockNumber.Uint64())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, 0, err
 	}
 
-	gasLimit, err := ec.GetGasLimit(contractAddress)
+	gasLimit, err := ec.GetMaxBlockGasLimit(contractAddress)
 	if err != nil{
 		return nil, 0, err
 	}
 
-	return response, gasLimit.Uint64(), nil
+	return block, gasLimit.Uint64(), nil
 }
 
 //GetGasLimit ...
-func (ec *Client) GetGasLimit(contractAddress common.Address)(*big.Int,error){
+func (ec *Client) GetGasLimit(contractAddress, nodeAddress common.Address)(*big.Int,error){
+	contract, err := relay.NewRelay(contractAddress, ec.client)
+	if err != nil {
+		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
+		return nil, err
+	}
+
+	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
+
+	gasLimit, err := contract.GetGasLimit(&bind.CallOpts{Pending:true, From: nodeAddress})
+
+	if err != nil {
+		msg := fmt.Sprintf("failed get gasLimit from %s",contractAddress.Hex())
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
+		return nil, err
+	}
+
+	return gasLimit, nil
+}
+
+//GetMaxBlockGasLimit ...
+func (ec *Client) GetMaxBlockGasLimit(contractAddress common.Address)(*big.Int,error){
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -290,10 +312,32 @@ func (ec *Client) GetGasLimit(contractAddress common.Address)(*big.Int,error){
 	gasLimit, err := contract.GetMaxGasBlockLimit(&bind.CallOpts{})
 
 	if err != nil {
-		msg := fmt.Sprintf("failed get gasLimit from %s",contractAddress.Hex())
+		msg := fmt.Sprintf("failed get max block gasLimit from %s",contractAddress.Hex())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
 
 	return gasLimit, nil
+}
+
+//AccountPermitted ...
+func (ec *Client) AccountPermitted(contractAddress, senderAddress common.Address)(bool,error){
+	contract, err := relay.NewAccount(contractAddress, ec.client)
+	if err != nil {
+		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
+		return false, err
+	}
+
+	log.GeneralLogger.Println("AccountPermissioning Contract instanced:", contractAddress.Hex())
+
+	isPermitted, err := contract.AccountPermitted(&bind.CallOpts{},senderAddress)
+
+	if err != nil {
+		msg := fmt.Sprintf("failed to know if account is permitted from %s",contractAddress.Hex())
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
+		return false, err
+	}
+
+	return isPermitted, nil
 }
