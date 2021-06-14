@@ -121,6 +121,14 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		return
     }
 
+	v,rInt,sInt := decodeTransaction.RawSignatureValues();
+	if (v==nil) || (rInt==nil) || (sInt == nil){
+		err := errors.New("bad signature ECDSA")
+		data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+	}
+
 	message, err := decodeTransaction.AsMessage(types.NewEIP155Signer(decodeTransaction.ChainId()))
     if err != nil {
         data := handleError(rpcMessage.ID, err)
@@ -160,7 +168,7 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 	log.GeneralLogger.Println("Nonce",decodeTransaction.Nonce())
 	log.GeneralLogger.Println("GasPrice:",decodeTransaction.GasPrice())
 	log.GeneralLogger.Println("Value:",decodeTransaction.Value())
-	v,rInt,sInt := decodeTransaction.RawSignatureValues();
+	//v,rInt,sInt := decodeTransaction.RawSignatureValues();
 
 	log.GeneralLogger.Println(fmt.Sprintf("Signature R %064x",rInt))
 	log.GeneralLogger.Println(fmt.Sprintf("Signature S %064x",sInt))

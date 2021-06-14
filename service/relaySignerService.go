@@ -42,6 +42,11 @@ type RelaySignerService struct {
 func (service *RelaySignerService) Init(_config *model.Config)(error){
 	service.Config = _config
 
+	for _, e := range os.Environ() {
+        pair := strings.SplitN(e, "=", 2)
+        fmt.Println(pair[0])
+    }
+
     key, exist := os.LookupEnv(ENVIRONMENT_KEY_NAME)
     if !exist {
 		return errors.FailedReadEnv.New("Environment variable WRITER_KEY not set", -32602)
