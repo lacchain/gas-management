@@ -3,7 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"sync"
-	"errors"
+//	"errors"
 	"net/http/httputil"
 	"net/http"
 	"net/url"
@@ -34,7 +34,7 @@ func (controller *RelayController) Init(config *model.Config, relaySignerService
 func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-//	log.GeneralLogger.Println("Body:", r.Body)
+	log.GeneralLogger.Println("Body:", r.Body)
 
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -43,7 +43,7 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 	rdr1 := ioutil.NopCloser(bytes.NewBuffer(buf))
 	rdr2 := ioutil.NopCloser(bytes.NewBuffer(buf))
 
-//	log.GeneralLogger.Println("Request body : ", rdr1)
+	log.GeneralLogger.Println("Request body : ", rdr1)
 
 	var rpcMessage rpc.JsonrpcMessage
 
@@ -78,17 +78,17 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 	}else if(rpcMessage.IsGetTransactionCount()){
 		processTransactionCount(controller.RelaySignerService,rpcMessage, w)
 		return
-	}else if(rpcMessage.IsGetBlockByNumber()){
-		processGetBlockByNumber(controller.RelaySignerService,rpcMessage, w)
-		return
-	}else{
-		//r.Body=rdr2
-		err := errors.New("method is not supported")
-		data := handleError(rpcMessage.ID, err)
-		w.Write(data)
-		return
-		//serveReverseProxy(controller.Config.Application.NodeURL,w,r)
-	}
+	//}else if(rpcMessage.IsGetBlockByNumber()){
+	//	processGetBlockByNumber(controller.RelaySignerService,rpcMessage, w)
+	//	return
+	}//else{
+	//	r.Body=rdr2
+		//err := errors.New("method is not supported")
+		//data := handleError(rpcMessage.ID, err)
+		//w.Write(data)
+		//return
+	//	serveReverseProxy(controller.Config.Application.NodeURL,w,r)
+	//}
 }
 
 func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request) {

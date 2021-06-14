@@ -260,8 +260,8 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 }
 
 //GetBlockByNumber ...
-func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *big.Int) (*types.Block, uint64, error){
-	response, err := ec.client.BlockByNumber(context.Background(), blockNumber)
+func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *big.Int) (*types.Header, uint64, error){
+	block, err := ec.client.HeaderByNumber(context.Background(), blockNumber)
 	if err != nil {
 		msg := fmt.Sprintf("failed get block by number %d", blockNumber.Uint64())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
@@ -273,7 +273,7 @@ func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *
 		return nil, 0, err
 	}
 
-	return response, gasLimit.Uint64(), nil
+	return block, gasLimit.Uint64(), nil
 }
 
 //GetGasLimit ...

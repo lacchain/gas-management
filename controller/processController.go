@@ -69,6 +69,7 @@ func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpc
 	}
 
 	response := relaySignerService.GetBlockByNumber(rpcMessage.ID,blockNumber)
+	log.GeneralLogger.Println("RESPUESTA:",response)
 	data, err := json.Marshal(response)
 	if err != nil {
 		log.GeneralLogger.Println(err)
