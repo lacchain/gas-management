@@ -41,12 +41,7 @@ type RelaySignerService struct {
 //Init configuration parameters
 func (service *RelaySignerService) Init(_config *model.Config)(error){
 	service.Config = _config
-
-	for _, e := range os.Environ() {
-        pair := strings.SplitN(e, "=", 2)
-        fmt.Println(pair[0])
-    }
-
+	
     key, exist := os.LookupEnv(ENVIRONMENT_KEY_NAME)
     if !exist {
 		return errors.FailedReadEnv.New("Environment variable WRITER_KEY not set", -32602)
@@ -237,7 +232,7 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 }
 
 //GetGasLimit of account
-func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
+/*func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
@@ -255,10 +250,10 @@ func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
 	log.GeneralLogger.Println("block logic gasLimit:",gasLimit.Uint64())
 
 	return gasLimit.Uint64()
-}
+}*/
 
 //GetBlockByNumber ...
-func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumber *big.Int) (*rpc.JsonrpcMessage){
+/*func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumber *big.Int) (*rpc.JsonrpcMessage){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
@@ -286,27 +281,27 @@ func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumb
 
 	result.ID = id
 	return result.Response(blockMap)
-}
+}*/
 
 //VerifyGasLimit sent a transaction
-func (service *RelaySignerService) VerifyGasLimit(gasLimit uint64, id json.RawMessage) (bool){
+func (service *RelaySignerService) VerifyGasLimit(gasLimit uint64, id json.RawMessage) (bool,error){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		HandleError(id,err)
+		return false,err
 	}
 	defer client.Close()
 
 	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
     if err != nil {
-        HandleError(id, err)
+        return false,err
 	}
 
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
     if !ok {
 		err := errors.New("error casting public key to ECDSA", -32602)
-		HandleError(id, err)
+		return false,err
 	}
 	
 	nodeAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
@@ -315,31 +310,46 @@ func (service *RelaySignerService) VerifyGasLimit(gasLimit uint64, id json.RawMe
 
 	maxBlockGasLimit,err := client.GetMaxBlockGasLimit(contractAddress)
 	if err != nil {
-		HandleError(id,err)
+		return false,err
 	}
 
-	log.GeneralLogger.Println("logic block gasLimit:",maxBlockGasLimit.Uint64())
+	if maxBlockGasLimit != nil{
+		log.GeneralLogger.Println("logic block gasLimit:",maxBlockGasLimit.Uint64())
+	}
 
 	nodeGasLimit,err := client.GetGasLimit(contractAddress, nodeAddress)
 	if err != nil {
-		HandleError(id,err)
+		return false,err
 	}
 
-	log.GeneralLogger.Println("node gasLimit:",nodeGasLimit.Uint64())
-
-	if (gasLimit > maxBlockGasLimit.Uint64()) || (gasLimit > nodeGasLimit.Uint64()) {
-		return false
+	if nodeGasLimit != nil {
+		log.GeneralLogger.Println("node gasLimit:",nodeGasLimit.Uint64())
 	}
 
-	return true
+	if (gasLimit > maxBlockGasLimit.Uint64()){
+		return false,nil
+	}
+
+	if (gasLimit > nodeGasLimit.Uint64()){
+		empty,err:=isPoolEmpty(service.Config.Application.NodeURL,id)
+		if err!=nil{
+			return false,err
+		}
+		
+		if !empty{
+			return false,nil
+		}
+	}
+
+	return true,nil
 }
 
 //VerifySender sent a transaction
-func (service *RelaySignerService) VerifySender(sender common.Address, id json.RawMessage) (bool){
+func (service *RelaySignerService) VerifySender(sender common.Address, id json.RawMessage) (bool,error){
 	client := new(bl.Client)
 	err := client.Connect(service.Config.Application.NodeURL)
 	if err != nil {
-		HandleError(id,err)
+		return false,err
 	}
 	defer client.Close()
 
@@ -347,12 +357,12 @@ func (service *RelaySignerService) VerifySender(sender common.Address, id json.R
 
 	isPermitted,err := client.AccountPermitted(contractAddress, sender)
 	if err != nil {
-		HandleError(id,err)
+		return false,err
 	}
 
 	log.GeneralLogger.Println("sender is permitted:",isPermitted)
 
-	return isPermitted
+	return isPermitted,nil
 }
 
 //DecreaseGasUsed by node
