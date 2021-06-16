@@ -82,51 +82,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
         HandleError(id, err)
 	}
 
-	/*publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-    if !ok {
-		err := errors.New("error casting public key to ECDSA", -32602)
-		HandleError(id, err)
-	}*/
-	
-	//address := crypto.PubkeyToAddress(*publicKeyECDSA)
-
-	/*options, err := client.ConfigTransaction(privateKey,gasLimit,true)
-	if err != nil {
-		return HandleError(id, err)
-	}*/
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
-
-	/*callTx,err := client.GenerateTransaction(options,to,contractAddress,signingData,v,r,s)
-	if err != nil {
-		return HandleError(id, err)
-	}
-	codeResponse,err := client.SimulateTransaction(service.Config.Application.NodeURL,address,callTx)
-	if err != nil {
-		return HandleError(id, err)
-	}
-
-	if( codeResponse != 8){
-		log.GeneralLogger.Println("Transaction will fail, then is rejected")
-		switch codeResponse {
-		case 0:
-			err = errors.New("transaction gas limit exceeds block gas limit",-32005) 
-		case 1,6:
-			err = errors.New("Invalid Signature",-32002) 
-		case 2:
-			err = errors.New("Incorrect Nonce",-32006) 
-		case 3:
-			err = errors.New("Intrinsic gas exceeds gas limit",-32003) 
-		case 4:
-			err = errors.New("Recepient is not a contract",-32004) 
-		case 5:
-			err = errors.New("Empty code can't be deployed",-32001) 
-		case 7:
-			err = errors.New("Invalid recipient smart contract ",-32007) 
-		}
-		
-		return HandleError(id, err)
-	}*/
 
 	optionsSendTransaction, err := client.ConfigTransaction(privateKey,gasLimit,false)
 	if err != nil {
@@ -230,58 +186,6 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 	result.ID = id
 	return result.Response(count)
 }
-
-//GetGasLimit of account
-/*func (service *RelaySignerService) GetGasLimit(id json.RawMessage) (uint64){
-	client := new(bl.Client)
-	err := client.Connect(service.Config.Application.NodeURL)
-	if err != nil {
-		HandleError(id,err)
-	}
-	defer client.Close()
-
-	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
-
-	gasLimit,err := client.GetMaxBlockGasLimit(contractAddress)
-	if err != nil {
-		HandleError(id,err)
-	}
-
-	log.GeneralLogger.Println("block logic gasLimit:",gasLimit.Uint64())
-
-	return gasLimit.Uint64()
-}*/
-
-//GetBlockByNumber ...
-/*func (service *RelaySignerService) GetBlockByNumber(id json.RawMessage,blockNumber *big.Int) (*rpc.JsonrpcMessage){
-	client := new(bl.Client)
-	err := client.Connect(service.Config.Application.NodeURL)
-	if err != nil {
-		HandleError(id,err)
-	}
-	defer client.Close()
-
-	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
-
-	blockDetails,count,err := client.GetBlockByNumber(contractAddress, blockNumber)
-	if err != nil {
-		HandleError(id,err)
-	}
-
-	var blockMap map[string]interface{}
-	jsonBlock,err := json.Marshal(blockDetails)
-	if err != nil{
-		HandleError(id,err)
-	}
-
-	json.Unmarshal(jsonBlock, &blockMap)
-	blockMap["gasLimit"] = hexutil.EncodeUint64(count)
-
-	result := new(rpc.JsonrpcMessage)
-
-	result.ID = id
-	return result.Response(blockMap)
-}*/
 
 //VerifyGasLimit sent a transaction
 func (service *RelaySignerService) VerifyGasLimit(gasLimit uint64, id json.RawMessage) (bool,error){
