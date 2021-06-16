@@ -3,7 +3,6 @@ package controller
 import(
 	"encoding/json"
 	"net/http"
-//	"math/big"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -38,48 +37,6 @@ func processGetTransactionReceipt(relaySignerService *service.RelaySignerService
 	}
 	w.Write(data)
 }
-
-/*func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpcMessage rpc.JsonrpcMessage, w http.ResponseWriter) {
-	log.GeneralLogger.Println("Is getBlockByNumber")
-	var params []interface{}
-	err := json.Unmarshal(rpcMessage.Params, &params)
-	if err != nil {
-		log.GeneralLogger.Println(err)
-		err := errors.New("internal error")
-		data := handleError(rpcMessage.ID, err)
-		w.Write(data)
-		return
-	}
-
-	var blockNumber *big.Int
-
-	if params[0].(string)[0:2] == "0x"{
-		number, err := hexutil.DecodeUint64(params[0].(string))
-		if err != nil {
-			log.GeneralLogger.Println(err)
-			err := errors.New("invalid params")
-			data := handleError(rpcMessage.ID, err)
-			w.Write(data)
-			return
-		}
-	
-		blockNumber = new(big.Int).SetUint64(number)
-	}else if (params[0].(string) == "earliest"){
-		blockNumber = new(big.Int).SetUint64(0)
-	}
-
-	response := relaySignerService.GetBlockByNumber(rpcMessage.ID,blockNumber)
-	log.GeneralLogger.Println("RESPUESTA:",response)
-	data, err := json.Marshal(response)
-	if err != nil {
-		log.GeneralLogger.Println(err)
-		err := errors.New("internal error")
-		data := handleError(rpcMessage.ID, err)
-		w.Write(data)
-		return
-	}
-	w.Write(data)
-}*/
 
 func processTransactionCount(relaySignerService *service.RelaySignerService, rpcMessage rpc.JsonrpcMessage, w http.ResponseWriter){
 	log.GeneralLogger.Println("Is getTransactionCount")
@@ -164,13 +121,6 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		return
 	}
 
-	/*if decodeTransaction.Gas() > relaySignerService.GetGasLimit(rpcMessage.ID) {
-		err := errors.New("transaction gas limit exceeds block gas limit") 
-		data := handleError(rpcMessage.ID, err)
-		w.Write(data)
-		return
-	}*/
-
 	log.GeneralLogger.Println("From:",message.From().Hex())
 	if (decodeTransaction.To() != nil){
 		log.GeneralLogger.Println("To:",decodeTransaction.To().Hex())
@@ -182,9 +132,9 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 	log.GeneralLogger.Println("Value:",decodeTransaction.Value())
 	//v,rInt,sInt := decodeTransaction.RawSignatureValues();
 
-	log.GeneralLogger.Println(fmt.Sprintf("Signature R %064x",rInt))
-	log.GeneralLogger.Println(fmt.Sprintf("Signature S %064x",sInt))
-	log.GeneralLogger.Println(fmt.Sprintf("Signature V %x",v))
+	//log.GeneralLogger.Println(fmt.Sprintf("Signature R %064x",rInt))
+	//log.GeneralLogger.Println(fmt.Sprintf("Signature S %064x",sInt))
+	//log.GeneralLogger.Println(fmt.Sprintf("Signature V %x",v))
 
 	var r [32]byte
 	var s [32]byte
@@ -192,11 +142,11 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 	sBytes,_ :=hex.DecodeString(fmt.Sprintf("%064x",sInt))
 
 	copy(r[:],rBytes)
-	fmt.Println(rBytes)
-	fmt.Println(r)
+	//fmt.Println(rBytes)
+	//fmt.Println(r)
 	copy(s[:],sBytes)
 		
-	log.GeneralLogger.Println("senderSignature:",fmt.Sprintf("%064x",rInt)+fmt.Sprintf("%064x",sInt)+fmt.Sprintf("%x",v))
+	//log.GeneralLogger.Println("senderSignature:",fmt.Sprintf("%064x",rInt)+fmt.Sprintf("%064x",sInt)+fmt.Sprintf("%x",v))
 
 	var signingDataTx *model.RawTransaction
 
@@ -214,7 +164,7 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		return
 	}
 
-	log.GeneralLogger.Println("SigningDataRLP:",hexutil.Encode(signingDataRLP))
+	//log.GeneralLogger.Println("SigningDataRLP:",hexutil.Encode(signingDataRLP))
 
 	lock.Lock()
 	defer lock.Unlock()
