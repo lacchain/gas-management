@@ -3,7 +3,7 @@ package controller
 import(
 	"encoding/json"
 	"net/http"
-	"math/big"
+//	"math/big"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -39,7 +39,7 @@ func processGetTransactionReceipt(relaySignerService *service.RelaySignerService
 	w.Write(data)
 }
 
-func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpcMessage rpc.JsonrpcMessage, w http.ResponseWriter) {
+/*func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpcMessage rpc.JsonrpcMessage, w http.ResponseWriter) {
 	log.GeneralLogger.Println("Is getBlockByNumber")
 	var params []interface{}
 	err := json.Unmarshal(rpcMessage.Params, &params)
@@ -79,7 +79,7 @@ func processGetBlockByNumber(relaySignerService *service.RelaySignerService, rpc
 		return
 	}
 	w.Write(data)
-}
+}*/
 
 func processTransactionCount(relaySignerService *service.RelaySignerService, rpcMessage rpc.JsonrpcMessage, w http.ResponseWriter){
 	log.GeneralLogger.Println("Is getTransactionCount")
@@ -137,7 +137,13 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
     }
 
 	if relaySignerService.Config.Security.PermissionsEnabled{
-		if !relaySignerService.VerifySender(message.From(), rpcMessage.ID){
+		isSenderPermitted, err := relaySignerService.VerifySender(message.From(), rpcMessage.ID)
+		if err != nil {
+			data := handleError(rpcMessage.ID, err)
+			w.Write(data)
+			return
+		}
+		if !isSenderPermitted{
 			err := errors.New("account sender is not permitted to send transactions")
 			data := handleError(rpcMessage.ID, err)
 			w.Write(data)
@@ -145,7 +151,13 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		}
 	}
 
-	if !relaySignerService.VerifyGasLimit(decodeTransaction.Gas(), rpcMessage.ID){
+	isCorrectGasLimit, err := relaySignerService.VerifyGasLimit(decodeTransaction.Gas(), rpcMessage.ID)
+	if err != nil {
+        data := handleError(rpcMessage.ID, err)
+		w.Write(data)
+		return
+    }
+	if !isCorrectGasLimit{
 		err := errors.New("transaction gas limit exceeds block gas limit") 
 		data := handleError(rpcMessage.ID, err)
 		w.Write(data)

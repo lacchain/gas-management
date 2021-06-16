@@ -83,10 +83,10 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 	//	return
 	}//else{
 	//	r.Body=rdr2
-		//err := errors.New("method is not supported")
-		//data := handleError(rpcMessage.ID, err)
-		//w.Write(data)
-		//return
+	//	err := errors.New("method is not supported")
+	//	data := handleError(rpcMessage.ID, err)
+	//	w.Write(data)
+	//	return
 	//	serveReverseProxy(controller.Config.Application.NodeURL,w,r)
 	//}
 }
@@ -111,7 +111,7 @@ func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request
 }
 
 func handleError(messageID json.RawMessage, err error) ([]byte) {
-	log.GeneralLogger.Println(err)
+//	log.GeneralLogger.Println(err)
 	data, err := json.Marshal(service.HandleError(messageID,err))
 	if err != nil {
 		log.GeneralLogger.Println("Error trying to marshall a response to client")
