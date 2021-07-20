@@ -13,7 +13,7 @@ Is a writer node part of the LACChain network. The node is composed by Nginx, re
 Its role is act as reverse proxy and SSL termination (terminate HTTPS traffic from clients), it accepts all transactions to the node and forwards them to the RelaySigner. Direct queries to the node do not go through the RelaySigner, in this case nginx redirects them to the RPC port of Besu.
 
 ### RelaySigner Layer
-Its role is to evaluate the type of message that arrives. In case it is a raw transaction, then the node generates a new transaction encapsulating the original transaction(RLP unsigned) in the data field of the new transaction and sends this new transaction to the network. If it is another type of message such as private transactions, get the recipient, block information or get transaction count then the message is directly forwarded to the Besu component.
+Its role is to evaluate the type of message that arrives. In case it is a raw transaction, then the node generates a new transaction encapsulating the original transaction(RLP unsigned from final user or application) in the data field of the new transaction and sends this new transaction to the network. If it is another type of message such as private transactions, get the recipient, block information or get transaction count then the message is directly forwarded to the Besu component.
 
 ### Besu
 Their role is to be a client of the LACChain network, with which the p2p connection is maintained, broadcast transactions with the other nodes of the network. This component receive transactions from RelaySigner to broadcast to network.
@@ -30,7 +30,7 @@ This smart contract is deployed on the LACChain network. The role of this contra
 * Transactions have to be directed towards the RelayHub smart contract.
 * Gas price of transaction must be 0.
 * Gas limit of transaction must be sufficient to run the entire RelayHub.
-* To transactions protected the sender of the transaction must be the same as indicated by the end user or application that generated the transaction.    
+* The sender of the transaction must be the same as indicated by the end user or application that generated the transaction. This means that the user or application must sign which writer node will send its transaction and expiration time for its transaction.     
 
 Transactions that do not satisfy these rules will be rejected.
 
@@ -76,21 +76,17 @@ Each time a transaction is sent to the network, it is first verified against the
 * Transactions have to be directed towards the RelayHub smart contract.
 * Gas price of transaction must be 0.
 * Gas limit of transaction must be sufficient to run the entire RelayHub.
-* To transactions protected the sender of the transaction must be the same as indicated by the end user or application that generated the transaction.  
+* The sender of the transaction must be the same as indicated by the end user or application that generated the transaction. This means that the user or application must sign which writer node will send its transaction and expiration time for its transaction.  
 
 In case the transaction does not comply these rules then is canceled and will not be executed. 
 
 After the transaction is verified and accepted, this transaction will go directly to the RelayHub contract where it is verified that the nonce sent is greater than the previous one to guarantee that the transaction is unique and does not repeat itself. Before the transaction is forwarded to a recipient contract, it is verified that the node has not consumed all the assigned GAS, in case the node has enough gas then the transaction is forwarded, after execution in the recipient contract the amount of GAS used is reduced for that address which sent the original transaction.
 
-### Protected vs Simple Transaction
+### Protected Transaction
 
-The GAS model has two types of transactions, protected and simple. 
+The GAS model has protected transactions.
 
 Protected transactions are those that ensure that a transaction will only be executed if the writer designated by the end user or application co-signs the transaction and sends it to the network. In addition, the protected transaction has an expiration time in which it must be executed.
-
-In another side, simple transactions do not have execution protection, they may be violated by malicious writer nodes or malicious users could use these types of transactions to ban innocent nodes that do not have protected transactions.
-
-Writer node operators are advised to use protected transactions to avoid any type of attack.
 
 ### Private Transactions
 
@@ -104,9 +100,10 @@ When a private transaction is sent, it goes through the RelaySigner which call t
 
 The RelayHub emits a event when a bad or doubtful transaction is sent in following cases:
 * The nonce sent is repeated or lower than registered in contract for that user's address.
-* The gas limit sent in the transaction exceeds the logical gas limit set in the contract(it is not the same as the genesis gas limit).
+* The gas limit sent in the transaction exceeds the block logical gas limit set in the contract(it is not the same as the genesis gas limit).
 * A transaction sent to a contract that has an empty code.
-* A transaction that tries to display an empty code contract.
+* A transaction that tries to deploy an empty code contract.
+* User transaction has a bad signature.
 * In case that execution of the sent transaction exceeds the total GAS assigned to the writer node through which the transaction is sent.
 
 ### Node Ban and DoS
