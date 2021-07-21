@@ -43,7 +43,7 @@ func (controller *RelayController) SignTransaction(w http.ResponseWriter, r *htt
 	rdr1 := ioutil.NopCloser(bytes.NewBuffer(buf))
 	rdr2 := ioutil.NopCloser(bytes.NewBuffer(buf))
 
-	//log.GeneralLogger.Println("Request body : ", rdr1)
+//	log.GeneralLogger.Println("Request body : ", rdr1)
 
 	var rpcMessage rpc.JsonrpcMessage
 

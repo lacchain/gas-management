@@ -53,7 +53,7 @@ func isPoolEmpty(rpcURL string, id json.RawMessage) (bool,error){
 
 	audit.GeneralLogger.Println("Transactions in pool:",rpcMessage.String())
 
-	var v []string    
+	var v []json.RawMessage    
 	err = json.Unmarshal(rpcMessage.Result, &v)    
 	if err != nil {
 		return false,err
