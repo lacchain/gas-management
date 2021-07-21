@@ -131,10 +131,7 @@ func (service *RelaySignerService) GetTransactionReceipt(id json.RawMessage,tran
 		fmt.Println("transaction relayed eventKeccak:",eventTransactionRelayed)
 
 		for _,log := range receipt.Logs {
-		//	fmt.Println(log.Topics[0].Hex())
 			if log.Topics[0].Hex() == "0x"+eventContractDeployed {
-			//	fmt.Println(hex.EncodeToString(log.Data))
-			//	fmt.Println(common.BytesToAddress(log.Data).Hex())
 				receipt.ContractAddress = common.BytesToAddress(log.Data)
 			}
 			if log.Topics[0].Hex() == "0x"+eventTransactionRelayed {
@@ -173,10 +170,24 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage,from s
 	}
 	defer client.Close()
 
+	privateKey, err := crypto.HexToECDSA(service.Config.Application.Key)
+    if err != nil {
+        HandleError(id,err)
+	}
+
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+    if !ok {
+		err := errors.New("error casting public key to ECDSA", -32602)
+		HandleError(id,err)
+	}
+	
+	nodeAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+
 	contractAddress := common.HexToAddress(service.Config.Application.ContractAddress)
 	address := common.HexToAddress(from)
 
-	count,err := client.GetTransactionCount(contractAddress, address)
+	count,err := client.GetTransactionCount(contractAddress, address, nodeAddress)
 	if err != nil {
 		HandleError(id,err)
 	}
@@ -221,26 +232,36 @@ func (service *RelaySignerService) VerifyGasLimit(gasLimit uint64, id json.RawMe
 		log.GeneralLogger.Println("logic block gasLimit:",maxBlockGasLimit.Uint64())
 	}
 
-	nodeGasLimit,err := client.GetGasLimit(contractAddress, nodeAddress)
-	if err != nil {
-		return false,err
-	}
-
-	if nodeGasLimit != nil {
-		log.GeneralLogger.Println("node gasLimit:",nodeGasLimit.Uint64())
-	}
-
 	if (gasLimit > maxBlockGasLimit.Uint64()){
 		return false,nil
 	}
 
-	if (gasLimit > nodeGasLimit.Uint64()){
-		empty,err:=isPoolEmpty(service.Config.Application.NodeURL,id)
-		if err!=nil{
+	empty,err:=isPoolEmpty(service.Config.Application.NodeURL,id)
+	if err!=nil{
+		return false,err
+	}
+
+	if empty{
+		currentGasLimit,err := client.GetCurrentGasLimit(contractAddress)
+		if err != nil {
 			return false,err
 		}
-		
-		if !empty{
+
+		if currentGasLimit != nil {
+			log.GeneralLogger.Println("current gasLimit assigned:",currentGasLimit.Uint64())
+		}
+		if (gasLimit > currentGasLimit.Uint64()){
+			return false,nil
+		}
+	}else{
+		nodeGasLimit,err := client.GetGasLimit(contractAddress, nodeAddress)
+		if err != nil {
+			return false,err
+		}
+		if nodeGasLimit != nil {
+			log.GeneralLogger.Println("node gasLimit:",nodeGasLimit.Uint64())
+		}
+		if (gasLimit > nodeGasLimit.Uint64()){
 			return false,nil
 		}
 	}

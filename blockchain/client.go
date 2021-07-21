@@ -6,14 +6,12 @@ import (
 	"fmt"
 	"math/big"
 	"strings"
-
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/rpc"
 	relay "github.com/lacchain/gas-relay-signer/blockchain/contracts"
 	"github.com/lacchain/gas-relay-signer/errors"
 	"github.com/lacchain/gas-relay-signer/model"
@@ -82,7 +80,7 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64, pend
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
-	auth.GasLimit = gasLimit + gasUsedByRelay // in units
+	auth.GasLimit = gasLimit // in units
 	auth.GasPrice = gasPrice
 
 	log.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d", auth.From, nonce, gasPrice, auth.GasLimit)
@@ -125,31 +123,6 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 	transactionHash := tx.Hash()
 
 	return &transactionHash, nil
-}
-
-func (ec *Client) SimulateTransaction(nodeURL string, from common.Address, tx *types.Transaction) (uint64,error) {
-	client, err := rpc.DialHTTP(nodeURL)
-	if err != nil {
-		msg := fmt.Sprintf("Can't connect to node %s", nodeURL)
-		err = errors.FailedConnection.Wrapf(err, msg, -32100)
-		return 7,err
-	}
-	defer client.Close()
-
-	var result string
-	err = client.Call(&result, "eth_call", createCallMsgFromTransaction(from, tx), "pending")
-	if err != nil {
-		msg := "Can not get revert reason"
-		err = errors.FailedTransaction.Wrapf(err, msg, -32603)
-		return 7, err
-	}
-	value := new(big.Int)
-    log.GeneralLogger.Println("simulate result:",result)
-	hexResult := strings.Replace(result, "0x", "", -1)
-	value.SetString(string([]byte(hexResult)[:64]), 16)
-	log.GeneralLogger.Println("simulate transaction result code:", value)
-	
-	return value.Uint64(),nil
 }
 
 func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) model.CallRequest {
@@ -205,7 +178,7 @@ func (ec *Client) GetTransactionReceipt(transactionHash common.Hash) (*types.Rec
 }
 
 //GetTransactionCount ...
-func (ec *Client) GetTransactionCount(contractAddress common.Address, address common.Address) (*big.Int, error) {
+func (ec *Client) GetTransactionCount(contractAddress common.Address, address common.Address, nodeAddress common.Address) (*big.Int, error) {
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -215,7 +188,7 @@ func (ec *Client) GetTransactionCount(contractAddress common.Address, address co
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
 
-	count, err := contract.GetNonce(&bind.CallOpts{}, address)
+	count, err := contract.GetNonce(&bind.CallOpts{From:nodeAddress}, address)
 
 	if err != nil {
 		msg := fmt.Sprintf("failed get transaction count for %s", address.Hex())
@@ -319,6 +292,29 @@ func (ec *Client) GetMaxBlockGasLimit(contractAddress common.Address)(*big.Int,e
 
 	return gasLimit, nil
 }
+
+//GetMaxBlockGasLimit ...
+func (ec *Client) GetCurrentGasLimit(contractAddress common.Address)(*big.Int,error){
+	contract, err := relay.NewRelay(contractAddress, ec.client)
+	if err != nil {
+		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
+		err = errors.FailedContract.Wrapf(err, msg, -32603)
+		return nil, err
+	}
+
+	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
+
+	gasLimit, err := contract.GetCurrentGasLimit(&bind.CallOpts{})
+
+	if err != nil {
+		msg := fmt.Sprintf("failed get current gasLimit from %s",contractAddress.Hex())
+		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
+		return nil, err
+	}
+
+	return gasLimit, nil
+}
+
 
 //AccountPermitted ...
 func (ec *Client) AccountPermitted(contractAddress, senderAddress common.Address)(bool,error){
