@@ -1,6 +1,6 @@
-# Rotation Validator
+# Gas Relay Signer
 
-This component is a client used to rotate the validator nodes in LACChain network
+This component is a client used to generate meta transactions, sign and send them to LACChain network.
 
 ## Prerequisites
 
@@ -11,9 +11,9 @@ This component is a client used to rotate the validator nodes in LACChain networ
 ## Install
 
 ```
-$ git clone https://github.com/lacchain/rotation-validator
+$ git clone https://github.com/lacchain/gas-relay-signer
 
-$ cd rotation-validator
+$ cd gas-relay-signer
 $ go build
 ```
 
@@ -22,10 +22,10 @@ $ go build
 Execute the executable file generated previously in a Validator node
 
 ```
-$ ./rotation-validator
+$ ./gas-relay-signer
 ```
 
-## Copyright 2020 LACChain
+## Copyright 2021 LACChain
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
