@@ -4,10 +4,9 @@ In this section we will review the different components of the architecture, fun
 
 ![Architecture](images/architecture.png)
 
-## Backend Components
+## Writer Node Components
 
-### Node
-Is a writer node part of the LACChain network. The node is composed by Nginx, relaySigner layer and Hyperledger Besu.
+A writer node is part of the LACChain network. The node is composed by Nginx, relaySigner layer and Hyperledger Besu.
 
 ### Nginx
 Its role is act as reverse proxy and SSL termination (terminate HTTPS traffic from clients), it accepts all transactions to the node and forwards them to the RelaySigner. Direct queries to the node do not go through the RelaySigner, in this case nginx redirects them to the RPC port of Besu.
@@ -34,8 +33,11 @@ This smart contract is deployed on the LACChain network. The role of this contra
 
 Transactions that do not satisfy these rules will be rejected.
 
+### Local Account Permission Smart Contract
+Writer nodes can deploy and customize a Local Account Permissioning Contract, which is a permissioning layer that writer node operators can use to filter (by whitelisting) the reliable addresses (senders) they allow to send transactions to the network through their writer node under rules customizable by the writer node operator, so transactions that do not meet the requirements presented in Section 2.2 are broadcasted to the network. This allows for each writer node operator to define its own rules to allow transactions to be broadcasted to the network by them. For writer nodes exposed to external users, services, and applications, this is extremely important, because writer node operators will be accountable for those transactions if their node broadcasts them, no matter who the original sender is. 
+
 ### Relay Hub Smart Contract
-This contract is based on EIP 1077. The contract receives a transaction whose data field is decoded by RLP to obtain the parameters of the original transaction, which are the address of the original sender, the gas limit, the nonce, the original data sent and the destination address of this data. 
+This contract is based on EIP 1077. The contract receives the user transaction whose data field is decoded by RLP to obtain the parameters of the original transaction, which are the address of the original sender, the gas limit, the nonce, the original data sent and the destination address of this data. 
 
 Then verifies that address which the node of the organization has chosen to send transactions has not reached the gas limit for that block. In case everything is correct, the transaction is forwarded to the recipient contract or create a new smart contract.
 
@@ -78,7 +80,7 @@ Each time a transaction is sent to the network, it is first verified against the
 * Gas limit of transaction must be sufficient to run the entire RelayHub.
 * The sender of the transaction must be the same as indicated by the end user or application that generated the transaction. This means that the user or application must sign which writer node will send its transaction and expiration time for its transaction.  
 
-In case the transaction does not comply these rules then is canceled and will not be executed. 
+In case the transaction does not comply these rules then is canceled and will not be executed and removed from validator's transaction pool. 
 
 After the transaction is verified and accepted, this transaction will go directly to the RelayHub contract where it is verified that the nonce sent is greater than the previous one to guarantee that the transaction is unique and does not repeat itself. Before the transaction is forwarded to a recipient contract, it is verified that the node has not consumed all the assigned GAS, in case the node has enough gas then the transaction is forwarded, after execution in the recipient contract the amount of GAS used is reduced for that address which sent the original transaction.
 
@@ -92,7 +94,7 @@ Protected transactions are those that ensure that a transaction will only be exe
 
 ![private_transactions](images/private_transactions.png)
 
-When a private transaction is sent, it goes through the RelaySigner which call to Management Gas contrat to decrease the gas used, which is 25000. Then it redirects the transaction without modifying to the Besu process and this communicates with the Orion service which share the transaction with the participating nodes of the private transaction.
+When a private transaction is sent, it goes through the RelaySigner which call to Management Gas contrat to decrease the gas used, which is 25000. Then it redirects the transaction without modifying to the Besu process and this communicates with the Orion/Tessera service which share the transaction with the participating nodes of the private transaction.
 
 ### Bad Transactions
 
@@ -128,9 +130,9 @@ This function to obtain the original sender is located in an abstract contract, 
 
 ![recipient](images/recipient.png)
 
-## How send a protected transaction
+## How send a transaction
 
-In order to send a protected transaction, an end user or application that generates and signs the transaction must add two additional parameters to the function parameters of the destination contract. These parameters are as follows:
+In order to send a transaction, an end user or application that generates and signs the transaction must add two additional parameters to the function parameters of the destination contract. These parameters are as follows:
 
 * nodeAddress(type:address): This parameter is the address of the private key that signs the transactions in the RelaySigner or by default it will be the address of the writer node through which the transactions will be sent.
 

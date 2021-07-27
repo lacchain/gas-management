@@ -8,15 +8,15 @@ It is important to mention that the RelaySigner component will be running on top
 
 ### Pre-existing contracts
 
-For these pre-existing contracts, it is necessary that their address be registered in the account permissioning contract, so that transactions towards these pre-existing contracts are allowed.
+For these pre-existing contracts, it is necessary that their address be registered in the transaction permissioning contract, so that transactions towards these pre-existing contracts are allowed.
 
-To interact with smart contracts that currently are running on the network is not necessary to make any changes. The interaction will be keep directly to the Besu node without going through any of the components of the gas model.
+To interact with smart contracts that currently are running on the network is not necessary to make any changes. The interaction will be keep directly to the Besu node(rpc o websocket) without going through any of the components of the gas model(RelaySigner).
 
 It is worth mentioning that these pre-existing contracts must be adapted to the gas model in order to function in a short time. With which we recommend seeing [How to adapt my contract to this new model](Architecture#how-to-adapt-my contract-to-this-new-model).
 
 ### New Smart Contracts
 
-New smart contracts have to previously change the way to obtain the sender according to the documentation [How to adapt my contract to this new model](Architecture#how-to-adapt-my contract-to-this-new-model)
+New smart contracts that will be deployed have to previously change the way to obtain the sender according to the documentation [How to adapt my contract to this new model](Architecture#how-to-adapt-my contract-to-this-new-model)
 
 ## About Nonce
 
@@ -38,7 +38,7 @@ In case the deployment is successful, the adress of the new deployed contract is
 
 ### After Gas Model deployed
 
-Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner.
+Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner. They also have to add two parameters at the end of the bytecode, which are the address of the writer node through which the transactions will be sent and the expiration time (timestamp), according to the documentation [How send a transaction](Architecture#how-to-send-a-transaction)
 
 The RelaySigner will be in charge of adding the organization's node signature and sending the transaction for the contract deployment, after the RelaySigner will be listening for events to verify that bytecode has been deployed. In case it has been deployed correctly, it will return an address of the contract deployed in the contractAddress parameter of the transaction receipt.
 
@@ -54,7 +54,7 @@ In case the transaction was successful, the receipt of the transaction would ret
 
 ### After Gas Model Deployed
 
-Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner.
+Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner. They also have to add two parameters at the end of the bytecode, which are the address of the writer node through which the transactions will be sent and the expiration time (timestamp), according to the documentation [How send a transaction](Architecture#how-to-send-a-transaction)
 
 The RelaySigner will be in charge of adding the organization's node signature and sending the transaction to execute, after the RelaySigner will be listening for events to verify that the transaction has been executed successfully.
 
@@ -95,10 +95,3 @@ In this scenario, the Relay Signer will redirect the call to the Besu node for t
 
 
  
-
-
-
-
-
-
-
