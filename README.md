@@ -1,6 +1,19 @@
-# Gas Relay Signer
+# Gas Management
 
-This component is a client used to generate meta transactions, sign and send them to LACChain network.
+This solution is in charge of distributing gas to the different LACChain Besu writer nodes, it is composed of backend components such as smart contracts. Gas distribution is automatic, whose logic is written in smart contracts. To better understand the architecture, you can review the following document
+
+## Package overview
+
+1. **audit** contains ways to log.
+2. **blockchain** contains connections to Ethereum.
+3. **controller** controller layer that receives all external requests and redirects requests to the service layer
+4. **service** contains main logic
+5. **model** contains data models of requests and responses of APIs
+6. **errors** contains different errors types
+7. **relayhub** contains all smart contract 
+8. **rpc** contains models and ways to interact with RPC request and response
+9. **docs** contains documentation about architecture and developer interaction with this 
+solution
 
 ## Prerequisites
 
@@ -11,9 +24,9 @@ This component is a client used to generate meta transactions, sign and send the
 ## Install
 
 ```
-$ git clone https://github.com/lacchain/gas-relay-signer
+$ git clone https://github.com/lacchain/gas-management
 
-$ cd gas-relay-signer
+$ cd gas-management
 $ go build
 ```
 
