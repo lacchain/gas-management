@@ -108,8 +108,10 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		}
 	}
 
-    var metaTxGasLimit uint64 = uint64((len(decodeTransaction.Data())*22)+300000)+decodeTransaction.Gas()
+    var metaTxGasLimit uint64 = uint64((len(decodeTransaction.Data())*105)+400000)+decodeTransaction.Gas()
 
+	lock.Lock()
+	defer lock.Unlock()
 	isCorrectGasLimit, err := relaySignerService.VerifyGasLimit(metaTxGasLimit, rpcMessage.ID)
 	if err != nil {
         data := handleError(rpcMessage.ID, err)
@@ -168,8 +170,6 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 
 	//log.GeneralLogger.Println("SigningDataRLP:",hexutil.Encode(signingDataRLP))
 
-	lock.Lock()
-	defer lock.Unlock()
 	response := relaySignerService.SendMetatransaction(rpcMessage.ID, decodeTransaction.To(), metaTxGasLimit, signingDataRLP, uint8(v.Uint64()), r, s)
 	data, err := json.Marshal(response)
 	if err != nil {

@@ -2,6 +2,7 @@ package model
 
 type ApplicationConfig struct {
 	NodeURL string `mapstructure:"nodeURL"`
+	WSURL string `mapstructure:"wsURL"`
 	ContractAddress string `mapstructure:"contractAddress"`
 	NodeKeyPath string `mapstructure:"nodeKeyPath"`
 	NodeAddressPath string `mapstructure:"nodeAddressPath"`

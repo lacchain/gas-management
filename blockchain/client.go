@@ -29,6 +29,11 @@ type Client struct {
 	client *ethclient.Client
 }
 
+//GetEthclient ...
+func (ec *Client) GetEthclient()(*ethclient.Client) {
+	return ec.client
+}
+
 //Connect to Ethereum
 func (ec *Client) Connect(nodeURL string) error {
 	client, err := ethclient.Dial(nodeURL)
@@ -103,9 +108,9 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 	var tx *types.Transaction
 
 	if to != nil {
-		tx, err = contract.RelayMetaTx(options, signingData, v, r, s)
+		tx, err = contract.RelayMetaTx(options, new(big.Int).SetUint64(options.GasLimit), signingData, v, r, s)
 	} else {
-		tx, err = contract.DeployMetaTx(options, signingData, v, r, s)
+		tx, err = contract.DeployMetaTx(options, new(big.Int).SetUint64(options.GasLimit), signingData, v, r, s)
 	}
 	if err != nil {
 		msg := "failed executing smart contract"
