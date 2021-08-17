@@ -1,6 +1,7 @@
 [application]
-nodeURL = "http://localhost:4545"
-contractAddress = "0x6e0d6e751d264835143831D8917F78ff29841536"
+nodeURL = "http://34.75.159.76:4545"
+wsURL = "ws://34.75.159.76:4546"
+contractAddress = "0x47a5E4C79296bde317Ab5A90B058147080BFBdCE"
 nodeKeyPath = "/root/lacchain/data/key"  
 nodeAddressPath = "/root/lacchain/data/nodeAddress"
 port = 9001

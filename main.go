@@ -38,7 +38,10 @@ func main() {
 
 	relayController = new(controller.RelayController)
 	relayController.Init(config, relaySignerService)
+	done := make(chan interface{})
+	go relaySignerService.ProcessNewBlocks(done)
 	setupRoutes(config.Application.Port)
+	close(done)
 }
 
 func getConfigFromFile()(*model.Config){
