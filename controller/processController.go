@@ -108,7 +108,7 @@ func processRawTransaction(relaySignerService *service.RelaySignerService, rpcMe
 		}
 	}
 
-    var metaTxGasLimit uint64 = uint64((len(decodeTransaction.Data())*105)+400000)+decodeTransaction.Gas()
+    var metaTxGasLimit uint64 = uint64((len(decodeTransaction.Data())*105)+500000)+decodeTransaction.Gas()
 
 	lock.Lock()
 	defer lock.Unlock()
