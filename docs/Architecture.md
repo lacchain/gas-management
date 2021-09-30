@@ -2,6 +2,8 @@
 
 In this section we will review the different components of the architecture, function and relationship with the other components.
 
+If you prefer to go to the practical part of how to adapt your Dapp, you can check [How adapt your Dapp](How_adapt_your_Dapp.md)
+
 ![Architecture](images/architecture.png)
 
 ## Writer Node Components
@@ -119,21 +121,3 @@ When an organization that owns a address which exceeds the GAS limit assigned to
 If action of exceeding the gas limit assigned occurs in one block address will be banned and transactions will not be accepted from that address. This is because it could be a denial of service attack.
 
 The address banned can be reestablished after the organization has contacted the consensus group.
-
-## How to adapt my contract to this new model
-
-As the sender with which the transactions arrive at the receipient contract is the address of the RelayHub contract, a mechanism is necessary to obtain the original sender of the client or user who sent the transaction. 
-
-To make this possible, we take advantage of the atomicity of the execution of the transactions in the EVM. That is, every time a transaction is sent to the RelayHub, the address of the original sender is stored, which is then retrieved by making a call to the RelayHub from the recipient contract.
-
-This function to obtain the original sender is located in an abstract contract, which has to be inherited by all the contracts that will be deployed in the network.
-
-![recipient](images/recipient.png)
-
-## How send a transaction
-
-In order to send a transaction, an end user or application that generates and signs the transaction must add two additional parameters to the function parameters of the destination contract. These parameters are as follows:
-
-* nodeAddress(type:address): This parameter is the address of the private key that signs the transactions in the RelaySigner or by default it will be the address of the writer node through which the transactions will be sent.
-
-* expiration(type:uint256): This parameter is the timestamp (Unix timestamp) that determines until when the transaction can be executed, after this time the transaction cannot be executed (added in a block).
