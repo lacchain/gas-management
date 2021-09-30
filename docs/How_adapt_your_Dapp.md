@@ -18,6 +18,8 @@ Next, you should use _msgSender() function instead msg.sender in all your contra
 
 Finally compile your contract.
 
+Additionally, you can find and example in [Storage2.sol](samples/contracts/BaseRelayRecipient.sol)
+
 ## How deploy a contract and send a transaction
 
 In order to deploy or send a transaction, an end user or application that generates and signs the transaction must add two additional parameters to the function parameters of the destination contract. These parameters are as follows:
@@ -25,3 +27,10 @@ In order to deploy or send a transaction, an end user or application that genera
 * nodeAddress(type:address): This parameter is the address of the private key that signs the transactions in the RelaySigner or by default it will be the address of the writer node through which the transactions will be sent. By default nodeAddress value is located in /lacchain/data/nodeAddress
 
 * expiration(type:uint256): This parameter is the timestamp (Unix timestamp) that determines until when the transaction can be executed, after this time the transaction cannot be executed (added in a block).
+
+### Deploy a contract
+
+To deploy a contract is necessary add nodeAddress and expiration time as additional parameters at end of bytecode to deploy. An example can be find [here](samples/deployPublicSmartContract.js).
+
+### Send a transaction
+In the same way, to send a transaction it is necessary to add the two parameters at the end of the transaction so that they are part of the RLP. An example can be found [here](samples/changeSmartContractState.js)
