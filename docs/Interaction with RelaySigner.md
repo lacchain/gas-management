@@ -2,7 +2,9 @@
 
 In this section we will review the way to interacting with the Gas Model and its differences with traditional way of interacting with the node.
 
-It is important to mention that the RelaySigner component will be running on top of Besu, which means that all transactions or queries sent to node will go through the RelaySigner. You can review the architecture for more knowledge in the following link [Gas Distribution Model Architecture](/Architecture.md)
+It is important to mention that the RelaySigner component will be running on top of Besu, which means that all transactions or queries sent to node will go through the RelaySigner. You can review the architecture for more knowledge in the following link [Gas Distribution Model Architecture](./Architecture.md)
+
+If you prefer to go to the practical part of how to adapt your Dapp, you can check [How adapt your Dapp](How_adapt_your_Dapp.md)
 
 ## Smart Contract
 
@@ -38,7 +40,7 @@ In case the deployment is successful, the adress of the new deployed contract is
 
 ### After Gas Model deployed
 
-Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner. They also have to add two parameters at the end of the bytecode, which are the address of the writer node through which the transactions will be sent and the expiration time (timestamp), according to the documentation [How send a transaction](Architecture#how-to-send-a-transaction)
+Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner. They also have to add two parameters at the end of the bytecode, which are the address of the writer node through which the transactions will be sent and the expiration time (timestamp), according to the documentation [How send a transaction](Architecture.md#how-send-a-transaction)
 
 The RelaySigner will be in charge of adding the organization's node signature and sending the transaction for the contract deployment, after the RelaySigner will be listening for events to verify that bytecode has been deployed. In case it has been deployed correctly, it will return an address of the contract deployed in the contractAddress parameter of the transaction receipt.
 
@@ -54,7 +56,7 @@ In case the transaction was successful, the receipt of the transaction would ret
 
 ### After Gas Model Deployed
 
-Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner. They also have to add two parameters at the end of the bytecode, which are the address of the writer node through which the transactions will be sent and the expiration time (timestamp), according to the documentation [How send a transaction](Architecture#how-to-send-a-transaction)
+Entities will be able to use the tools or clients to deploy contracts as normal. Instead of pointing directly to the besu it is necessary to point to the RelaySigner. They also have to add two parameters at the end of the bytecode, which are the address of the writer node through which the transactions will be sent and the expiration time (timestamp), according to the documentation [How send a transaction](Architecture.md#how-send-a-transaction)
 
 The RelaySigner will be in charge of adding the organization's node signature and sending the transaction to execute, after the RelaySigner will be listening for events to verify that the transaction has been executed successfully.
 
