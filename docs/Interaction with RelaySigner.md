@@ -2,7 +2,7 @@
 
 In this section we will review the way to interacting with the Gas Model and its differences with traditional way of interacting with the node.
 
-It is important to mention that the RelaySigner component will be running on top of Besu, which means that all transactions or queries sent to node will go through the RelaySigner. You can review the architecture for more knowledge in the following link [Gas Distribution Model Architecture](./Architecture.md)
+It is important to mention that the RelaySigner component will be running on top of Besu, which means that all transactions sent to node will go through the RelaySigner. All queries will go directly to Besu without going through the RelaySigner. You can review the architecture for more knowledge in the following link [Gas Distribution Model Architecture](./Architecture.md)
 
 If you prefer to go to the practical part of how to adapt your Dapp, you can check [How adapt your Dapp](How_adapt_your_Dapp.md)
 
@@ -10,15 +10,15 @@ If you prefer to go to the practical part of how to adapt your Dapp, you can che
 
 ### Pre-existing contracts
 
-For these pre-existing contracts, it is necessary that their address be registered in the transaction permissioning contract, so that transactions towards these pre-existing contracts are allowed.
+For these pre-existing contracts, it is necessary that their address be registered in the transaction permissioning contract, so that transactions towards these pre-existing contracts are allowed. This is because the transaction permissioning smart contract will reject transactions that are not directed towards permitted smart contracts, such as the contracts that are currently deployed on the network.
 
 To interact with smart contracts that currently are running on the network is not necessary to make any changes. The interaction will be keep directly to the Besu node(rpc o websocket) without going through any of the components of the gas model(RelaySigner).
 
-It is worth mentioning that these pre-existing contracts must be adapted to the gas model in order to function in a short time. With which we recommend seeing [How to adapt my contract to this new model](Architecture#how-to-adapt-my contract-to-this-new-model).
+It is worth mentioning that these pre-existing contracts must be adapted to the gas model in order to function in a short time. With which we recommend seeing [How adapt your Dapp](How_adapt_your_Dapp.md).
 
 ### New Smart Contracts
 
-New smart contracts that will be deployed have to previously change the way to obtain the sender according to the documentation [How to adapt my contract to this new model](Architecture#how-to-adapt-my contract-to-this-new-model)
+New smart contracts that will be deployed have to previously change the way to obtain the sender according to the documentation [How adapt your Dapp](How_adapt_your_Dapp.md)
 
 ## About Nonce
 

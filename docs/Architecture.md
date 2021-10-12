@@ -36,7 +36,15 @@ This smart contract is deployed on the LACChain network. The role of this contra
 Transactions that do not satisfy these rules will be rejected.
 
 ### Local Account Permission Smart Contract
-Writer nodes can deploy and customize a Local Account Permissioning Contract, which is a permissioning layer that writer node operators can use to filter (by whitelisting) the reliable addresses (senders) they allow to send transactions to the network through their writer node under rules customizable by the writer node operator, so transactions that do not meet the requirements presented in Section 2.2 are broadcasted to the network. This allows for each writer node operator to define its own rules to allow transactions to be broadcasted to the network by them. For writer nodes exposed to external users, services, and applications, this is extremely important, because writer node operators will be accountable for those transactions if their node broadcasts them, no matter who the original sender is. 
+Writer nodes can deploy and customize a Local Account Permissioning Contract, which is a permissioning layer that writer node operators can use to filter (by whitelisting) the reliable addresses (senders) they allow to send transactions to the network through their writer node under rules customizable by the writer node operator, so transactions that do not meet the organization requirements are not broadcasted to the network. This allows for each writer node operator to define its own rules to allow transactions to be broadcasted to the network by them. For writer nodes exposed to external users, services, and applications, this is extremely important, because writer node operators will be accountable for those transactions if their node broadcasts them, no matter who the original sender is.
+
+Additionally, writer node operator can determine the maximum amount of GAS Limit that can be sent per transaction to prevent the node from being banned.
+
+When the local permissioning smart contract is active, the transaction reaches the RelaySigner which before sending it to Besu, verifies the rules set by the node operator against the local permissioning contract, in case the rules are met the transaction will be sent to Besu.
+
+A local account permission smart contract is located [here](https://github.com/lacchain/permissioning-smart-contracts/blob/master/contracts/AccountRules.sol)
+
+if you want to change the rules, just modify the "transactionAllowed" function and put your own rules.
 
 ### Relay Hub Smart Contract
 This contract is based on EIP 1077. The contract receives the user transaction whose data field is decoded by RLP to obtain the parameters of the original transaction, which are the address of the original sender, the gas limit, the nonce, the original data sent and the destination address of this data. 
@@ -92,11 +100,15 @@ The GAS model has protected transactions.
 
 Protected transactions are those that ensure that a transaction will only be executed if the writer designated by the end user or application co-signs the transaction and sends it to the network. In addition, the protected transaction has an expiration time in which it must be executed.
 
+Protected transactions are necessary to not allow a same transaction to be sent to two different nodes, trying to make one of them fail and decrease its gas limit.
+
 ### Private Transactions
 
 ![private_transactions](images/private_transactions.png)
 
 When a private transaction is sent, it goes through the RelaySigner which call to Management Gas contrat to decrease the gas used, which is 25000. Then it redirects the transaction without modifying to the Besu process and this communicates with the Orion/Tessera service which share the transaction with the participating nodes of the private transaction.
+
+It decreases 25000 GAS, because it is the cost of registering the private-mark transaction hash in the public part of the network. At the end of a private transaction this hash is always recorded.
 
 ### Bad Transactions
 
@@ -109,6 +121,8 @@ The RelayHub emits a event when a bad or doubtful transaction is sent in followi
 * A transaction that tries to deploy an empty code contract.
 * User transaction has a bad signature.
 * In case that execution of the sent transaction exceeds the total GAS assigned to the writer node through which the transaction is sent.
+
+The amount of gas used to execute a bad transaction will also be decremented from the node that sent the transaction.
 
 ### Node Ban and DoS
 
