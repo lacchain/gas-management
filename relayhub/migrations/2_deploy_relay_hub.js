@@ -19,7 +19,7 @@ module.exports = async(deployer, network) => {
 //    console.log("node Added")
 
     await relayHub.addNode("0xfaae4e8e9dabf9859db1601024191f3c97302230",3)
-//    await relayHub.addNode("0xfaae4e8e9dabf9859db1601024191f3c97302230",3)
+    await relayHub.addNode("0xbcEda2Ba9aF65c18C7992849C312d1Db77cF008E",3)
 	
 
     console.log("node Added")
