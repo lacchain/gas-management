@@ -2,7 +2,7 @@ var TxRelay = artifacts.require("TxRelay");
 
 //const Rules = artifacts.require("./AccountRules.sol");
 
-const blocksFrequency = 60;
+const blocksFrequency = 300;
 const account_Ingress = '0xbcEda2Ba9aF65c18C7992849C312d1Db77cF008E';
 
 module.exports = async(deployer, network) => {
@@ -18,7 +18,9 @@ module.exports = async(deployer, network) => {
 
 //    console.log("node Added")
 
-    await relayHub.addNode("0xfaae4e8e9dabf9859db1601024191f3c97302230")
+    await relayHub.addNode("0xfaae4e8e9dabf9859db1601024191f3c97302230",3)
+//    await relayHub.addNode("0xfaae4e8e9dabf9859db1601024191f3c97302230",3)
+	
 
     console.log("node Added")
 
