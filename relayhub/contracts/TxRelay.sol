@@ -22,21 +22,21 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
 
     address msgSender;
 
-    constructor(uint8 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress){
+    constructor(uint16 _blocksFrequency, address _accountIngress) GasLimit(_blocksFrequency,_accountIngress){
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function relayMetaTx(
+        uint256 gasLimit,
         bytes memory signingData, ////0xf8..RLP final user + nodeAddress + expiration
         uint8 v,
         bytes32 r,
         bytes32 s
     ) external nonReentrant evaluateCurrentBlock override returns (ErrorCode success){
-        uint256 gasUsed = gasleft();
         (ErrorCode errorCode, TransactionData memory data) = _verifyTransaction(signingData,v,r,s,false);
 
         if (errorCode!=ErrorCode.OK){
-            if (!_increaseGasUsed(gasUsed - gasleft())){
+            if (!_increaseGasUsed(gasLimit - gasleft() + 6494)){  //6494 cost to set gasUsed
                 return ErrorCode.NotEnoughGas;    
             }
             emit BadTransactionSent(msg.sender, data.from, errorCode);
@@ -50,7 +50,7 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
                     emit TransactionRelayed(msg.sender, data.from, data.to, executed, output);
                 }else{
                     emit BadTransactionSent(msg.sender, data.from, ErrorCode.NotEnoughGas);
-                    if (!_increaseGasUsed(gasUsed - gasleft())){
+                    if (!_increaseGasUsed(gasLimit - gasleft() + 6494)){    //6494 cost to set gasUsed
                         return ErrorCode.NotEnoughGas;    
                     }
                     return ErrorCode.NotEnoughGas;
@@ -58,7 +58,7 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
             }else{
                 emit BadTransactionSent(msg.sender, data.from, ErrorCode.IsNotContract);
             }
-            if (!_increaseGasUsed(gasUsed - gasleft())){
+            if (!_increaseGasUsed(gasLimit - gasleft() + 6494)){   //6494 cost to set gasUsed
                 return ErrorCode.NotEnoughGas;
             }
             return ErrorCode.OK;
@@ -66,17 +66,17 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
     }
 
     function deployMetaTx(
+        uint256 gasLimit,
         bytes memory signingData,
         uint8 v,
         bytes32 r,
         bytes32 s
     ) external nonReentrant override evaluateCurrentBlock returns (ErrorCode success, address deployedAddress){
-        uint256 gasUsed = gasleft();
         (ErrorCode errorCode, TransactionData memory data) = _verifyTransaction(signingData,v,r,s,true);
 
         if (errorCode!=ErrorCode.OK){
             emit BadTransactionSent(msg.sender, data.from, errorCode);
-            if (!_increaseGasUsed(gasUsed - gasleft())){
+            if (!_increaseGasUsed(gasLimit - gasleft() + 6494)){  //6494 cost to set gasUsed
                 return (ErrorCode.NotEnoughGas,address(0));   
             }
             return (errorCode,address(0));
@@ -91,7 +91,7 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
                     }
                 } else{
                     emit BadTransactionSent(msg.sender, data.from, ErrorCode.NotEnoughGas);
-                    if (!_increaseGasUsed(gasUsed - gasleft())){
+                    if (!_increaseGasUsed(gasLimit - gasleft() + 6494)){   //6494 cost to set gasUsed
                         return (ErrorCode.NotEnoughGas, address(0));
                     }
                     return (ErrorCode.NotEnoughGas,address(0));
@@ -99,7 +99,7 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
             }else{
                 emit BadTransactionSent(msg.sender, data.from, ErrorCode.EmptyCode);
             }
-            if (!_increaseGasUsed(gasUsed - gasleft())){
+            if (!_increaseGasUsed(gasLimit - gasleft() + 6494)){   //6494 cost to set gasUsed
                 return (ErrorCode.NotEnoughGas,address(0));
             }
             
@@ -112,7 +112,7 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
         uint8 v,
         bytes32 r,
         bytes32 s,
-        bool isContractDeploy) private returns (ErrorCode, TransactionData memory){
+        bool isContractDeploy) private returns (ErrorCode, TransactionData memory){    
         TransactionData memory data;
         
         (bool success, address signer) = _getOriginalSender(signingData,v,r,s);
@@ -121,12 +121,10 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
             data.from = address(0);
             return (ErrorCode.InvalidSignature,data);
         }
-
         data.from = signer;
         (data.nonce,data.gasLimit, data.to, data.encodedFunction) = _getParametersTx(signingData,isContractDeploy);
         
-        emit Parameters(data.nonce, data.gasLimit, data.to, data.encodedFunction);
-
+        //emit Parameters(data.nonce, data.gasLimit, data.to, data.encodedFunction);
         if (data.nonce != nonces[msg.sender][data.from]){
             return (ErrorCode.BadNonce,data);
         }
@@ -213,19 +211,23 @@ contract TxRelay is ReentrancyGuard,GasLimit,IRelayHub{
         return true;
     }
 
-    function _getParametersTx(bytes memory signingData, bool isDeployContract) private pure returns (uint256, uint256, address, bytes memory){  
+    function _getParametersTx(bytes memory signingData, bool isDeployContract) private pure returns (uint256, uint256, address, bytes memory){    //    bytes memory ddd = "0x6057361d0000000000000000000000000000000000000000000000000000000000000057";
         RLPReader.RLPItem[] memory ls = signingData.toRlpItem().toList();
         if (!isDeployContract){
             return (ls[0].toUint(),ls[2].toUint(),ls[3].toAddress(),ls[5].toBytes());
         }else{
             return (ls[0].toUint(),ls[2].toUint(),address(0),ls[5].toBytes());
         }
+    //    return (0,500000,address(0xf9F76f30dcA57501e132d43D26FDab10A313CcE8),ddd);
     }
 
     event Relayed(address indexed sender, address indexed from);
     event GasUsedByTransaction(address node, uint blockNumber, uint gasUsed, uint gasLimit, uint gasUsedLastBlocks);
     event ContractDeployed(address indexed relay, address indexed from, address contractDeployed);
     event BadTransactionSent(address node, address originalSender, ErrorCode errorCode);
-    //REMOVE
+    //TODO REMOVE
     event Parameters(uint256 nonce, uint256 gasLimit, address to, bytes decodedFunction);
+//    event GasSigner(uint256 gasSig);
+//    event GasPara(uint256 gasPar);
+//    event GasTotal(uint256 gasTotal);
 }

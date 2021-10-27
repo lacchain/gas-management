@@ -2,16 +2,19 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
-//import "./lib/SafeMath.sol";
 import "./access/AccessControl.sol";
 
 contract GasLimit is AccessControl{
 
 //    bytes32 public constant ACCOUNT_CONTRACT_ROLE = keccak256("ACCOUNT_CONTRACT_ROLE");
-    uint256 internal maxGasBlockLimit = 200000000;
+    uint256 internal maxGasBlockLimit = 150000000;
     uint256 internal gasUsedRelayHub = 300000;
+    uint256 internal basicGasLimit = 500000;
+    uint256 internal standardGasLimit = 1000000;
 
     address[] private writerNodes;
+
+    address[] private premiumNodes;
 
     uint256 private blockNumber;
 
@@ -21,13 +24,15 @@ contract GasLimit is AccessControl{
 
     mapping (address => uint256) private indexOf; //1 based indexing. 0 means non-existent
 
+    mapping (address => uint8) private typeNodes; //1-basic,2-standard,3-premium
+
     uint256 private gasUsedLastBlocks;
 
     uint256 private averageLastBlocks;
 
     uint256 private blockCalculateExecuted;
 
-    uint8 private blocksFrequency;
+    uint16 private blocksFrequency;
 
     bool private nodeAdded;
 
@@ -37,7 +42,8 @@ contract GasLimit is AccessControl{
 
     mapping(address => uint256) private blockLastTranx;
 
-    constructor(uint8 _blocksFrequency, address _accountIngress){
+    constructor(uint16 _blocksFrequency, address _accountIngress){
+        currentGasLimit = maxGasBlockLimit;
         blockNumber = block.number;
         blockCalculateExecuted = block.number;
         blocksFrequency = _blocksFrequency;
@@ -48,11 +54,19 @@ contract GasLimit is AccessControl{
     modifier evaluateCurrentBlock () {
         if (block.number > blockLastTranx[msg.sender]){
             blockLastTranx[msg.sender] = block.number;
-            gasLimits[msg.sender] = currentGasLimit;
+            if (typeNodes[msg.sender]==1){
+                gasLimits[msg.sender] = basicGasLimit;    
+            }else if(typeNodes[msg.sender]==2){
+                gasLimits[msg.sender] = standardGasLimit;    
+            }else{
+                gasLimits[msg.sender] = currentGasLimit;  //dependiendo del tipo de nodo setear el gas limite
+            }
         }
-        if (nodeAdded || recalcuteGasLimit()){
-            emit Recalculated(true);
-            calculateGasLimit();
+        if (premiumNodes.length > 0){ 
+            if (nodeAdded || recalcuteGasLimit()){
+                emit Recalculated(true);
+                calculateGasLimit();
+            }
         }
         _;
     }
@@ -60,6 +74,16 @@ contract GasLimit is AccessControl{
     function setBlocksFrequency(uint8 _blocksFrequency) onlyAdmin external evaluateCurrentBlock{
         blocksFrequency = _blocksFrequency;
         emit BlockFrequencyChanged(msg.sender, blocksFrequency);
+    }
+
+    function setBasicGasLimit(uint256 _basicGasLimit) onlyAdmin external evaluateCurrentBlock{
+        basicGasLimit = _basicGasLimit;
+        emit BasicGasLimitChanged(msg.sender, basicGasLimit);
+    }
+
+    function setStandardGasLimit(uint256 _standardGasLimit) onlyAdmin external evaluateCurrentBlock{
+        standardGasLimit = _standardGasLimit;
+        emit StandardGasLimitChanged(msg.sender, standardGasLimit);
     }
 
     function _hasEnoughGas(uint256 gas) internal view returns (bool){
@@ -72,15 +96,15 @@ contract GasLimit is AccessControl{
     function calculateGasLimit() internal  {
         uint256 newGasLimit = (80*maxGasBlockLimit)/100;
         if (averageLastBlocks<=((20*maxGasBlockLimit)/100)){
-            newGasLimit = 5*(maxGasBlockLimit/writerNodes.length);
+            newGasLimit = 5*(maxGasBlockLimit/premiumNodes.length);
         }else if(averageLastBlocks<=((40*maxGasBlockLimit)/100)){
-            newGasLimit = 4*(maxGasBlockLimit/writerNodes.length);
+            newGasLimit = 4*(maxGasBlockLimit/premiumNodes.length);
         }else if(averageLastBlocks<=((60*maxGasBlockLimit)/100)){
-            newGasLimit = 3*(maxGasBlockLimit/writerNodes.length);
+            newGasLimit = 3*(maxGasBlockLimit/premiumNodes.length);
         }else if(averageLastBlocks<=((80*maxGasBlockLimit)/100)){
-            newGasLimit = 2*(maxGasBlockLimit/writerNodes.length);
+            newGasLimit = 2*(maxGasBlockLimit/premiumNodes.length);
         }else{
-            newGasLimit = maxGasBlockLimit/writerNodes.length;
+            newGasLimit = maxGasBlockLimit/premiumNodes.length;
         }
 
         if (newGasLimit > (80*maxGasBlockLimit)/100){
@@ -90,7 +114,7 @@ contract GasLimit is AccessControl{
     }
 
     function _setGasLimit(uint256 _gasUsedLastBlocks, uint256 _newGasLimit) private {
-         for (uint16 id = 0; id < writerNodes.length; id++){
+         for (uint16 id = 0; id < premiumNodes.length; id++){
             gasLimits[writerNodes[id]] = _newGasLimit;
          }
          currentGasLimit = _newGasLimit;
@@ -152,10 +176,14 @@ contract GasLimit is AccessControl{
         return indexOf[node] != 0;
     }
 
-    function addNode(address newNode) onlyAccountContract external returns(bool){
+    function addNode(address newNode, uint8 nodeType) onlyAccountContract external returns(bool){
         if(indexOf[newNode] == 0){
             writerNodes.push(newNode);
             indexOf[newNode] = writerNodes.length;
+            typeNodes[newNode] = nodeType;
+            if (nodeType == 3){
+                premiumNodes.push(newNode);
+            }
             nodeAdded = true;
             emit NodeAdded(newNode);
         }
@@ -233,7 +261,9 @@ contract GasLimit is AccessControl{
     event NodeAdded(address newNode);
     event NodeDeleted(address oldNode);
     event AccountIngressChanged(address admin, address newAddress);
-    event BlockFrequencyChanged(address admin, uint8 blocksFrequency);
+    event BlockFrequencyChanged(address admin, uint16 blocksFrequency);
+    event BasicGasLimitChanged(address admin, uint256 newBasicGasLimit);
+    event StandardGasLimitChanged(address admin, uint256 newStandardGasLimit);
     event MaxGasBlockLimitChanged(uint256 blockNumber, address admin, uint256 maxGasBlockLimit);
     event GasUsedRelayHubChanged(address admin, uint256 gasUsedRelayHub);
     event Recalculated(bool result);

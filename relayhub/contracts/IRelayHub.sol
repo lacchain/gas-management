@@ -38,6 +38,7 @@ interface IRelayHub {
      */
 
     function relayMetaTx(
+        uint256 gasLimit,
         bytes memory signingData,
         uint8 v,
         bytes32 r,
@@ -55,6 +56,7 @@ interface IRelayHub {
      */
 
     function deployMetaTx(
+        uint256 gasLimit,
         bytes memory signingData,
         uint8 v,
         bytes32 r,
