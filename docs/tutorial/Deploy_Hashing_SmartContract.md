@@ -1,5 +1,5 @@
 # Smart contract deployment tutorial
-This tutorial provides a basic deployment of a smart contract on Lacchain networks which are configured with gas model feature . It is intended for anyone interested in deploy smart contracts on Lacchain networks base on Ethereum. You don't need any programming or blockchain experience to complete this tutorial. This is just the first step.
+This tutorial provides a basic deployment of a smart contract on Lacchain networks which are configured with gas model feature. It is intended for anyone interested in deploy smart contracts on Lacchain networks base on Ethereum. You don't need any programming or blockchain experience to complete this tutorial. This is just the first step.
 
 ## 1. Running a writer node
 The first step is to run a writer node in one of the lacchain networks. We recommend that you have a node running on the testnet. To be able to provision a node in the testnet network clone this repository.
@@ -12,7 +12,7 @@ $ cd besu-pro-testnet/
 
 Please, make sure you are in *david19_network* branch
 
-After follow this instructions [here](https://github.com/lacchain/besu-pro-testnet/tree/david19_network) to provision a *writer node*.
+After, follow this instructions [here](https://github.com/lacchain/besu-pro-testnet/tree/david19_network) to provision a *writer node*.
 
 Finally, [check your writer](https://github.com/lacchain/besu-pro-testnet/tree/david19_network#checking-your-connection) node is working well.
 
@@ -50,7 +50,6 @@ Next step is set your node address(by default) to model gas. Please, run these c
 $ cd /root/lacchain/data
 $ cat nodeAddress
 ```
-
 Now send an email with the subject "permissioning node in testnet" to *adrianp@iadb.org* with copy to *eduardoma@iadb.org* writing as content your *node address* and your the name of your organization.
 
 When you receive the response, your node will be ready to send transactions or deploy contracts.
@@ -58,25 +57,40 @@ When you receive the response, your node will be ready to send transactions or d
 ## 4. Download prerequisites
 A simple contract will be deployed which records a hash associated with the end user who sent the transaction.
 
-For this part you will need to have *nodejs* installed, in case you don't have it please check [this manual](https://nodejs.org/es/download/)
+For this part you will need to have *nodejs* installed. Check whether node is installed on your local computer by running the following command:
 
+```shell
+$ node --version
+```
+If the command doesn’t return a version number, download and install node by following the instructions for the operating system you use on the [Node.js](https://nodejs.org/es/download/) website. Node version should be at least v14.
+
+Check whether yarn is installed on your local computer by running the following command:
+
+```shell
+$ yarn --version
+```
+If the command doesn’t return a version number, download and install yarn by running the following command:
+
+```shell
+$ npm install -g yarn
+```
 Please clone this repository. It contains all the code necessary to deploy a contract and send a transaction.
 
 ```shell
-$ git clone xxxxxxxxx
+$ git clone https://github.com/lacchain/samples.git
 ```
 Now download all the necessary dependencies
 
 ```shell
-$ cd xxxxx
-$ node install
+$ cd samples
+$ yarn install
 ```
 
 ## 5. Configure local variables
 After having downloaded the project dependencies, we are going to configure the local variables, for which make sure you have the IP of your writer node, as well as the private key of the end user with which you will deploy the contract.
 
 ```shell
-$ cd xxxxx
+$ cd samples
 ```
 open a text editor and change the RPC_URL value to the IP of your writer node in /xxxxx/keys.js file, keep port 80 set.
 ```js
@@ -107,7 +121,7 @@ const expiration = 1736394529  //SET TIMESTAMP HERE
 ## 6. Deploy your contract
 To deploy the contract, please run the following command:
 ```shell
-$ cd xxxxxx
+$ cd samples
 $ node deployPublicSmartContract.js
 ```
 If everything goes well, you will get the address of the contract deployed.
