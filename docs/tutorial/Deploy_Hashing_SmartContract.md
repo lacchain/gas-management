@@ -1,8 +1,8 @@
 # Smart contract deployment tutorial
-This tutorial provides a basic deployment of a smart contract on Lacchain networks which are configured with gas model feature. It is intended for anyone interested in deploy smart contracts on Lacchain networks base on Ethereum. You don't need any programming or blockchain experience to complete this tutorial. This is just the first step.
+This tutorial provides a basic deployment of a smart contract on LACChain networks which are configured with gas model feature. It is intended for anyone interested in deploy smart contracts on LACChain networks base on Ethereum. You don't need any programming or blockchain experience to complete this tutorial. This is just the first step.
 
 ## 1. Running a writer node
-The first step is to run a writer node in one of the lacchain networks. We recommend that you have a node running on the testnet. To be able to provision a node in the testnet network clone this repository.
+The first step is to run a writer node in one of the LACChain networks. We recommend that you have a node running on the testnet. To be able to provision a node in the testnet network clone this repository.
 
 ```shell
 $ git clone https://github.com/lacchain/besu-pro-testnet
