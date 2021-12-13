@@ -10,7 +10,7 @@ abstract contract BaseRelayRecipient{
     /*
      * Forwarder singleton we accept calls from
      */
-    address internal trustedForwarder = 0xdD37c69fF29C4b93A346Ed6dF184f48A71800b7E;
+    address internal trustedForwarder = 0x3B62E51E37d090453600395Ff1f9bdf4d7398404;
 
     /**
      * return the sender of this call.
