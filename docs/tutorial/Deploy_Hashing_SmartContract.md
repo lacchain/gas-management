@@ -92,13 +92,13 @@ After having downloaded the project dependencies, we are going to configure the 
 ```shell
 $ cd samples
 ```
-open a text editor and change the RPC_URL value to the IP of your writer node in /xxxxx/keys.js file, keep port 80 set.
+open a text editor and change the RPC_URL value to the IP of your writer node in /samples/keys.js file, keep port 80 set.
 ```js
 module.exports = {
     RPC_URL:"http://1.1.1.1:80"
 }
 ```
-save the changes. Now change the Web3 parameter to the IP of your writer node in /xxxxx/web3.js file. Also, keep port 80 set.
+save the changes. Now change the Web3 parameter to the IP of your writer node in /samples/web3.js file. Also, keep port 80 set.
 
 ```js
 const Web3 = require('web3')
@@ -125,3 +125,18 @@ $ cd samples
 $ node deployPublicSmartContract.js
 ```
 If everything goes well, you will get the address of the contract deployed.
+
+## 7. Deploy another smart contract
+To deploy another smart contract, for example an ERC20 token.
+
+```shell
+$ cd samples
+```
+open a text editor and uncomment erc20 constant in /samples/deployPublicSmartContract.js file, comment other bytecodes.
+
+```js
+//const simpleStorageByteCode = "0x6080604...030033";
+const erc20 = "0x6080604...030033"
+//const simpleHashByteCode = "0x6080604...030033"
+```
+finally, follow step 6 to deploy ERC20 bytecode.
