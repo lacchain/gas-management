@@ -9,4 +9,4 @@ yarn-error.log*
 lerna-debug.log*
 
 # Configuration
-#config.toml
+config.toml
