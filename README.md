@@ -1,6 +1,6 @@
 # Gas Management
 
-This solution is in charge of distributing gas to the different LACChain Besu writer nodes, it is composed of backend components such as smart contracts. Gas distribution is automatic, whose logic is written in smart contracts. To better understand the architecture, you can review the following document
+This solution is in charge of distributing gas to the different LACChain Besu writer nodes, it is composed of backend components such as smart contracts. Gas distribution is automatic, whose logic is written in smart contracts. To better understand the architecture.
 
 ## Package overview
 
