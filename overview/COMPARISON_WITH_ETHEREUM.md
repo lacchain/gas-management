@@ -1,6 +1,10 @@
 As discussed in the [overview of the GAS distribution mechanism](https://github.com/lacchain/gas-management/blob/master/overview/OVERVIEW.MD), the transaction-fee based mechanisms adopted by the most popular permissionless blockchain networks, such as Bitcoin and Ethereum, make them very unaffordable for use cases involving large amounts of transactions, such as typical government and enterprise solutions. In this appendix, we compare the difference in price between the transaction-fee based permissionless Ethereum Mainnet and the membership-fee based permissioned LACNet Network.
 
-[TABLE 1]
+| Type of LACNet membership | Maximum GAS per month available in LACNet * | Monthly cost of LACNet | Equivalent cost of same GAS in Ethereum ** |
+|:--------------------------------:|:-------------------------------------------------:|:-----------------------------:|:------------------------------------------------:|
+|               Basic              |                   648,000,000,000                 |              $170             |                    $77,760,000                   |
+|             Standard             |                 1,940,000,000,000                 |              $380             |                    $233,280,000                  |
+|              Premium             |                  6,480,000,000,000                |              $1250            |                    $777,600,000                  |
 
 * (*) This calculation is the result of multiplying the maximum GAS per block for each membership in LACNet by the average block number per month, considering block generation every 2 seconds.
 

@@ -38,7 +38,7 @@ A high-level architecture diagram is presented in Figure 1. The solution has two
 
 2) The writer node back-end components necessary to generate, sign, and send the meta-transactions to the proxy smart contracts. 
 
-[FIGURE1]
+![Architecture](../docs/images/architecture.png)
 
 ### 2.1.1 Smart Contracts
 
@@ -68,17 +68,17 @@ Transactions that do not satisfy these rules will be rejected by validator nodes
 
 When a new node is added to the network, the Permissioning Committee registers it into the Node Permissioning Smart Contract. Next, the organization senders’ addresses, whose node was previously added to the Node Permissioning Smart Contract, are added to the Transaction Permissioning Smart Contract. Automatically, the Transaction Permissioning Smart Contract invokes the Gas Management Contract which sets a gas limit for the new node addresses and recalculates the gas limit for the existing nodes. 
 
-[FIGURE 2]
+![Add new node](../docs/images/add_node_and_address.png)
 
 Each time a transaction is sent to the network, nodes check it against the Transaction Permissioning Smart Contract. First, writers check the transaction coming from the off-chain service or application, then boots check the transaction coming from the writer, and finally validators check the transaction coming from the boots.  If the transaction does not satisfy the requirements (introduced above and covered in detail in Section 2.2), the transaction will be rejected (i.e., not executed and erased from the transaction pool).
 
 The validator nodes of the network, which are responsible for generating blocks, have the Transaction Permissioning configuration set, which makes them check every transaction they receive against the Transaction Permissioning Contract before they are executed in the network. It is worth mentioning that if a validator node becomes malicious by modifying the configuration of its node to accept invalid transactions into the network, this validator node will be banned by the other validators. For an invalid transaction to be introduced into a block, ⅔ +1 validator nodes need to be corrupted. If validator node operators tried such an attack, they would incur a legal penalty because validator nodes are committed contractually to not attack the network.
 
-[FIGURE 3]
+![Verify Transaction](../docs/images/verification_transaction.png)
 
 When the transaction satisfies the requirements, validator nodes execute the transaction against the RelayHub contract, where the nonce is verified to be greater than the previous one in order to guarantee that the transaction is unique and not duplicated. Before the transaction is forwarded to the Recipient Smart Contract (or creates a new smart contract itself), it is verified that the node has not consumed all the gas assigned to it for that block Gas Management Contract. If the transaction gas limit is lower than the amount of gas remaining for the writer node in the current block, the transaction is executed and the amount of gas used is discounted in the Gas Management Contract. If the transaction execution cannot be completed, the amount of gas consumed is discounted and a “not enough gas” error event is emitted. 
 
-[FIGURE 4]
+![Send Transaction](../docs/images/send_transaction.png)
 
 The RelayHub emits an event when a bad or doubtful transaction is sent, including:
 
@@ -89,15 +89,16 @@ The RelayHub emits an event when a bad or doubtful transaction is sent, includin
 * The user transaction has an invalid signature.
 * The gas limit of the transaction exceeds the amount of gas left available for the writer node that is broadcasting the transaction. 
 
-[FIGURE 5]
+![Send Bad Transactions](../docs/images/send_bad_transaction.png)
 
 When an organization that owns a writer node exceeds the gas limit assigned to them in a block, it will be marked as an “exceeded gas limit” error, and the organization responsible for the writer node is automatically removed from the Transaction Permissioning Contract, which prevents it from sending transactions. When a node is banned, the Permissioning Committee reaches out to the node operator to clarify the situation and add the node back into the Transaction Permissioning Contract. 
 
-[FIGURE 6]
+![Gas Exceeded](../docs/images/gas_exceeded.png)
+![Penalize](../docs/images/penalize.png)
 
 When a private transaction is sent by the end-user or application to the writer node, it goes through the RelaySigner, which calls the Gas Management Smart Contract to discount a fixed amount of 25000. Then, it redirects the transaction to the Besu process, and this is communicated with the Orion service, which shares the transaction with the private Orion or Tessera nodes indicated trough the Orion or Tessera private channel.
 
-[FIGURE 7]
+![Private Transactions](../docs/images/private_transactions.png)
 
 ### 2.1.2. Writer Node
 
@@ -128,7 +129,14 @@ The type of membership the node has purchased determines the amount of gas per b
 
 Table 1 gives the ideal amount of gas consumed on average by different typical transactions in the networks orchestrated by LACNet.
 
-[TABLE 1]
+|           **Type of Transaction**          | **Estimated average amount gas  consumed** |
+|:------------------------------------------:|:------------------------------------------:|
+|   Change of simple attribute type Uint256  |                     120K                   |
+|        Notarization (register a hash)      |                     140K                   |
+|                Token transfer              |                     145K                   |
+|       Register a verifiable credential     |                     275K                   |
+|         Deploy ERC20 smart contract        |                      1M                    |
+|        Deploy complex smart contract       |                      3M                    |
 
 The idea of “reserving gas” can lead to scenarios where some nodes might not be using all their gas per block whereas others might need more. For this reason, this gas distribution model is very flexible and attempts to maximize the amount of gas per block made available to each premium writer node. This is achieved by updating the gas limit every Y blocks for premium nodes according to how much the network is being used by all the permissioned nodes.  
 
@@ -152,11 +160,11 @@ G_P:= Gas limit per block for writer nodes with Premium membership package.
 
 ϑ≔ Fraction of G_T  consumed on average in the last 10 minutes by all the writer nodes.
 
-[Formula 1]
+![Formula 1](../docs/images/formula1.png)
 
 This formula leads to the following scenarios:
 
-[TABLE 2]
+![Table Formula 1](../docs/images/table_formula1.png)
 
 Let’s explore the formula with an example. Let us suppose that the amount of gas per block that the network can process without operating under stress 〖(G〗_T) is 150M. In a network with 20 basic, 20 standard, and 20 premium nodes, basic nodes would have access to a maximum of (0.5M gas limit x 20 nodes) 10M of gas, and standard nodes would have access to a maximum of (1.5M gas limit x 20 nodes) 30M of gas. The 20 premium nodes would then have access to a maximum of (150M gas total – 10M gas for basic nodes – 30M gas for standard nodes) 110M of gas to be equally used among them, which is equal to a gas limit per premium node of 5.5M gas per block. But this is the case only if these 60 nodes are using all the gas they have available (thus the parameter ϑ is equal to 1). If, conversely, the under 20% of the network network is used (the 150M of gas per block), then basic and standard nodes would keep their 0.5M and 1.5M gas limit per block, respectively, but premium nodes have up to 5 times higher gas limit, which in this example, would mean (5.5M gas limit x 5) 22.5M gas limit per block. Appendix A presents results of stress tests performed in the LACNet Networks using the GAS distribution mechanism. Appendix B analyzes the monthly cost in Ether and USD of this amount of gas in the Ethereum Mainnet.
 
@@ -188,7 +196,7 @@ All transactions must go through the RelayHub contract before they reach their d
 
 A malicious user might want to modify admin contracts such as the Node Permissioning Contract, the Transaction Permissioning Contract, or the GAS Management Contract. For example, the malicious user would send a transaction in which the final destination contract after going through the RelayHub would be the method of removing nodes from the GAS Management Contract.
 
-[FIGURE 8]
+![Attack to modidy the admin contract](../docs/images/attack_modify_admin.png)
 
 This potential attack is prevented by the RelayHub. When the validator nodes execute transactions against the RelayHub, the RelayHub confirms that the target contract is not any of the management contracts. This prevents end-users from reaching the contracts through the RelayHub, which has permission, through these contracts, to enable authorized users to interact with these contracts. Only authorized users specified in the RelayHub are allowed to interact with the Admin contract. Through this process, the malicious transaction would not be executed against the Admin Contract and the GAS would be discounted to the writer node that broadcasted it.
 
@@ -198,7 +206,7 @@ LACNet networks are permissioned networks, which means that permission is requir
 
 A malicious writer node operator could remove its default node's permissioning settings (so it stops following the connections indicated in the Node Permissioning Smart Contracts), thereby accepting connections from new nodes. The malicious writer node operator would deploy a new malicious node or allow a third-party unauthorized node to connect to its node, allowing the unauthorized node or party to broadcast transactions that are replicated to the network by the permissioned node with the corrupted permissioning configuration. 
 
-[FIGURE 9]
+![Attack malicious node as proxy](../docs/images/malicious_node_as_proxy.png)
 
 This potential attack is prevented by the Transaction Permissioning Smart Contract which rejects the transaction before it is execute because it is an invalid transaction as it is not signed by a permissioned node. The malicious node serving as a proxy will also be banned.
 
@@ -220,7 +228,7 @@ Because of this, it is necessary to have a mechanism to obtain the address of th
 
 This function to obtain the original sender is located in an abstract contract, which has to be inherited by all the contracts that will be deployed in the network.
 
-[FIGURE 10]
+![Recipient](../docs/images/recipient.png)
 
 For more detailed information, including a comparison between how transactions work with and without the GAS distribution model, please see https://github.com/lacchain/gas-relay-signer/blob/master/docs/Interaction%20with%20RelaySigner.md. 
 
@@ -253,7 +261,7 @@ This allows for each writer node operator to define its own rules for broadcasti
 
 Examples of rules include verifying the trail, the gas limit, the destination of the transaction or the gas price. They can also be more granular rules, such as verifying the data being sent in the transaction. 
 
-[FIGURE 11]
+![Local permissioning Layer](../docs/images/local_permissioning_layer.png)
 
 ### 4.2.3. Resending and Overwriting Transactions
 
