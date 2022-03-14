@@ -6,21 +6,22 @@ import (
 	"fmt"
 	"math/big"
 	"strings"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	log "github.com/lacchain/gas-relay-signer/audit"
 	relay "github.com/lacchain/gas-relay-signer/blockchain/contracts"
 	"github.com/lacchain/gas-relay-signer/errors"
 	"github.com/lacchain/gas-relay-signer/model"
-	log "github.com/lacchain/gas-relay-signer/audit"
 )
 
 const (
-	gasUsedByRelay = 300000
-	relayMetaTxMethod = "relayMetaTx"
+	gasUsedByRelay     = 300000
+	relayMetaTxMethod  = "relayMetaTx"
 	deployMetaTxMethod = "deployMetaTx"
 )
 
@@ -30,7 +31,7 @@ type Client struct {
 }
 
 //GetEthclient ...
-func (ec *Client) GetEthclient()(*ethclient.Client) {
+func (ec *Client) GetEthclient() *ethclient.Client {
 	return ec.client
 }
 
@@ -60,14 +61,14 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64, pend
 	var nonce uint64
 	var err error
 
-	if (pending){
+	if pending {
 		nonce, err = ec.client.PendingNonceAt(context.Background(), auth.From)
 		if err != nil {
 			msg := fmt.Sprintf("can't get pending nonce for:%s", auth.From)
 			err = errors.FailedConfigTransaction.Wrapf(err, msg, -32603)
 			return nil, err
 		}
-	} else{
+	} else {
 		nonce, err = ec.client.NonceAt(context.Background(), auth.From, nil)
 		if err != nil {
 			msg := fmt.Sprintf("can't get latest nonce for:%s", auth.From)
@@ -84,8 +85,8 @@ func (ec *Client) ConfigTransaction(key *ecdsa.PrivateKey, gasLimit uint64, pend
 	}
 
 	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)                // in wei
-	auth.GasLimit = gasLimit // in units
+	auth.Value = big.NewInt(0) // in wei
+	auth.GasLimit = gasLimit   // in units
 	auth.GasPrice = gasPrice
 
 	log.GeneralLogger.Printf("OptionsTransaction=[From:0x%x,nonce:%d,gasPrice:%s,gasLimit:%d", auth.From, nonce, gasPrice, auth.GasLimit)
@@ -104,7 +105,7 @@ func (ec *Client) SendMetatransaction(contractAddress common.Address, options *b
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
 	log.GeneralLogger.Println("Metatransaction signingData:", hexutil.Encode(signingData))
-	
+
 	var tx *types.Transaction
 
 	if to != nil {
@@ -141,7 +142,7 @@ func createCallMsgFromTransaction(from common.Address, tx *types.Transaction) mo
 	}
 }
 
-func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Address, relayAddress common.Address, signingData []byte, v uint8, r , s [32]byte) (*types.Transaction,error) {
+func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Address, relayAddress common.Address, signingData []byte, v uint8, r, s [32]byte) (*types.Transaction, error) {
 	testabi, err := abi.JSON(strings.NewReader(relay.RelayABI))
 	if err != nil {
 		msg := "Error decoding ABI"
@@ -151,7 +152,7 @@ func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Add
 
 	var bytesData []byte
 
-	if to!=nil {
+	if to != nil {
 		bytesData, err = testabi.Pack(relayMetaTxMethod, signingData, v, r, s)
 	} else {
 		fmt.Println("DEPLOYYYY")
@@ -165,7 +166,7 @@ func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Add
 	}
 
 	tx := types.NewTransaction(options.Nonce.Uint64(), relayAddress, big.NewInt(0), options.GasLimit, big.NewInt(0), bytesData)
-	return tx,nil
+	return tx, nil
 }
 
 //GetTransactionReceipt ...
@@ -176,6 +177,8 @@ func (ec *Client) GetTransactionReceipt(transactionHash common.Hash) (*types.Rec
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
+
+	receipt.PostState = []byte{0x0}
 
 	log.GeneralLogger.Printf("Receipt of Tx:%s was returned with Status:%d in blockNumber:%s", transactionHash.Hex(), receipt.Status, receipt.BlockNumber)
 
@@ -193,7 +196,7 @@ func (ec *Client) GetTransactionCount(contractAddress common.Address, address co
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
 
-	count, err := contract.GetNonce(&bind.CallOpts{From:nodeAddress}, address)
+	count, err := contract.GetNonce(&bind.CallOpts{From: nodeAddress}, address)
 
 	if err != nil {
 		msg := fmt.Sprintf("failed get transaction count for %s", address.Hex())
@@ -238,7 +241,7 @@ func (ec *Client) DecreaseGasUsed(contractAddress common.Address, options *bind.
 }
 
 //GetBlockByNumber ...
-func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *big.Int) (*types.Header, uint64, error){
+func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *big.Int) (*types.Header, uint64, error) {
 	block, err := ec.client.HeaderByNumber(context.Background(), blockNumber)
 	if err != nil {
 		msg := fmt.Sprintf("failed get block by number %d", blockNumber.Uint64())
@@ -247,7 +250,7 @@ func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *
 	}
 
 	gasLimit, err := ec.GetMaxBlockGasLimit(contractAddress)
-	if err != nil{
+	if err != nil {
 		return nil, 0, err
 	}
 
@@ -255,7 +258,7 @@ func (ec *Client) GetBlockByNumber(contractAddress common.Address, blockNumber *
 }
 
 //GetGasLimit ...
-func (ec *Client) GetGasLimit(contractAddress, nodeAddress common.Address)(*big.Int,error){
+func (ec *Client) GetGasLimit(contractAddress, nodeAddress common.Address) (*big.Int, error) {
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -265,10 +268,10 @@ func (ec *Client) GetGasLimit(contractAddress, nodeAddress common.Address)(*big.
 
 	log.GeneralLogger.Println("RelayHub Contract instanced:", contractAddress.Hex())
 
-	gasLimit, err := contract.GetGasLimit(&bind.CallOpts{Pending:true, From: nodeAddress})
+	gasLimit, err := contract.GetGasLimit(&bind.CallOpts{Pending: true, From: nodeAddress})
 
 	if err != nil {
-		msg := fmt.Sprintf("failed get gasLimit from %s",contractAddress.Hex())
+		msg := fmt.Sprintf("failed get gasLimit from %s", contractAddress.Hex())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
@@ -277,7 +280,7 @@ func (ec *Client) GetGasLimit(contractAddress, nodeAddress common.Address)(*big.
 }
 
 //GetMaxBlockGasLimit ...
-func (ec *Client) GetMaxBlockGasLimit(contractAddress common.Address)(*big.Int,error){
+func (ec *Client) GetMaxBlockGasLimit(contractAddress common.Address) (*big.Int, error) {
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -290,7 +293,7 @@ func (ec *Client) GetMaxBlockGasLimit(contractAddress common.Address)(*big.Int,e
 	gasLimit, err := contract.GetMaxGasBlockLimit(&bind.CallOpts{})
 
 	if err != nil {
-		msg := fmt.Sprintf("failed get max block gasLimit from %s",contractAddress.Hex())
+		msg := fmt.Sprintf("failed get max block gasLimit from %s", contractAddress.Hex())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
@@ -299,7 +302,7 @@ func (ec *Client) GetMaxBlockGasLimit(contractAddress common.Address)(*big.Int,e
 }
 
 //GetMaxBlockGasLimit ...
-func (ec *Client) GetCurrentGasLimit(contractAddress common.Address)(*big.Int,error){
+func (ec *Client) GetCurrentGasLimit(contractAddress common.Address) (*big.Int, error) {
 	contract, err := relay.NewRelay(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -312,7 +315,7 @@ func (ec *Client) GetCurrentGasLimit(contractAddress common.Address)(*big.Int,er
 	gasLimit, err := contract.GetCurrentGasLimit(&bind.CallOpts{})
 
 	if err != nil {
-		msg := fmt.Sprintf("failed get current gasLimit from %s",contractAddress.Hex())
+		msg := fmt.Sprintf("failed get current gasLimit from %s", contractAddress.Hex())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return nil, err
 	}
@@ -320,9 +323,8 @@ func (ec *Client) GetCurrentGasLimit(contractAddress common.Address)(*big.Int,er
 	return gasLimit, nil
 }
 
-
 //AccountPermitted ...
-func (ec *Client) AccountPermitted(contractAddress, senderAddress common.Address)(bool,error){
+func (ec *Client) AccountPermitted(contractAddress, senderAddress common.Address) (bool, error) {
 	contract, err := relay.NewAccount(contractAddress, ec.client)
 	if err != nil {
 		msg := fmt.Sprintf("can't instance RelayHub contract %s", contractAddress)
@@ -332,10 +334,10 @@ func (ec *Client) AccountPermitted(contractAddress, senderAddress common.Address
 
 	log.GeneralLogger.Println("AccountPermissioning Contract instanced:", contractAddress.Hex())
 
-	isPermitted, err := contract.AccountPermitted(&bind.CallOpts{},senderAddress)
+	isPermitted, err := contract.AccountPermitted(&bind.CallOpts{}, senderAddress)
 
 	if err != nil {
-		msg := fmt.Sprintf("failed to know if account is permitted from %s",contractAddress.Hex())
+		msg := fmt.Sprintf("failed to know if account is permitted from %s", contractAddress.Hex())
 		err = errors.CallBlockchainFailed.Wrapf(err, msg, -32603)
 		return false, err
 	}
