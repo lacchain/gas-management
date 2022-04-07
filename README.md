@@ -1,4 +1,4 @@
-# *** This repository has been deprecated and is no longer supported. We are now supporting [LACNet's branch](https://github.com/LACNetNetworks/gas-management)***
+**IMPORTANT NOTE:** *The ongoing development of this project has migrated to the LACNet organization. Please use [LACNet's branch](https://github.com/LACNetNetworks/gas-management) instead of this repository which has been deprecated and is no longer supported.*
 
 # Gas Management
 
